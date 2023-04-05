@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Hub extends Model
+class HubParams extends Model
 {
     use HasFactory;
 
@@ -15,15 +15,8 @@ class Hub extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'logo',
-        'departement',
-        'code_departement',
-        'user_id'
+        'update_planning',
+        'type_day',
+        'hubs'
     ];
-
-    public function users (): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(User::class);
-    }
 }

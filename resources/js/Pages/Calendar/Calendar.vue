@@ -16,7 +16,7 @@
                         <div :class="[day.vacance[1].includes('A') ? 'bg-blue-600 p-1 m-1' : '']" :title="day.vacance[1].includes('A') ? 'Zone A' : ''"></div>
                         <div :class="[day.vacance[1].includes('B') ? 'bg-green-600 p-1 m-1' : '']" :title="day.vacance[1].includes('B') ? 'Zone B' : ''"></div>
                         <div :class="[day.vacance[1].includes('C') ? 'bg-red-600 p-1 m-1' : '']" :title="day.vacance[1].includes('C') ? 'Zone C' : ''"></div>
-<!--                        <div :class="[day.vacance[1].includes('Corse') ? 'bg-yellow-600 p-1 m-1' : '']" :title="day.vacance[1].includes('C') ? 'Zone Corse' : ''"></div>-->
+                        <!--                        <div :class="[day.vacance[1].includes('Corse') ? 'bg-yellow-600 p-1 m-1' : '']" :title="day.vacance[1].includes('C') ? 'Zone Corse' : ''"></div>-->
                     </div>
                 </div>
             </div>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+
 export default {
     name: "Calendar",
     props: {

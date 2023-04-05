@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, watch } from 'vue';
+import {computed, onMounted, onUnmounted, ref, watch} from 'vue';
 
 const props = defineProps({
     show: {
@@ -18,6 +18,12 @@ const props = defineProps({
 
 const emit = defineEmits(['close']);
 
+const isDarkMode = ref(false);
+
+onMounted(() => {
+    isDarkMode.value = localStorage.getItem('isDarkMode') === 'true';
+});
+
 watch(
     () => props.show,
     () => {
@@ -26,6 +32,7 @@ watch(
         } else {
             document.body.style.overflow = null;
         }
+        isDarkMode.value = localStorage.getItem('isDarkMode') === 'true';
     }
 );
 
@@ -72,7 +79,7 @@ const maxWidthClass = computed(() => {
                     leave-to-class="opacity-0"
                 >
                     <div v-show="show" class="fixed inset-0 transform transition-all" @click="close">
-                        <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
+                        <div class="absolute inset-0 opacity-75" :class="[isDarkMode ? 'bg-gray-600' : 'bg-gray-500']" />
                     </div>
                 </transition>
 
@@ -86,8 +93,8 @@ const maxWidthClass = computed(() => {
                 >
                     <div
                         v-show="show"
-                        class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
-                        :class="maxWidthClass"
+                        :class="[isDarkMode ? 'bg-gray-800' : 'bg-white', maxWidthClass]"
+                        class="mb-6 rounded-lg my-auto overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
                     >
                         <slot v-if="show" />
                     </div>

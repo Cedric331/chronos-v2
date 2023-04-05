@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Hub;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class HubController extends Controller
 {
@@ -34,9 +35,12 @@ class HubController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Hub $hub)
+    public function show(Hub $hub): \Inertia\Response
     {
-        //
+        $hubWithUsers = $hub->load('users');
+        return Inertia::render('Hub/Hub', [
+            'hub' => $hubWithUsers
+        ]);
     }
 
     /**

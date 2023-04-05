@@ -13,7 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::factory(1)->create();
+        $this->call([
+            RoleSeeder::class,
+        ]);
+        $users = User::factory(1)->create();
+        $user = $users->first();
+
+        $user->assignRole('Admin');
+
+        $this->call([
+            HubSeeder::class,
+        ]);
+
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

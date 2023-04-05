@@ -37,7 +37,7 @@ const submit = () => {
 
         <div class="min-h-screen w-full max-w-screen flex justify-center items-center">
 
-            <div class="py-12 px-12 bg-white rounded-2xl shadow-xl z-20 md:w-auto xl:w-5/12 bg-opacity-80">
+            <div class="py-12 px-12 bg-white rounded-2xl shadow-xl z-20 md:w-auto xl:w-3/12 bg-opacity-80">
                 <div class="flex justify-center">
                     <Link href="/">
                         <ApplicationLogo class="w-20 h-20 fill-current text-gray-500" />
@@ -61,7 +61,7 @@ const submit = () => {
                     </div>
 
                     <div class="mt-4">
-                        <InputLabel for="password" value="Password" />
+                        <InputLabel for="password" value="Mot de passe" />
 
                         <TextInput
                             id="password"
@@ -78,7 +78,7 @@ const submit = () => {
                     <div class="block mt-4">
                         <label class="flex items-center">
                             <Checkbox name="remember" v-model:checked="form.remember" />
-                            <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Remember me</span>
+                            <span class="ml-2 text-sm text-gray-600 dark:text-gray-400">Se souvenir de moi</span>
                         </label>
                     </div>
 

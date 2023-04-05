@@ -33,10 +33,51 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Tableau de bord
                                 </NavLink>
+                                <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.hub_id" :href="route('hub.show', {hub: $page.props.auth.user.hub_id})" :active="route().current('hub.show')">
+                                    Gestion du Hub
+                                </NavLink>
                             </div>
                         </div>
 
                         <div class="flex justify-between h-16">
+
+                            <div class="hidden sm:flex sm:items-center sm:ml-6">
+                                <!-- Settings Dropdown -->
+                                <div class="ml-3 relative">
+                                    <Dropdown align="right" width="48">
+                                        <template #trigger>
+                                            <span class="inline-flex rounded-md">
+                                                <button
+                                                    type="button"
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
+                                                >
+                                                    {{ hub.name }}
+
+                                                    <svg
+                                                        class="ml-2 -mr-0.5 h-4 w-4"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fill-rule="evenodd"
+                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                            clip-rule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                        </template>
+
+                                        <template #content>
+                                            <div v-for="hub in $page.props.hubs" :key="hub.id">
+                                                <div @click="this.hub = hub" class="text-gray-600 hover:bg-gray-200 p-1 dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ hub.name }} </div>
+                                            </div>
+                                        </template>
+                                    </Dropdown>
+                                </div>
+                            </div>
+
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <label class="relative inline-flex items-center cursor-pointer">
                                     <input @click="updateDarkMode()" type="checkbox" value="" :checked="isDarkMode" class="sr-only peer">
@@ -149,8 +190,8 @@ const showingNavigationDropdown = ref(false);
             </nav>
 
             <!-- Page Heading -->
-            <header class="bg-gray-100 border-1 sticky top-0 dark:bg-gray-800 shadow" v-if="$slots.header">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <header class="bg-gray-100 border-1 top-0 dark:bg-gray-800 shadow" v-if="$slots.header">
+                <div class="w-auto mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
@@ -168,6 +209,7 @@ const showingNavigationDropdown = ref(false);
 export default {
     data () {
         return {
+            hub: {'name': 'Hub non défini'},
             isDarkMode: false
         }
     },
@@ -175,7 +217,6 @@ export default {
         updateDarkMode () {
             this.isDarkMode = !this.isDarkMode
             localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));
-            console.log(localStorage.getItem('isDarkMode'))
         },
         darkMode () {
             const isDarkMode = localStorage.getItem('isDarkMode');
@@ -187,6 +228,11 @@ export default {
         }
     },
     mounted () {
+        if (this.$page.props.auth.user.hub_id) {
+            this.hub = this.$page.props.hubs.find(item => {
+                return item.id === this.$page.props.auth.user.hub_id
+            })
+        }
         this.darkMode()
     }
 }
