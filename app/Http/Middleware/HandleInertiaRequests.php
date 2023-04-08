@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
-                'isCoordinateur' => $request->user()->isCoordinateur(),
+                'isCoordinateur' => $request->user() ? $request->user()->isCoordinateur() : false,
             ],
             'hubs' => Hub::orderBy('name')->get(),
             'ziggy' => function () use ($request) {

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HubController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,6 +29,10 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::middleware('isCoordinateur')->group(function () {
+
+        // User
+        Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
+
         Route::get('/hub/{hub}', [HubController::class, 'show'])->name('hub.show');
     });
 
