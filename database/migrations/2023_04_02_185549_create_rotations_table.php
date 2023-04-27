@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('rotations', function (Blueprint $table) {
             $table->id();
             $table->string('name', 10);
-            $table->foreignId('hub_id')
-                ->constrained('hubs')
+            $table->foreignId('team_id')
+                ->constrained('teams')
                 ->cascadeOnDelete();
-            $table->unique(['hub_id', 'name']);
+            $table->unique(['team_id', 'name']);
             $table->timestamps();
         });
     }

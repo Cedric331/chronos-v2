@@ -54,6 +54,7 @@ class UserRequest extends FormRequest
             'email.email' => 'L\'adresse e-mail doit être valide.',
             'email.max' => 'L\'adresse e-mail ne peut pas dépasser 255 caractères.',
             'email.unique' => 'L\'adresse e-mail est déjà utilisée.',
+
         ];
     }
 }

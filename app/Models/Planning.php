@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Rotation extends Model
+class Planning extends Model
 {
     use HasFactory;
 
@@ -15,7 +15,16 @@ class Rotation extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'team_id'
+        'type_day',
+        'debut_journee',
+        'debut_pause',
+        'fin_pause',
+        'fin_journee',
+        'is_vacation',
+        'is_technician',
+        'telework',
+        'day_id',
+        'rotation_id',
+        'user_id'
     ];
 }

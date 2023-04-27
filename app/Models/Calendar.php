@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,19 +16,16 @@ class Calendar extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'day',
-        'type_day',
-        'debut_journee',
-        'debut_pause',
-        'fin_pause',
-        'fin_journee',
+        'date',
         'is_holiday',
-        'is_vacation',
-        'is_technician',
-        'telework',
-        'zone',
-        'rotation_id',
-        'user_id'
+        'name_holiday',
+        'zone'
     ];
 
+    public function getDateAttribute($value)
+    {
+        Carbon::setLocale('fr');
+        $date = Carbon::parse($value);
+        return $date->isoFormat('dddd D MMMM YYYY');
+    }
 }

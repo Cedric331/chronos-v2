@@ -33,15 +33,15 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Tableau de bord
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.hub_id" :href="route('hub.show', {hub: $page.props.auth.user.hub_id})" :active="route().current('hub.show')">
-                                    Gestion du Hub
+                                <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
+                                    Gestion de la Team
                                 </NavLink>
                             </div>
                         </div>
 
                         <div class="flex justify-between h-16">
 
-                            <div class="hidden sm:flex sm:items-center sm:ml-6">
+                            <div v-if="$page.props.config.active && team.name" class="hidden sm:flex sm:items-center sm:ml-6">
                                 <!-- Settings Dropdown -->
                                 <div class="ml-3 relative">
                                     <Dropdown align="right" width="48">
@@ -49,9 +49,8 @@ const showingNavigationDropdown = ref(false);
                                             <span class="inline-flex rounded-md">
                                                 <button
                                                     type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
-                                                >
-                                                    {{ hub.name }}
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                                    {{ team.name }}
 
                                                     <svg
                                                         class="ml-2 -mr-0.5 h-4 w-4"
@@ -70,8 +69,8 @@ const showingNavigationDropdown = ref(false);
                                         </template>
 
                                         <template #content>
-                                            <div v-for="hub in $page.props.hubs" :key="hub.id">
-                                                <div @click="this.hub = hub" class="text-gray-600 hover:bg-gray-200 p-1 dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ hub.name }} </div>
+                                            <div v-for="team in $page.props.teams" :key="team.id">
+                                                <div @click="this.team = team" class="text-gray-600 hover:bg-gray-200 p-1 dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </div>
                                             </div>
                                         </template>
                                     </Dropdown>
@@ -209,7 +208,7 @@ const showingNavigationDropdown = ref(false);
 export default {
     data () {
         return {
-            hub: {'name': 'Hub non défini'},
+            team: {'name': null},
             isDarkMode: false
         }
     },
@@ -228,11 +227,11 @@ export default {
         }
     },
     mounted () {
-        if (this.$page.props.auth.user.hub_id) {
-            this.hub = this.$page.props.hubs.find(item => {
-                return item.id === this.$page.props.auth.user.hub_id
-            })
-        }
+        // if (this.$page.props.auth.user.team_id && this.$page.props.config.active) {
+        //     this.team = this.$page.props.teams.find(item => {
+        //         return item.id === this.$page.props.auth.user.id
+        //     })
+        // }
         this.darkMode()
     }
 }

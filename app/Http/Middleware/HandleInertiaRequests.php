@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Hub;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tightenco\Ziggy\Ziggy;
@@ -36,7 +36,8 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
                 'isCoordinateur' => $request->user() ? $request->user()->isCoordinateur() : false,
             ],
-            'hubs' => Hub::orderBy('name')->get(),
+            'config' => config('teams'),
+            'teams' => config('teams.active') ? Team::orderBy('name')->get() : null,
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [
                     'location' => $request->url(),

@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('Admin');
 
         $this->call([
-            HubSeeder::class,
+            TeamSeeder::class,
         ]);
 
 

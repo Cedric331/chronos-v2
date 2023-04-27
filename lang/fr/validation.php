@@ -152,7 +152,6 @@ return [
     'wrong' => 'Le champ :attribute est incorrect.',
 
 
-
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -165,6 +164,7 @@ return [
     */
 
     'custom' => [
+        'attributes' => [],
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
@@ -181,8 +181,5 @@ return [
     |
     */
 
-    'attributes' => [
-        'additional' => 'et :additional erreur(s) supplémentaire(s)',
-    ],
 
 ];

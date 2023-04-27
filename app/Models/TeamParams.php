@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class HubParams extends Model
+class TeamParams extends Model
 {
     use HasFactory;
 
@@ -17,6 +17,6 @@ class HubParams extends Model
     protected $fillable = [
         'update_planning',
         'type_day',
-        'hubs'
+        'teams'
     ];
 }

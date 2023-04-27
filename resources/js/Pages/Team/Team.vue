@@ -1,5 +1,5 @@
 <template>
-    <Head title="Gestion du Hub" />
+    <Head title="Gestion de la Team" />
 
     <AuthenticatedLayout>
 
@@ -27,10 +27,10 @@
                                 <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 2xl:col-span-2">
                                     <div class="mb-4 flex items-center justify-between">
                                         <div>
-                                            <h3 class="text-xl font-bold text-gray-900 mb-2">Les conseillers du Hub</h3>
+                                            <h3 class="text-xl font-bold text-gray-900 mb-2">Membre de la Team</h3>
                                         </div>
                                         <div class="flex-shrink-0">
-                                            <SecondaryButton @click="createUser()">Ajouter un conseiller</SecondaryButton>
+                                            <SecondaryButton @click="createUser()">Ajouter un membre</SecondaryButton>
                                         </div>
                                     </div>
                                     <div class="flex flex-col mt-8">
@@ -52,13 +52,12 @@
                                                             <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                                                 Téléphone
                                                             </th>
-                                                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-
-                                                            </th>
+                                                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                                                         </tr>
                                                         </thead>
+
                                                         <tbody class="bg-white">
-                                                        <tr v-for="user in hub.users">
+                                                        <tr v-for="user in team.users">
                                                             <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                                                 {{ user.name }}
                                                             </td>
@@ -346,10 +345,10 @@ import { Head } from '@inertiajs/vue3';
 import Calendar from "@/Pages/Calendar/Calendar.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import ModalUserUpdate from "@/Components/Modal/ModalUserUpdate.vue";
+import ModalUserUpdate from "@/Components/Modal/ModalUser.vue";
 
 export default {
-    name: 'Hub',
+    name: 'Team',
     components: {
         ModalUserUpdate,
         SecondaryButton,
@@ -359,7 +358,7 @@ export default {
         Head
     },
     props: {
-        hub: Object
+        team: Object
     },
     data() {
         return {
@@ -370,7 +369,10 @@ export default {
     },
     methods: {
         dateFormatFr (date) {
-            return this.$dateFormatFr(date);
+            if (date) {
+                return this.$dateFormatFr(date);
+            }
+            return null
         },
         createUser () {
             this.user = null

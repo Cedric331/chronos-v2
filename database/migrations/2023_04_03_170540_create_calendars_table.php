@@ -13,23 +13,10 @@ return new class extends Migration
     {
         Schema::create('calendars', function (Blueprint $table) {
             $table->id();
-            $table->date('day');
-            $table->string('type_day')->default('Travaille');
-            $table->time('debut_journee')->nullable();
-            $table->time('debut_pause')->nullable();
-            $table->time('fin_pause')->nullable();
-            $table->time('fin_journee')->nullable();
+            $table->date('date');
             $table->boolean('is_holiday')->default(false);
-            $table->boolean('is_vacation')->default(false);
-            $table->boolean('is_technician')->default(false);
-            $table->boolean('telework')->default(false);
+            $table->string('name_holiday')->nullable();
             $table->set('zone', ['A', 'B', 'C', 'Corse'])->nullable();
-            $table->foreignId('rotation_id')
-                ->nullable()
-                ->constrained('rotations');
-            $table->foreignId('user_id')
-                ->constrained('users')
-                ->cascadeOnDelete();
             $table->timestamps();
         });
     }

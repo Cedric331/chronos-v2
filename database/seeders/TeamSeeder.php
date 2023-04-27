@@ -2,30 +2,30 @@
 
 namespace Database\Seeders;
 
-use App\Models\Hub;
+use App\Models\Team;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class HubSeeder extends Seeder
+class TeamSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Hub::create([
+        Team::create([
             'name' => 'Gujan',
         ]);
 
-        Hub::create([
+        Team::create([
             'name' => 'Libourne',
         ]);
 
-        Hub::create([
+        Team::create([
             'name' => 'Bruges',
         ]);
 
-        Hub::create([
+        Team::create([
             'name' => 'Agen',
         ]);
     }

@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hubs', function (Blueprint $table) {
+        Schema::create('teams', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('logo')->nullable();
             $table->string('departement')->nullable();
             $table->unsignedSmallInteger('code_departement')->nullable();
-            // Coordinateur du Hub
+            // Coordinateur de la Team
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users')
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hubs');
+        Schema::dropIfExists('teams');
     }
 };

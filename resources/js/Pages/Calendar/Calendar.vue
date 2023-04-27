@@ -9,14 +9,14 @@
                             <h1 class="font-bold text-xl">{{ day.date }}</h1>
                         </div>
                         <div class="flex justify-center">
-                            <p class="font-bold">{{ day.jour_ferie[0] ? 'Jour Férié ' + '('+ day.jour_ferie[1] + ')' : null }}</p>
+                            <p class="font-bold">{{ day.is_holiday ? 'Jour Férié ' + '('+ day.name_holiday + ')' : null }}</p>
                         </div>
                     </div>
-                    <div v-if="day.vacance[0]" class="w-full">
-                        <div :class="[day.vacance[1].includes('A') ? 'bg-blue-600 p-1 m-1' : '']" :title="day.vacance[1].includes('A') ? 'Zone A' : ''"></div>
-                        <div :class="[day.vacance[1].includes('B') ? 'bg-green-600 p-1 m-1' : '']" :title="day.vacance[1].includes('B') ? 'Zone B' : ''"></div>
-                        <div :class="[day.vacance[1].includes('C') ? 'bg-red-600 p-1 m-1' : '']" :title="day.vacance[1].includes('C') ? 'Zone C' : ''"></div>
-                        <!--                        <div :class="[day.vacance[1].includes('Corse') ? 'bg-yellow-600 p-1 m-1' : '']" :title="day.vacance[1].includes('C') ? 'Zone Corse' : ''"></div>-->
+                    <div v-if="day.zone" class="w-full">
+                        <div :class="[day.zone.includes('A') ? 'bg-blue-600 p-1 m-1' : '']" :title="day.zone.includes('A') ? 'Zone A' : ''"></div>
+                        <div :class="[day.zone.includes('B') ? 'bg-green-600 p-1 m-1' : '']" :title="day.zone.includes('B') ? 'Zone B' : ''"></div>
+                        <div :class="[day.zone.includes('C') ? 'bg-red-600 p-1 m-1' : '']" :title="day.zone.includes('C') ? 'Zone C' : ''"></div>
+<!--                        <div :class="[day.zone.includes('Corse') ? 'bg-yellow-600 p-1 m-1' : '']" :title="day.zone.includes('C') ? 'Zone Corse' : ''"></div>-->
                     </div>
                 </div>
             </div>

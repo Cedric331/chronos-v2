@@ -25,7 +25,7 @@ class User extends Authenticatable
         'email',
         'birthday',
         'phone',
-        'hub_id',
+        'team_id',
         'password',
     ];
 
@@ -48,10 +48,14 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-//    public function getBirthdayAttribute($value)
-//    {
-//        return Carbon::parse($value)->format('d/m/Y');
-//    }
+    protected $with = ['team'];
+
+
+    public function team (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
 
     /**
      * @return bool

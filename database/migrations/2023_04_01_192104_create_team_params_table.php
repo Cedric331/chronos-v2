@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('hub_params', function (Blueprint $table) {
+        Schema::create('team_params', function (Blueprint $table) {
             $table->id();
             $table->json('type_day');
             $table->boolean('update_planning')->default(false);
-            $table->foreignId('hub_id')
-                ->constrained('hubs')
+            $table->foreignId('team_id')
+                ->constrained('teams')
                 ->cascadeOnDelete();
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('hub_params');
+        Schema::dropIfExists('team_params');
     }
 };

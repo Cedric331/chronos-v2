@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Hub;
+use App\Models\Team;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class HubController extends Controller
+class TeamController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -35,18 +35,20 @@ class HubController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Hub $hub): \Inertia\Response
+    public function show($name): \Inertia\Response
     {
-        $hubWithUsers = $hub->load('users');
-        return Inertia::render('Hub/Hub', [
-            'hub' => $hubWithUsers
+        $team = Team::where('name', $name)->firstOrFail();
+
+        $teamWithUsers = $team->load('users');
+        return Inertia::render('Team/Team', [
+            'team' => $teamWithUsers
         ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Hub $hub)
+    public function edit(Team $team)
     {
         //
     }
@@ -54,7 +56,7 @@ class HubController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Hub $hub)
+    public function update(Request $request, Team $team)
     {
         //
     }
@@ -62,7 +64,7 @@ class HubController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Hub $hub)
+    public function destroy(Team $team)
     {
         //
     }

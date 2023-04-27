@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Calendar;
 use Carbon\Traits\Date;
 use ICal\ICal;
 use Illuminate\Http\Request;
@@ -13,12 +14,20 @@ use Yasumi\Yasumi;
 class CalendarController extends Controller
 {
 
+    public function showGeneratedDaysWithHolidays()
+    {
+        $days = Calendar::all();
+
+        return Inertia::render('Dashboard', [
+            'days' => $days
+        ]);
+    }
+
     /**
      * @param $dateDebut
      * @param $dateFin
-     * @return \Inertia\Response
      */
-    function generateDaysWithHolidays($dateDebut = null, $dateFin = null): \Inertia\Response
+    public static function generateDaysWithHolidays($dateDebut = null, $dateFin = null): array
     {
         $year = date('Y');
         if ($dateDebut === null) {
@@ -34,18 +43,18 @@ class CalendarController extends Controller
         }
 
         $days = [];
-        $holidays = $this->getFrenchHolidays($year);
-        $holidaysByZone = $this->getSchoolHolidays($year);
+        $holidays = self::getFrenchHolidays($year);
+        $holidaysByZone = self::getSchoolHolidays($year);
 
         $currentDate = $dateDebut;
         while ($currentDate <= $dateFin) {
-            $formattedDate = ucwords($currentDate->isoFormat('dddd D MMMM'));
+            $formattedDate = $currentDate->format('Y-m-d');
             $currentDateString = $currentDate->toDateString();
 
             $isHoliday = isset($holidays[$currentDateString]);
             $holidayName = $isHoliday ? $holidays[$currentDateString] : '';
 
-            list($isSchoolHoliday, $schoolHolidayZones) = $this->isSchoolHoliday($currentDateString, $holidaysByZone);
+            list($isSchoolHoliday, $schoolHolidayZones) = self::isSchoolHoliday($currentDateString, $holidaysByZone);
 
             $days[] = [
                 'date' => $formattedDate,
@@ -57,12 +66,10 @@ class CalendarController extends Controller
         }
 
 
-        return Inertia::render('Dashboard', [
-            'days' => $days
-        ]);
+        return $days;
     }
 
-    private function getFrenchHolidays($year): array
+    private static function getFrenchHolidays($year): array
     {
         $holidays = Yasumi::create('France', $year, 'fr_FR');
 
@@ -77,7 +84,7 @@ class CalendarController extends Controller
         return $holidayDates;
     }
 
-    private function isSchoolHoliday($date, $holidaysByZone)
+    private static function isSchoolHoliday($date, $holidaysByZone)
     {
         $zonesInHolidays = [];
 
@@ -93,7 +100,7 @@ class CalendarController extends Controller
     }
 
 
-    private function getSchoolHolidays($year)
+    private static function getSchoolHolidays($year)
     {
         $url = 'https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
 

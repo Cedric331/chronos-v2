@@ -58,7 +58,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, User $user)
+    public function update(UserRequest $request, User $user): bool|\Inertia\Response
     {
         if (!Gate::check('has-authorization')) {
            return Inertia::render('Errors/401');

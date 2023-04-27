@@ -2,7 +2,10 @@
 
 return [
 
-    // Détermine les types de jours par défaut des hubs lors de la création de ceux-ci
+    // Autorise la création des teams
+    'active' => false,
+
+    // Détermine les types de jours par défaut des teams lors de la création de ceux-ci
     'type_days_default' => [
         'Travaille',
         'RJF',
@@ -11,6 +14,6 @@ return [
         'Maladie',
         'Repos',
         'Formation'
-    ]
+    ],
 
 ];
