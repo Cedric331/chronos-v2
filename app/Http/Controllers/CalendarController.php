@@ -14,9 +14,18 @@ use Yasumi\Yasumi;
 class CalendarController extends Controller
 {
 
-    public function showGeneratedDaysWithHolidays()
+    public function showGeneratedDaysWithHolidays($getAllDates = false)
     {
-        $days = Calendar::all();
+        if ($getAllDates) {
+            // Récupérez toutes les dates
+            $days = Calendar::all();
+        } else {
+            // Récupérez le lundi de la semaine en cours
+            $startOfWeek = Carbon::now()->startOfWeek();
+
+            // Récupérez les jours à partir du lundi de la semaine en cours
+            $days = Calendar::where('date', '>=', $startOfWeek)->get();
+        }
 
         return Inertia::render('Dashboard', [
             'days' => $days

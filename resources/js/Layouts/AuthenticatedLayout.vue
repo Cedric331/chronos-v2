@@ -31,10 +31,10 @@ const showingNavigationDropdown = ref(false);
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Tableau de bord
+                                    {{ $t('nav.dashboard') }}
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
-                                    Gestion de la Team
+                                    {{ $t('nav.management') }}
                                 </NavLink>
                             </div>
                         </div>
@@ -115,9 +115,11 @@ const showingNavigationDropdown = ref(false);
                                         </template>
 
                                         <template #content>
-                                            <DropdownLink :href="route('profile.edit')"> Profil </DropdownLink>
+                                            <DropdownLink :href="route('profile.edit')">
+                                                {{ $t('nav.profil') }}
+                                            </DropdownLink>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
-                                               Déconnexion
+                                                {{ $t('nav.logout') }}
                                             </DropdownLink>
                                         </template>
                                     </Dropdown>
@@ -165,7 +167,7 @@ const showingNavigationDropdown = ref(false);
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Tableau de bord
+                            {{ $t('nav.dashboard') }}
                         </ResponsiveNavLink>
                     </div>
 
@@ -179,9 +181,11 @@ const showingNavigationDropdown = ref(false);
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('profile.edit')"> Profil </ResponsiveNavLink>
+                            <ResponsiveNavLink :href="route('profile.edit')">
+                                {{ $t('nav.profil') }}
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
-                               Déconnexion
+                                {{ $t('nav.logout') }}
                             </ResponsiveNavLink>
                         </div>
                     </div>
@@ -227,11 +231,11 @@ export default {
         }
     },
     mounted () {
-        // if (this.$page.props.auth.user.team_id && this.$page.props.config.active) {
-        //     this.team = this.$page.props.teams.find(item => {
-        //         return item.id === this.$page.props.auth.user.id
-        //     })
-        // }
+        if (this.$page.props.auth.user.team_id && this.$page.props.config.active) {
+            this.team = this.$page.props.teams.find(item => {
+                return item.id === this.$page.props.auth.user.id
+            })
+        }
         this.darkMode()
     }
 }

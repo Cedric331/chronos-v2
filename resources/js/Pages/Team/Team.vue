@@ -1,86 +1,16 @@
 <template>
-    <Head title="Gestion de la Team" />
+    <Head :title="$t('nav.management')" />
+    <notifications position="bottom right" />
 
     <AuthenticatedLayout>
-
         <div>
             <div>
                 <div id="main-content" class="h-full w-full bg-gray-50 relative overflow-y-auto">
                     <main>
                         <div class="pt-6 px-4">
                             <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 gap-4">
-                                <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8  2xl:col-span-2">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <div class="flex-shrink-0">
-                                            <span class="text-2xl sm:text-3xl leading-none font-bold text-gray-900">$45,385</span>
-                                            <h3 class="text-base font-normal text-gray-500">Sales this week</h3>
-                                        </div>
-                                        <div class="flex items-center justify-end flex-1 text-green-500 text-base font-bold">
-                                            12.5%
-                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M5.293 7.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L6.707 7.707a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                    <div id="main-chart"></div>
-                                </div>
-                                <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 2xl:col-span-2">
-                                    <div class="mb-4 flex items-center justify-between">
-                                        <div>
-                                            <h3 class="text-xl font-bold text-gray-900 mb-2">Membre de la Team</h3>
-                                        </div>
-                                        <div class="flex-shrink-0">
-                                            <SecondaryButton @click="createUser()">Ajouter un membre</SecondaryButton>
-                                        </div>
-                                    </div>
-                                    <div class="flex flex-col mt-8">
-                                        <div class="overflow-x-auto rounded-lg">
-                                            <div class="align-middle inline-block min-w-full">
-                                                <div class="shadow overflow-hidden sm:rounded-lg">
-                                                    <table class="min-w-full divide-y divide-gray-200">
-                                                        <thead class="bg-gray-50">
-                                                        <tr>
-                                                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                                Nom
-                                                            </th>
-                                                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                                Email
-                                                            </th>
-                                                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                                Anniversaire
-                                                            </th>
-                                                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                                                Téléphone
-                                                            </th>
-                                                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-                                                        </tr>
-                                                        </thead>
-
-                                                        <tbody class="bg-white">
-                                                        <tr v-for="user in team.users">
-                                                            <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
-                                                                {{ user.name }}
-                                                            </td>
-                                                            <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-500">
-                                                                {{ user.email }}
-                                                            </td>
-                                                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                                                {{ dateFormatFr(user.birthday) }}
-                                                            </td>
-                                                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                                                {{ user.phone }}
-                                                            </td>
-                                                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                                                <PrimaryButton @click="editUser(user)">Modifier</PrimaryButton>
-                                                            </td>
-                                                        </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <TeamGestion :team="team"></TeamGestion>
+                                <TeamUser :users="team.users"></TeamUser>
                             </div>
                             <div class="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                                 <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
@@ -335,7 +265,6 @@
                 </div>
             </div>
         </div>
-        <ModalUserUpdate :showUser="showUser" :user="this.user" :isUpdate="this.isUpdate" @close="closeUser()"></ModalUserUpdate>
     </AuthenticatedLayout>
 </template>
 
@@ -345,11 +274,15 @@ import { Head } from '@inertiajs/vue3';
 import Calendar from "@/Pages/Calendar/Calendar.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import ModalUserUpdate from "@/Components/Modal/ModalUser.vue";
+import ModalUserUpdate from "@/Pages/Team/Modal/ModalUserUpdate.vue";
+import TeamUser from "@/Pages/Team/Components/TeamUser.vue";
+import TeamGestion from "@/Pages/Team/Components/TeamGestion.vue";
 
 export default {
     name: 'Team',
     components: {
+        TeamGestion,
+        TeamUser,
         ModalUserUpdate,
         SecondaryButton,
         PrimaryButton,
@@ -359,36 +292,6 @@ export default {
     },
     props: {
         team: Object
-    },
-    data() {
-        return {
-            showUser: false,
-            isUpdate: false,
-            user: null
-        }
-    },
-    methods: {
-        dateFormatFr (date) {
-            if (date) {
-                return this.$dateFormatFr(date);
-            }
-            return null
-        },
-        createUser () {
-            this.user = null
-            this.isUpdate = false
-            this.showUser = true
-        },
-        editUser (user) {
-            this.user = user
-            this.isUpdate = true
-            this.showUser = true
-        },
-        closeUser () {
-            this.user = null
-            this.isUpdate = false
-            this.showUser = false
-        }
     }
 }
 </script>

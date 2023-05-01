@@ -2,7 +2,7 @@
     <Modal :show="showUser" @close="this.$emit('close')">
         <form class="py-6 px-9">
             <h2 class="flex justify-center my-5 text-xl w-full text-gray-400">
-              {{ this.isUpdate ? "Modification du conseiller " +  item.name : "Ajout d'un conseiller" }}
+                {{ $t('team_user.modalUserUpdate.title') }}
             </h2>
             <hr class="my-4 dark:text-white">
             <div class="mb-5">
@@ -44,8 +44,8 @@
             <InputError :message="message" :canClose="true" @close="this.message = null"></InputError>
 
             <div class="flex justify-center">
-                <SecondaryButton @click.prevent="actionUser()" class="w-2/4 flex justify-center">
-                    {{ this.isUpdate ? "Modifier" : "Créer" }}
+                <SecondaryButton @click.prevent="updateUser()" class="w-2/4 flex justify-center">
+                    {{ $t('team_user.modalUserUpdate.button') }}
                 </SecondaryButton>
             </div>
         </form>
@@ -60,6 +60,7 @@ import InputError from "@/Components/InputError.vue";
 
 export default {
     name: "ModalUserUpdate",
+    emits: ['update-users', 'close'],
     components: {
         InputError,
         SecondaryButton,
@@ -68,23 +69,12 @@ export default {
     },
     props: {
         user: Object,
-        isUpdate: Boolean,
         showUser: Boolean
     },
     watch: {
         showUser () {
             this.message = null
-            if (this.isUpdate) {
-                this.item = JSON.parse(JSON.stringify(this.user))
-            } else {
-                this.item = {
-                    name: null,
-                    email: null,
-                    birthday: null,
-                    phone: null,
-                    hub_id: null
-                }
-            }
+            this.item = JSON.parse(JSON.stringify(this.user))
         }
     },
     data() {
@@ -95,43 +85,21 @@ export default {
                 email: null,
                 birthday: null,
                 phone: null,
-                hub_id: null
+                team_id: null
             },
         };
     },
     methods: {
-        actionUser() {
-            if (this.isUpdate) {
-                this.updateUser()
-            } else {
-                this.saveUser()
-            }
-        },
-        saveUser() {
-            axios.post('/user', {
-                name: this.item.name,
-                hub: this.item.hub_id,
-                birthday: this.item.birthday,
-                phone: this.item.phone,
-                email: this.item.email
-            })
-                .then(response => {
-
-                })
-                .catch(error => {
-                    this.message = error.response.data.message
-                })
-        },
         updateUser() {
             axios.patch('/user/' + this.item.id, {
                 name: this.item.name,
-                hub: this.item.hub_id,
+                team_id: this.item.team_id,
                 birthday: this.item.birthday,
                 phone: this.item.phone,
                 email: this.item.email
             })
             .then(response => {
-
+                this.$emit('update-users', response.data)
             })
             .catch(error => {
                 this.message = error.response.data.message
@@ -140,9 +108,7 @@ export default {
     },
     mounted() {
         this.message = null
-        if (this.isUpdate) {
-            this.item = JSON.parse(JSON.stringify(this.user))
-        }
+        this.item = JSON.parse(JSON.stringify(this.user))
     }
 }
 </script>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class TeamController extends Controller
@@ -35,9 +36,13 @@ class TeamController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($name): \Inertia\Response
+    public function show($name): \Inertia\Response|\Symfony\Component\HttpFoundation\Response
     {
-        $team = Team::where('name', $name)->firstOrFail();
+        $team = Team::where('name', $name)->first();
+
+        if (Auth::user()->team->id !== $team->id && config('teams.active')) {
+            return Inertia::location('/');
+        }
 
         $teamWithUsers = $team->load('users');
         return Inertia::render('Team/Team', [

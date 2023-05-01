@@ -34,6 +34,11 @@ return [
     */
 
     'mailers' => [
+        'mailjet' => [
+            'domain' => env('MAILJET_DOMAIN', 'api.mailjet.com'),
+            'key' => env('MAILJET_APIKEY'),
+            'secret' => env('MAILJET_APISECRET'),
+        ],
         'smtp' => [
             'transport' => 'smtp',
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),

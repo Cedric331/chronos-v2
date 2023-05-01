@@ -2,7 +2,7 @@
     <section class="bg-white dark:bg-gray-900">
         <div class="mx-5 py-10 mx-auto">
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-7 lg:grid-cols-5 w-full p-2">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
                 <div v-for="day in days" :key="day">
                     <div class="w-full h-64 bg-gray-300 rounded-lg dark:bg-gray-600 p-1">
                         <div class="flex justify-center">

@@ -58,13 +58,25 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UserRequest $request, User $user): bool|\Inertia\Response
+    public function update(UserRequest $request, User $user): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         if (!Gate::check('has-authorization')) {
            return Inertia::render('Errors/401');
         }
 
-        return true;
+        $update = $user->update([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'birthday' => $request->input('birthday'),
+            'phone' => $request->input('phone'),
+            'team_id' => $request->input('team_id')
+        ]);
+
+        if ($update) {
+            return response()->json($user);
+        } else {
+            return response()->json(['message' => 'Erreur lors de l\'enregistrement'], 404);
+        }
     }
 
     /**

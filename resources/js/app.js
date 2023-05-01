@@ -1,11 +1,13 @@
 import './bootstrap';
 import '../css/app.css';
+import i18n from './i18n';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import dateFormatPlugin from './Plugin/date-format-plugin';
+import Notifications from '@kyvg/vue3-notification'
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -15,6 +17,8 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
             .use(plugin)
+            .use(i18n)
+            .use(Notifications)
             .use(ZiggyVue, Ziggy)
             .use(dateFormatPlugin)
             .mount(el);

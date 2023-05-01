@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => ['bail', 'required', 'string', 'max:50'],
-            'hub' => ['bail', 'integer'],
+            'team_id' => ['bail', 'integer'],
             'birthday' => 'bail|nullable|date',
             'phone' => 'bail|nullable|string|size:10',
             'email' => ['bail', 'required', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
@@ -44,7 +44,7 @@ class UserRequest extends FormRequest
             'name.required' => 'Le nom est obligatoire.',
             'name.max' => 'Le nom ne peut pas dépasser 50 caractères.',
 
-            'hub.integer' => 'Le hub doit être un entier.',
+            'team_id.integer' => 'Le hub doit être un entier.',
 
             'birthday.date' => 'La date de naissance doit être une date valide.',
 
