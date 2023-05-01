@@ -29,14 +29,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::middleware('isCoordinateur')->group(function () {
-
-        // User
         Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
-
-        Route::get('/team/{name}', [TeamController::class, 'show'])->name('team.show');
     });
 
 });
 
 require __DIR__.'/auth.php';
 require __DIR__.'/calendar.php';
+require __DIR__.'/team.php';

@@ -2,8 +2,9 @@
 
 return [
 
-    // Autorise la création des teams
+    // Paramètre pour les teams
     'active' => true,
+    'logo' => true,
 
     // Détermine les types de jours par défaut des teams lors de la création de ceux-ci
     'type_days_default' => [

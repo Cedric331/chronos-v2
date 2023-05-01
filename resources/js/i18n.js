@@ -8,13 +8,22 @@ const messages = {
     fr: {
         'name': 'Nom',
         'birthday': 'Anniversaire',
+        'department': 'Département',
+        'department_code': 'Code du Département',
         'nav': {
             'dashboard': 'Tableau de bord',
             'management': 'Gestion de la team',
             'profil': 'Mes informations',
             'logout': 'Déconnexion',
         },
-        'titre_gestion_team': 'Information sur la team',
+        'team_gestion': {
+            'titre': 'Information sur la team',
+            'buttonUpdate': 'Modifier',
+            'modalTeamUpdate': {
+                'title': 'Modification de la Team',
+                'button': 'Enregistrer'
+            }
+        },
         'team_user': {
             'titre': 'Membre de la Team',
             'buttonAdd': 'Ajouter un membre',

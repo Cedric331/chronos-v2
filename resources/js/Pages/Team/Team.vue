@@ -12,7 +12,7 @@
                                 <TeamGestion :team="team"></TeamGestion>
                                 <TeamUser :users="team.users"></TeamUser>
                             </div>
-                            <div class="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                            <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
                                 <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0">

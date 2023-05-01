@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4">
+    <div class="bg-white dark:bg-gray-800 shadow rounded-lg p-4 2xl:col-span-2">
         <div class="mb-4 flex items-center justify-between">
             <div>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">

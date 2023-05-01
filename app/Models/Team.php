@@ -22,8 +22,18 @@ class Team extends Model
         'user_id'
     ];
 
+    protected $appends = ['logo_url'];
+
     public function users (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function getLogoUrlAttribute()
+    {
+        if ($this->logo) {
+            return asset('storage/' . $this->logo);
+        }
+        return null;
     }
 }
