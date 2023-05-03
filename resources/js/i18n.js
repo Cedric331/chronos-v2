@@ -24,6 +24,9 @@ const messages = {
                 'button': 'Enregistrer'
             }
         },
+        'team_rotation': {
+            'button': 'Créer une nouvelle rotation'
+        },
         'team_user': {
             'titre': 'Membre de la Team',
             'buttonAdd': 'Ajouter un membre',

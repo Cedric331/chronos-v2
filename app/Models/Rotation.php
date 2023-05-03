@@ -18,4 +18,9 @@ class Rotation extends Model
         'name',
         'team_id'
     ];
+
+    public function details (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(RotationDetail::class);
+    }
 }

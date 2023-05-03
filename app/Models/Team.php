@@ -36,4 +36,9 @@ class Team extends Model
         }
         return null;
     }
+
+    public function rotations ()
+    {
+        return $this->hasMany(Rotation::class);
+    }
 }

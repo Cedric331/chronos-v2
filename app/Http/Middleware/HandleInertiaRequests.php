@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
-                'team' => config('teams.active') && $request->user()->team_id ? Team::find($request->user()->team_id) : null,
+                'team' => config('teams.active') && $request->user() && $request->user()->team_id ? Team::find($request->user()->team_id) : null,
                 'isCoordinateur' => $request->user() ? $request->user()->isCoordinateur() : false,
             ],
             'config' => config('teams'),

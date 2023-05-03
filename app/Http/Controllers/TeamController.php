@@ -40,13 +40,16 @@ class TeamController extends Controller
      */
     public function show($name): \Inertia\Response|\Symfony\Component\HttpFoundation\Response
     {
-        $team = Team::where('name', $name)->firstOrFail();
+        $team = Team::with('rotations.details')
+            ->where('name', $name)
+            ->firstOrFail();
 
         if (!Auth::user()->team || Auth::user()->team->id !== $team->id || !config('teams.active')) {
             return Inertia::location('/');
         }
 
         $teamWithUsers = $team->load('users');
+
         return Inertia::render('Team/Team', [
             'team' => $teamWithUsers
         ]);

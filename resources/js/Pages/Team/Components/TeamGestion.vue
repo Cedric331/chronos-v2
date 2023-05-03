@@ -4,9 +4,6 @@
             <div>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('team_gestion.titre') }}</h3>
             </div>
-            <div class="flex-shrink-0">
-                <SecondaryButton>Ajouter un membre</SecondaryButton>
-            </div>
         </div>
         <div class="flex flex-col">
             <div class="overflow-x-auto rounded-lg">
