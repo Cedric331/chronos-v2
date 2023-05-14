@@ -54,14 +54,14 @@
                     <div v-if="tabs === 1" class="mx-auto w-max">
                         <div class="mx-auto">
                             <div class="w-full flex flex-col bg-white rounded-lg">
-                                <h1 class="font-semibold tracking-wide mb-2">Sélection des dates</h1>
+                                <h1 class="font-semibold text-center tracking-wide mb-2">Sélection des dates</h1>
 
                                 <div class="flex flex-col justify-between">
                                     <label for="start">Semaine de début:</label>
                                     <input type="week" id="start" name="trip-start" class="w-full"
                                            v-model="dateStart"
                                            :min="dateLimitStart" :max="dateLimitEnd">
-                                    <label for="end">Semaine de Fin :</label>
+                                    <label for="end" class="mt-6">Semaine de Fin :</label>
                                     <input type="week" id="end" name="trip-end"
                                            v-model="dateEnd"
                                            :min="dateLimitStart" :max="dateLimitEnd">

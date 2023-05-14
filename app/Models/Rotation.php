@@ -16,6 +16,7 @@ class Rotation extends Model
      */
     protected $fillable = [
         'name',
+        'total_hours',
         'team_id'
     ];
 

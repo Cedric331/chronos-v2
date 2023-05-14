@@ -64,4 +64,20 @@ class User extends Authenticatable
     {
         return $this->hasRole(['Coordinateur', 'Responsable', 'Admin']);
     }
+
+    /**
+     * @return bool
+     */
+    public function isResponsable(): bool
+    {
+        return $this->hasRole(['Responsable', 'Admin']);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdmin(): bool
+    {
+        return $this->hasRole(['Admin']);
+    }
 }

@@ -3,9 +3,11 @@
         <div class="mx-auto w-full border p-4">
             <div class="mt-6 flex justify-between">
                 <div>
-                    <label for="type" class="block mb-2 text-lg font-medium text-gray-400">*Nom de la Rotation</label>
-                    <input v-model="type" type="text" id="type" max="3" class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="5 caractères maximum" required>
+                    <label for="name" class="block mb-2 text-lg font-medium text-gray-400">*Nom de la Rotation</label>
+                    <input v-model="name" type="text" id="name" max="3" class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="5 caractères maximum" required>
                 </div>
+                <InputError :message="message" :canClose="true" @close="this.message = null" class="w-1/3 mx-auto"></InputError>
+
                 <div class="border-t-0 px-6 align-middle border-l-0 border-r-0 flex justify-between p-4">
                     <label class="inline-flex items-center mt-3">
                         <input v-model="synchronise" :checked="synchronise" type="checkbox" class="form-checkbox h-5 w-5"><span class="ml-2 text-gray-400">Synchroniser les jours</span>
@@ -92,9 +94,8 @@
                     </table>
                 </div>
             </div>
-
-
         </div>
+
         <div class="px-4 py-3 sm:px-6 flex justify-between sm:flex sm:flex-row-reverse">
             <PrimaryButton @click="submit()" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
                 {{ this.rotation ? 'Modifier' : 'Créer' }}
@@ -102,12 +103,6 @@
             <SecondaryButton @click="this.$emit('close')" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-100 text-base font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                 Annuler
             </SecondaryButton>
-            <div v-if="notifmsg.length > 0">
-                <span class="text-red-600 font-bold">{{ notifmsg }}</span>
-            </div>
-            <div v-if="errors">
-                <span class="text-red-600 font-bold">{{ errors }}</span>
-            </div>
         </div>
     </Modal>
 </template>
@@ -118,12 +113,12 @@ import Checkbox from "@/Components/Checkbox.vue";
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-
+import InputError from "@/Components/InputError.vue";
 
 export default {
     name: "ModalGestionRotation",
     emits: ['storeRotation', 'close'],
-    components: {SecondaryButton, PrimaryButton, Modal, Checkbox},
+    components: {SecondaryButton, PrimaryButton, Modal, Checkbox, InputError},
     props: {
         team_id: Number,
         rotation: Object,
@@ -132,7 +127,7 @@ export default {
     data () {
         return {
             synchronise: false,
-            errors: null,
+            message: null,
             jours: {
                 lundi: {
                     'id': null,
@@ -234,8 +229,7 @@ export default {
                 '20h30',
                 '21h00'
             ],
-            type: null,
-            notifmsg: []
+            name: null
         }
     },
     methods: {
@@ -249,7 +243,7 @@ export default {
             }
         },
         checkHours(data, days) {
-            this.errors = null;
+            this.message = null;
             let debut_journee = data['debut_journee'] ? data['debut_journee'].split('h') : null;
             let debut_pause = data['debut_pause'] ? data['debut_pause'].split('h') : null;
             let fin_pause = data['fin_pause'] ? data['fin_pause'].split('h') : null;
@@ -268,12 +262,12 @@ export default {
             }
             if (debut_journee && fin_journee) {
                 if (debut_journee >= fin_journee) {
-                    this.errors = 'Le début de journée de ' + days + ' doit commencer avant la fin de journée';
+                    this.message = 'Le début de journée de ' + days + ' doit commencer avant la fin de journée';
                 }
             }
             if (debut_pause && fin_pause) {
                 if (debut_pause >= fin_pause) {
-                    this.errors = 'Le début de pause de ' + days + ' doit commencer avant la fin de pause';
+                    this.message = 'Le début de pause de ' + days + ' doit commencer avant la fin de pause';
                 }
             }
         },
@@ -292,55 +286,46 @@ export default {
             })
         },
         store () {
-            this.notifmsg = []
-            this.errors = null
+            this.message = null
             this.checkPause()
             axios.post('/team/rotation/' + this.team_id, {
-                type: this.type,
+                team_id: this.team_id,
+                name: this.name,
                 jours: this.jours,
             })
                 .then(res => {
                     this.$emit('storeRotation', res.data)
                     this.closeModal()
                 })
-                .catch(err => {
-                    if (err.response.data.errors) {
-                        this.notifmsg = err.response.data.errors
-                    } else {
-                        this.notifmsg.push(err.date)
-                    }
+                .catch(error => {
+                    this.message = error.response.data.message
                 })
         },
         update () {
-            this.notifmsg = []
-            this.errors = null
+            this.message = null
             this.checkPause()
             axios.patch('/team/rotation/' + this.rotation.id, {
-                type: this.type,
+                name: this.name,
                 jours: this.jours,
             })
                 .then(res => {
                     this.$emit('storeRotation', res.data, true)
                     this.closeModal()
                 })
-                .catch(err => {
-                    if (typeof err.response.data.errors === 'string') {
-                        this.notifmsg = err.response.data.errors
-                    } else {
-                        this.notifmsg = Object.values(err.response.data.errors)[0][0]
-                    }
+                .catch(error => {
+                    this.message = error.response.data.message
                 })
         },
         closeModal () {
-            this.type = null
-            this.errors = null
+            this.name = null
+            this.message = null
             this.$emit('close', false)
         },
     },
     mounted () {
 
         if (this.rotation !== null) {
-            this.type = this.rotation.name;
+            this.name = this.rotation.name;
             this.rotation.details.forEach(item => {
 
                 this.jours[item.day.toLowerCase()]['debut_journee'] = item.debut_journee;
