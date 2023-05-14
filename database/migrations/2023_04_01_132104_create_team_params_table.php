@@ -15,9 +15,6 @@ return new class extends Migration
             $table->id();
             $table->json('type_day');
             $table->boolean('update_planning')->default(false);
-            $table->foreignId('team_id')
-                ->constrained('teams')
-                ->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -16,14 +16,16 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
         ]);
-        $users = User::factory(1)->create();
-        $user = $users->first();
-
-        $user->assignRole('Admin');
-
         $this->call([
             TeamSeeder::class,
         ]);
+        $users = User::factory(1)->create([
+            'email' => "limacedric@hotmail.fr"
+        ]);
+        $user = $users->first();
+        $users = User::factory(5)->create();
+
+        $user->assignRole('Admin');
 
 
         // \App\Models\User::factory()->create([

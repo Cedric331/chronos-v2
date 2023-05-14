@@ -40,7 +40,7 @@ class TeamController extends Controller
      */
     public function show($name): \Inertia\Response|\Symfony\Component\HttpFoundation\Response
     {
-        $team = Team::with('rotations.details')
+        $team = Team::with(['rotations.details', 'params'])
             ->where('name', $name)
             ->firstOrFail();
 

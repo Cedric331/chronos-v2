@@ -1,5 +1,5 @@
 <template>
-    <div v-if="$page.props.auth.team">
+    <div v-if="$page.props.auth.team && $page.props.auth.team.logo_url">
         <img :src="$page.props.auth.team.logo_url" alt="Logo" class="rounded-full w-10 h-10" />
     </div>
     <div v-else>

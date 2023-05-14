@@ -22,6 +22,10 @@ return new class extends Migration
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
+            $table->foreignId('team_params_id')
+                ->nullable()
+                ->constrained('team_params')
+                ->cascadeOnDelete();
             $table->timestamps();
         });
     }

@@ -25,7 +25,9 @@ const messages = {
             }
         },
         'team_rotation': {
-            'button': 'Créer une nouvelle rotation'
+            'button_rotation': 'Créer une nouvelle rotation',
+            'button_planning': 'Créer un planning',
+            'title_planning': 'Création du Planning'
         },
         'team_user': {
             'titre': 'Membre de la Team',

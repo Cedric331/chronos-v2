@@ -19,4 +19,9 @@ class TeamParams extends Model
         'type_day',
         'teams'
     ];
+
+    public function getTypeDayAttribute($value)
+    {
+        return json_decode($value);
+    }
 }

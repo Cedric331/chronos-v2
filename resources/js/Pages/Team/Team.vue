@@ -12,6 +12,9 @@
                                 <TeamGestion :team="team"></TeamGestion>
                                 <TeamUser :users="team.users"></TeamUser>
                             </div>
+                            <div class="w-full grid grid-cols-1 gap-4 mb-10">
+                                <TeamRotation :team="team"></TeamRotation>
+                            </div>
                             <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
                                 <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                                     <div class="flex items-center">
@@ -57,7 +60,6 @@
                                 </div>
                             </div>
                             <div class="grid grid-cols-1 2xl:grid-cols-2 xl:gap-4 my-4">
-                                <TeamRotation :rotations="team.rotations"></TeamRotation>
                                 <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                                     <h3 class="text-xl leading-none font-bold text-gray-900 mb-10">Acquisition Overview</h3>
                                     <div class="block w-full overflow-x-auto">

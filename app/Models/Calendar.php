@@ -26,6 +26,7 @@ class Calendar extends Model
     {
         Carbon::setLocale('fr');
         $date = Carbon::parse($value);
-        return $date->isoFormat('dddd D MMMM YYYY');
+        return ucwords($date->isoFormat('dddd D MMMM'));
     }
+
 }

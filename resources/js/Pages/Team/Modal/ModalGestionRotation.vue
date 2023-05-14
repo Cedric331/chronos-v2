@@ -1,14 +1,14 @@
 <template>
-    <Modal :show="showRotation" maxWidth="3xl" @close="this.$emit('close')">
-        <div class="mx-auto w-full border bg-white p-4">
+    <Modal :show="showRotation" maxWidth="3xl">
+        <div class="mx-auto w-full border p-4">
             <div class="mt-6 flex justify-between">
                 <div>
-                    <label for="type" class="block mb-2 text-lg font-medium text-gray-700">*Nom de la Rotation</label>
+                    <label for="type" class="block mb-2 text-lg font-medium text-gray-400">*Nom de la Rotation</label>
                     <input v-model="type" type="text" id="type" max="3" class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="5 caractères maximum" required>
                 </div>
                 <div class="border-t-0 px-6 align-middle border-l-0 border-r-0 flex justify-between p-4">
                     <label class="inline-flex items-center mt-3">
-                        <input v-model="synchronise" :checked="synchronise" type="checkbox" class="form-checkbox h-5 w-5 text-black"><span class="ml-2 text-gray-700">Synchroniser les jours</span>
+                        <input v-model="synchronise" :checked="synchronise" type="checkbox" class="form-checkbox h-5 w-5"><span class="ml-2 text-gray-400">Synchroniser les jours</span>
                     </label>
                 </div>
             </div>
@@ -18,35 +18,35 @@
                     <table class="items-center bg-transparent w-full border-collapse ">
                         <thead>
                         <tr>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Jour de la semaine
                             </th>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Jour OFF
                             </th>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Télétravail
                             </th>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Technicien
                             </th>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Début Journée
                             </th>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Début Pause Déjeuner
                             </th>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Fin Pause Déjeuner
                             </th>
-                            <th class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
                                 Fin Journée
                             </th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="(jour, days) in jours" :key="days">
-                            <th class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap p-4 text-left font-bold">
+                            <th class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap p-4 text-left text-gray-400 font-bold">
                                 {{ days.charAt(0).toUpperCase() + days.slice(1) }}
                             </th>
                             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
@@ -95,15 +95,13 @@
 
 
         </div>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-between sm:flex sm:flex-row-reverse">
-            <div>
-                <button @click="closeModal()" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                    Annuler
-                </button>
-                <button @click="submit()" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
-                    {{ this.rotation ? 'Modifier' : 'Créer' }}
-                </button>
-            </div>
+        <div class="px-4 py-3 sm:px-6 flex justify-between sm:flex sm:flex-row-reverse">
+            <PrimaryButton @click="submit()" type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm">
+                {{ this.rotation ? 'Modifier' : 'Créer' }}
+            </PrimaryButton>
+            <SecondaryButton @click="this.$emit('close')" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-gray-100 text-base font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                Annuler
+            </SecondaryButton>
             <div v-if="notifmsg.length > 0">
                 <span class="text-red-600 font-bold">{{ notifmsg }}</span>
             </div>
@@ -118,12 +116,16 @@
 
 import Checkbox from "@/Components/Checkbox.vue";
 import Modal from "@/Components/Modal.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 
 export default {
     name: "ModalGestionRotation",
-    components: {Modal, Checkbox},
+    emits: ['storeRotation', 'close'],
+    components: {SecondaryButton, PrimaryButton, Modal, Checkbox},
     props: {
+        team_id: Number,
         rotation: Object,
         showRotation: Boolean
     },
@@ -133,6 +135,7 @@ export default {
             errors: null,
             jours: {
                 lundi: {
+                    'id': null,
                     'technicien': false,
                     'teletravail': false,
                     'is_off': false,
@@ -142,6 +145,7 @@ export default {
                     'fin_journee': null,
                 },
                 mardi: {
+                    'id': null,
                     'technicien': false,
                     'teletravail': false,
                     'is_off': false,
@@ -151,6 +155,7 @@ export default {
                     'fin_journee': null,
                 },
                 mercredi: {
+                    'id': null,
                     'technicien': false,
                     'teletravail': false,
                     'is_off': false,
@@ -160,6 +165,7 @@ export default {
                     'fin_journee': null,
                 },
                 jeudi: {
+                    'id': null,
                     'technicien': false,
                     'teletravail': false,
                     'is_off': false,
@@ -169,6 +175,7 @@ export default {
                     'fin_journee': null,
                 },
                 vendredi: {
+                    'id': null,
                     'technicien': false,
                     'teletravail': false,
                     'is_off': false,
@@ -178,18 +185,20 @@ export default {
                     'fin_journee': null,
                 },
                 samedi: {
+                    'id': null,
                     'technicien': false,
                     'teletravail': false,
-                    'is_off': true,
+                    'is_off': false,
                     'debut_journee': null,
                     'debut_pause': null,
                     'fin_pause': null,
                     'fin_journee': null,
                 },
                 dimanche: {
+                    'id': null,
                     'technicien': false,
                     'teletravail': false,
-                    'is_off': true,
+                    'is_off': false,
                     'debut_journee': null,
                     'debut_pause': null,
                     'fin_pause': null,
@@ -197,11 +206,10 @@ export default {
                 },
             },
             horaires: [
-                null,
-                '8h00',
-                '8h30',
-                '9h00',
-                '9h30',
+                '08h00',
+                '08h30',
+                '09h00',
+                '09h30',
                 '10h00',
                 '10h30',
                 '11h00',
@@ -240,41 +248,37 @@ export default {
                 })
             }
         },
-        checkHours (data, days) {
-            this.errors = null
-            var debut_journee = data['debut_journee'] ? data['debut_journee'].split('h') : null
-            var debut_pause =  data['debut_pause'] ? data['debut_pause'].split('h') : null
-            var fin_pause = data['fin_pause'] ? data['fin_pause'].split('h') : null
-            var fin_journee = data['fin_journee'] ? data['fin_journee'].split('h') : null
+        checkHours(data, days) {
+            this.errors = null;
+            let debut_journee = data['debut_journee'] ? data['debut_journee'].split('h') : null;
+            let debut_pause = data['debut_pause'] ? data['debut_pause'].split('h') : null;
+            let fin_pause = data['fin_pause'] ? data['fin_pause'].split('h') : null;
+            let fin_journee = data['fin_journee'] ? data['fin_journee'].split('h') : null;
             if (debut_journee) {
-                var debut_journee = (+debut_journee[0]) * 60 * 60 + (+debut_journee[1]) * 60;
+                debut_journee = (+debut_journee[0]) * 60 * 60 + (+debut_journee[1]) * 60;
             }
             if (debut_pause) {
-                var debut_pause = (+debut_pause[0]) * 60 * 60 + (+debut_pause[1]) * 60;
+                debut_pause = (+debut_pause[0]) * 60 * 60 + (+debut_pause[1]) * 60;
             }
             if (fin_pause) {
-                var fin_pause = (+fin_pause[0]) * 60 * 60 + (+fin_pause[1]) * 60;
+                fin_pause = (+fin_pause[0]) * 60 * 60 + (+fin_pause[1]) * 60;
             }
             if (fin_journee) {
-                var fin_journee = (+fin_journee[0]) * 60 * 60 + (+fin_journee[1]) * 60;
+                fin_journee = (+fin_journee[0]) * 60 * 60 + (+fin_journee[1]) * 60;
             }
             if (debut_journee && fin_journee) {
                 if (debut_journee >= fin_journee) {
-                    this.errors = 'Le début de journée de ' + days + ' doit commencer ou être différent de la fin de journée'
-                } else {
-                    this.errors = null
+                    this.errors = 'Le début de journée de ' + days + ' doit commencer avant la fin de journée';
                 }
             }
             if (debut_pause && fin_pause) {
                 if (debut_pause >= fin_pause) {
-                    this.errors = 'Le début de pause de ' + days + ' doit commencer ou être différent de la fin de pause'
-                } else {
-                    this.errors = null
+                    this.errors = 'Le début de pause de ' + days + ' doit commencer avant la fin de pause';
                 }
             }
         },
         submit () {
-            if (this.isUpdate) {
+            if (this.rotation) {
                 this.update()
             } else {
                 this.store()
@@ -291,7 +295,7 @@ export default {
             this.notifmsg = []
             this.errors = null
             this.checkPause()
-            axios.post('rotation', {
+            axios.post('/team/rotation/' + this.team_id, {
                 type: this.type,
                 jours: this.jours,
             })
@@ -311,8 +315,7 @@ export default {
             this.notifmsg = []
             this.errors = null
             this.checkPause()
-            axios.patch('rotation', {
-                id: this.rotation.id,
+            axios.patch('/team/rotation/' + this.rotation.id, {
                 type: this.type,
                 jours: this.jours,
             })
@@ -335,19 +338,21 @@ export default {
         },
     },
     mounted () {
-        if (this.rotation) {
-            this.rotation.rotations.forEach(item => {
-                this.type = this.rotation.type
-                this.jours[item.day] = JSON.parse(item.horaire)
-                if (!this.jours[item.day]['teletravail']) {
-                    this.jours[item.day]['teletravail'] = false
-                }
-                this.jours[item.day]['id'] = item.id
-            })
+
+        if (this.rotation !== null) {
+            this.type = this.rotation.name;
+            this.rotation.details.forEach(item => {
+
+                this.jours[item.day.toLowerCase()]['debut_journee'] = item.debut_journee;
+                this.jours[item.day.toLowerCase()]['debut_pause'] = item.debut_pause;
+                this.jours[item.day.toLowerCase()]['fin_pause'] = item.fin_pause;
+                this.jours[item.day.toLowerCase()]['fin_journee'] = item.fin_journee;
+                this.jours[item.day.toLowerCase()]['technicien'] = item.technicien;
+                this.jours[item.day.toLowerCase()]['teletravail'] = item.teletravail;
+                this.jours[item.day.toLowerCase()]['is_off'] = item.is_off;
+                this.jours[item.day.toLowerCase()]['id'] = item.id;
+            });
         }
     }
 }
 </script>
-
-<style scoped>
-</style>

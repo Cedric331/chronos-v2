@@ -5,7 +5,7 @@ const emit = defineEmits(['update:checked']);
 
 const props = defineProps({
     checked: {
-        type: [Array, Boolean],
+        type: [Array, Boolean, Number],
         default: false,
     },
     value: {
@@ -15,7 +15,11 @@ const props = defineProps({
 
 const proxyChecked = computed({
     get() {
-        return props.checked;
+        if (typeof props.checked === "number") {
+            return props.checked === 1;
+        } else {
+            return props.checked
+        }
     },
 
     set(val) {

@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('rotation_details', function (Blueprint $table) {
             $table->id();
             $table->enum('day', ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']);
-            $table->string('type_day');
+            $table->boolean('is_off')->default(false);
+            $table->boolean('technicien')->default(false);
+            $table->boolean('teletravail')->default(false);
             $table->time('debut_journee')->nullable();
             $table->time('debut_pause')->nullable();
             $table->time('fin_pause')->nullable();
             $table->time('fin_journee')->nullable();
-            $table->boolean('is_technician')->default(false);
-            $table->boolean('telework')->default(false);
             $table->foreignId('rotation_id')
                 ->constrained('rotations')
                 ->cascadeOnDelete();

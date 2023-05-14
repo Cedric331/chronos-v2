@@ -38,6 +38,7 @@ class CalendarController extends Controller
      */
     public static function generateDaysWithHolidays($dateDebut = null, $dateFin = null): array
     {
+        date_default_timezone_set('Europe/Paris');
         $year = date('Y');
         if ($dateDebut === null) {
             $dateDebut = CarbonImmutable::parse("{$year}-01-01");
@@ -73,7 +74,6 @@ class CalendarController extends Controller
 
             $currentDate = $currentDate->addDay();
         }
-
 
         return $days;
     }
@@ -149,7 +149,7 @@ class CalendarController extends Controller
                     $holidaysByZone[$zone][] = [
                         'name' => $event->summary,
                         'start' => date('Y-m-d', $startDate),
-                        'end' => date('Y-m-d', $endDate),
+                        'end' => date('Y-m-d', strtotime('-1 day', $endDate)),
                     ];
                 }
             }

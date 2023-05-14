@@ -19,6 +19,7 @@ class Team extends Model
         'logo',
         'departement',
         'code_departement',
+        'team_params_id',
         'user_id'
     ];
 
@@ -35,6 +36,10 @@ class Team extends Model
             return asset('storage/' . $this->logo);
         }
         return null;
+    }
+
+    public function params () {
+        return $this->belongsTo(TeamParams::class, 'team_params_id');
     }
 
     public function rotations ()
