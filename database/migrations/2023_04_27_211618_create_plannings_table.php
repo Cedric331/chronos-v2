@@ -18,7 +18,6 @@ return new class extends Migration
             $table->time('debut_pause')->nullable();
             $table->time('fin_pause')->nullable();
             $table->time('fin_journee')->nullable();
-            $table->boolean('is_vacation')->default(false);
             $table->boolean('is_technician')->default(false);
             $table->boolean('telework')->default(false);
             $table->foreignId('rotation_id')

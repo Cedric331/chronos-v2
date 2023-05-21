@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="showRotation" maxWidth="3xl">
+    <Modal :show="showRotation" maxWidth="4xl">
         <div class="mx-auto w-full border p-4">
             <div class="mt-6 flex justify-between">
                 <div>

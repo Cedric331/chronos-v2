@@ -20,10 +20,9 @@ class Planning extends Model
         'debut_pause',
         'fin_pause',
         'fin_journee',
-        'is_vacation',
         'is_technician',
         'telework',
-        'day_id',
+        'calendar_id',
         'rotation_id',
         'user_id'
     ];

@@ -22,7 +22,7 @@
                                 </svg>
                             </button>
                             <p class="text-xl font-bold font-medium text-gray-900 truncate dark:text-white">
-                                {{ rotation.name }}
+                                {{ rotation.name }} - ({{ rotation.total_hours }})
                             </p>
                         </div>
                         <div v-for="detail in rotation.details" class="hidden sm:block w-full">

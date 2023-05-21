@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('rotations', function (Blueprint $table) {
             $table->id();
             $table->string('name', 10);
-            $table->integer('total_hours')->nullable();
+            $table->string('total_hours')->nullable();
             $table->foreignId('team_id')
                 ->constrained('teams')
                 ->cascadeOnDelete();
