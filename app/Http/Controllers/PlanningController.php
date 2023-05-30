@@ -24,6 +24,8 @@ class PlanningController extends Controller
             return response()->json('Erreur dans la sélection des dates', 422);
         }
 
+        Planning::where('user_id', $request->user)->delete();
+
         while (!$dateStart->eq($dateEnd)) {
             foreach ($request->rotations as $rotation) {
                 foreach ($rotation['details'] as $detail) {
@@ -54,5 +56,7 @@ class PlanningController extends Controller
             'rotation_id' => $rotation['id'],
             'user_id' => $userId
         ]);
+
+        return response()->json($planning);
     }
 }

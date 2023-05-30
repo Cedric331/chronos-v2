@@ -11,7 +11,7 @@ const messages = {
         'department': 'Département',
         'department_code': 'Code du Département',
         'nav': {
-            'dashboard': 'Tableau de bord',
+            'dashboard': 'Planning',
             'management': 'Gestion de la team',
             'profil': 'Mes informations',
             'logout': 'Déconnexion',

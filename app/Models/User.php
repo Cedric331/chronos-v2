@@ -50,12 +50,16 @@ class User extends Authenticatable
 
     protected $with = ['team'];
 
+    public function planning ()
+    {
+        return $this->hasMany(Planning::class);
+    }
+
 
     public function team (): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
-
 
     /**
      * @return bool

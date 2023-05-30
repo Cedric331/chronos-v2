@@ -15,8 +15,10 @@ class TeamParamsController extends Controller
      */
     public function update (Request $request, TeamParams $teamParams): \Illuminate\Http\JsonResponse
     {
+        $unique_type = collect($request->type_day);
+
         $teamParams->update([
-            'type_day' => json_encode($request->type_day),
+            'type_day' => json_encode($unique_type->unique()->all()),
             'update_planning' => $request->update_planning,
         ]);
         $teamParams->save();

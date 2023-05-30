@@ -3,33 +3,59 @@
 namespace App\Http\Controllers;
 
 use App\Models\Calendar;
+use App\Models\User;
 use Carbon\Traits\Date;
 use ICal\ICal;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Yasumi\Yasumi;
 
 class CalendarController extends Controller
 {
 
-    public function showGeneratedDaysWithHolidays($getAllDates = false)
+    /**
+     * @return \Inertia\Response
+     */
+    public function getPlanning(): \Inertia\Response
     {
-        if ($getAllDates) {
-            // Récupérez toutes les dates
-            $days = Calendar::all();
-        } else {
-            // Récupérez le lundi de la semaine en cours
-            $startOfWeek = Carbon::now()->startOfWeek();
+        $user = User::find(Auth::id());
+        $users = User::where('team_id', $user->team_id)->get();
 
-            // Récupérez les jours à partir du lundi de la semaine en cours
-            $days = Calendar::where('date', '>=', $startOfWeek)->get();
-        }
+        $monday = Carbon::now()->startOfWeek();
 
-        return Inertia::render('Dashboard', [
-            'days' => $days
+        $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+            ->with(['plannings' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }])
+            ->where('date', '>=', $monday)
+            ->get();
+
+        return Inertia::render('Planning', [
+            'user' => $user,
+            'users' => $users,
+            'calendar' => $calendar
         ]);
+    }
+
+    public function getPlanningCustom (Request $request)
+    {
+        $monday = Carbon::now()->startOfWeek();
+
+        $calendar = Calendar::whereHas('plannings', function ($query) use ($request, $monday) {
+                $query->where('user_id', $request->user['id']);
+            })
+            ->with(['plannings' => function ($query) use ($request, $monday) {
+                $query->where('user_id', $request->user['id']);
+            }])
+            ->where('date', '>=', $monday)
+            ->get();
+
+        return response()->json($calendar);
     }
 
     /**

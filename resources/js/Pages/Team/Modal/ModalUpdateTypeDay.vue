@@ -73,6 +73,11 @@ export default {
             newTypeDay: ""
         };
     },
+    watch: {
+        show () {
+          this.changeData()
+        }
+    },
     methods: {
         updateTeamParams () {
             this.$emit('update:type_day', this.item.params.type_day);
@@ -86,10 +91,10 @@ export default {
         removeTypeDay(index) {
             this.item.params.type_day.splice(index, 1)
         },
-    },
-    mounted () {
-        this.message = null
-        this.item = JSON.parse(JSON.stringify(this.team))
+        changeData () {
+            this.message = null
+            this.item = JSON.parse(JSON.stringify(this.team))
+        }
     }
 }
 </script>

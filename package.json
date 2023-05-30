@@ -20,6 +20,7 @@
     "dependencies": {
         "@fullcalendar/daygrid": "^6.1.4",
         "@fullcalendar/interaction": "^6.1.4",
+        "@headlessui/vue": "^1.7.13",
         "@kyvg/vue3-notification": "^2.9.0",
         "flowbite": "^1.6.4",
         "flowbite-vue": "^0.0.10",

@@ -13,6 +13,7 @@ const showingNavigationDropdown = ref(false);
 
 <template>
     <div :class="{ 'dark': isDarkMode }">
+        <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
                 <!-- Primary Navigation Menu -->
@@ -21,14 +22,14 @@ const showingNavigationDropdown = ref(false);
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('planning')">
                                     <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"/>
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                                <NavLink :href="route('planning')" :active="route().current('planning')">
                                     {{ $t('nav.dashboard') }}
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
@@ -77,7 +78,7 @@ const showingNavigationDropdown = ref(false);
 
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <label class="relative inline-flex items-center cursor-pointer">
-                                    <input @click="updateDarkMode()" type="checkbox" value="" :checked="isDarkMode" class="sr-only peer">
+                                    <input @click="updateDarkMode($event)" type="checkbox" value="" :checked="isDarkMode" class="sr-only peer">
                                     <div class="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-white dark:peer-focus:ring-white rounded-full peer dark:bg-white peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[23px] after:left-[2px] after:bg-black after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-white"></div>
                                     <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ isDarkMode ? 'Mode Dark' : 'Mode Light' }}</span>
                                 </label>
@@ -164,7 +165,7 @@ const showingNavigationDropdown = ref(false);
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
+                        <ResponsiveNavLink :href="route('planning')" :active="route().current('planning')">
                             {{ $t('nav.dashboard') }}
                         </ResponsiveNavLink>
                     </div>
@@ -211,13 +212,24 @@ export default {
     data () {
         return {
             team: {'name': null},
-            isDarkMode: false
+            isDarkMode: false,
+            triggerWave: false,
+            waveX: 0,
+            waveY: 0
         }
     },
     methods: {
-        updateDarkMode () {
+        updateDarkMode (event) {
             this.isDarkMode = !this.isDarkMode
             localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));
+
+            // Record the click coordinates
+            this.waveX = event.clientX;
+            this.waveY = event.clientY;
+
+            // Trigger the wave effect
+            this.triggerWave = true;
+            setTimeout(() => this.triggerWave = false, 1000); // Remove the class after the animation is done
         },
         darkMode () {
             const isDarkMode = localStorage.getItem('isDarkMode');
@@ -238,3 +250,36 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+#wave {
+    position: fixed;
+    width: 2000px;
+    height: 2000px;
+    border-radius: 50%;
+    background: transparent;
+    pointer-events: none;
+    z-index: 9999;
+    overflow: hidden;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0); /* Adjust the div to be centered on the click */
+}
+
+#wave.wave {
+    opacity: 1;
+    background: radial-gradient(circle, transparent 1%, #000 1%);
+    animation: wave 1s ease-out;
+}
+
+@keyframes wave {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(2);
+        opacity: 0;
+    }
+}
+
+
+</style>

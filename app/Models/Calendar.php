@@ -22,6 +22,11 @@ class Calendar extends Model
         'zone'
     ];
 
+    public function plannings ()
+    {
+        return $this->hasMany(Planning::class);
+    }
+
     public function getDateAttribute($value)
     {
         Carbon::setLocale('fr');

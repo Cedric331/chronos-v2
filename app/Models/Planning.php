@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -26,4 +27,29 @@ class Planning extends Model
         'rotation_id',
         'user_id'
     ];
+
+    public function getFinPauseAttribute($value)
+    {
+        return Carbon::parse($value)->format('H\hi');
+    }
+
+    public function getFinJourneeAttribute($value)
+    {
+        return Carbon::parse($value)->format('H\hi');
+    }
+
+    public function getDebutJourneeAttribute($value)
+    {
+        return Carbon::parse($value)->format('H\hi');
+    }
+
+    public function getDebutPauseAttribute($value)
+    {
+        return Carbon::parse($value)->format('H\hi');
+    }
+
+    public function calendar ()
+    {
+        return $this->belongsTo(Calendar::class);
+    }
 }

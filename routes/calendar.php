@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
 
-    Route::get('/dashboard', [CalendarController::class, 'showGeneratedDaysWithHolidays'])->middleware(['auth', 'verified'])->name('dashboard');
+    Route::get('/planning', [CalendarController::class, 'getPlanning'])->name('planning');
 
+    Route::post('/planning', [CalendarController::class, 'getPlanningCustom'])->name('planning.custom');
 });
