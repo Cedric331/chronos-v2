@@ -52,7 +52,7 @@
         <div>
             <div class="w-full mx-auto">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <Calendar :days="days"></Calendar>
+                    <Calendar :days="days" :isToday="isToday"></Calendar>
                 </div>
             </div>
         </div>
@@ -83,6 +83,7 @@ export default {
         Head
     },
     props: {
+        isToday: String,
         user: Object,
         users: Object,
         calendar: Object

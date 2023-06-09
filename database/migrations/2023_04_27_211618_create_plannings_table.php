@@ -26,9 +26,13 @@ return new class extends Migration
             $table->foreignId('calendar_id')
                 ->constrained('calendars')
                 ->cascadeOnDelete();
+            $table->foreignId('team_id')
+                ->constrained('teams')
+                ->cascadeOnDelete();
             $table->foreignId('user_id')
                 ->constrained('users')
                 ->cascadeOnDelete();
+            $table->unique(['user_id', 'team_id', 'calendar_id']);
             $table->timestamps();
         });
     }

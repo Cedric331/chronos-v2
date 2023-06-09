@@ -24,13 +24,14 @@ class Team extends Model
     ];
 
     protected $appends = ['logo_url'];
+    protected $with = ['params'];
 
     public function users (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(User::class);
     }
 
-    public function getLogoUrlAttribute()
+    public function getLogoUrlAttribute(): ?string
     {
         if ($this->logo) {
             return asset('storage/' . $this->logo);
@@ -38,11 +39,12 @@ class Team extends Model
         return null;
     }
 
-    public function params () {
+    public function params (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
         return $this->belongsTo(TeamParams::class, 'team_params_id');
     }
 
-    public function rotations ()
+    public function rotations (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Rotation::class);
     }

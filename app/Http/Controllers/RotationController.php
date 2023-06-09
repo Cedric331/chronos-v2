@@ -48,7 +48,7 @@ class RotationController extends Controller
                             $workHours = ($endTime - $startTime);
                         }
 
-                        $hours = $workHours / 3600; // Convertir en heures
+                        $hours = $workHours;
                     }
                 }
 
@@ -67,8 +67,11 @@ class RotationController extends Controller
             }
 
             $totalHoursInHours = $totalHours / 3600;
+
             $hours = floor($totalHoursInHours);
+
             $minutes = ($totalHoursInHours - $hours) * 60;
+
             $rotation->total_hours = sprintf("%02dh%02d", $hours, $minutes);
             $rotation->save();
 

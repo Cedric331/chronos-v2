@@ -26,8 +26,15 @@
 
                         <tbody class="bg-white dark:bg-gray-200">
                         <tr>
-                            <td v-if="$page.props.config.logo" class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
-                                <img v-if="team.logo_url" :src="team.logo_url" alt="Logo" class="rounded-full w-10 h-10" />
+                            <td v-if="$page.props.config.logo" class="p-4 whitespace-nowrap text-sm font-normal text-gray-900 flex justify-start">
+                                <div v-if="team.logo_url" class="relative inline-block">
+                                    <img :src="team.logo_url" alt="Logo" class="rounded-full w-10 h-10" />
+                                    <button @click.prevent="deleteLogo()" id="deleteImage" class="absolute top-1 right-0 bg-[#ff4757] text-white rounded-full w-4 h-4 p-2.5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-4 h-4 text-white">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                    </button>
+                                </div>
                             </td>
                             <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                 {{ team.name }}
@@ -67,7 +74,9 @@
                                 Type de Jour
                             </th>
                             <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <p v-for="type_day in team.params.type_day" :key="type_day">{{ type_day }}</p>
+                                <div v-for="type_day in team.params.type_day" :key="type_day" :class="`m-1 flex justify-between`">
+                                    <p>{{ type_day }}</p>
+                                </div>
                             </th>
                             <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                 <SecondaryButton @click="editTypeDay()">
@@ -101,6 +110,8 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ModalTeamUpdate from "@/Pages/Team/Modal/ModalTeamUpate.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 import ModalUpdateTypeDay from "@/Pages/Team/Modal/ModalUpdateTypeDay.vue";
+import tippy from "tippy.js";
+import {Inertia} from "@inertiajs/inertia";
 
 export default {
     name: "TeamGestion",
@@ -125,6 +136,21 @@ export default {
             this.team.params.type_day = type_day
             this.updateTeamParamsCheck(this.team.params.update_planning)
             this.close()
+        },
+        deleteLogo () {
+            axios.delete('/team/logo/delete/' + this.team.id)
+                .then(() => {
+                    this.$notify({
+                        title: "Succès",
+                        type: "success",
+                        text: "Logo supprimé avec succès!",
+                    });
+                    this.team.logo_url = null
+                    Inertia.reload({ only: ['auth.team'] });
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         },
         updateTeamParamsCheck (update_planning) {
             axios.patch('/team/params/update/' + this.team.team_params_id, {
@@ -153,6 +179,12 @@ export default {
             this.show = false
             this.showTypeDay = false
         }
+    },
+    mounted() {
+        tippy('#deleteImage', {
+            placement: 'top',
+            content: 'Supprimer le logo',
+        });
     }
 }
 </script>

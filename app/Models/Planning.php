@@ -25,27 +25,39 @@ class Planning extends Model
         'telework',
         'calendar_id',
         'rotation_id',
+        'team_id',
         'user_id'
     ];
 
     public function getFinPauseAttribute($value)
     {
-        return Carbon::parse($value)->format('H\hi');
-    }
+        if ($value) {
+            return Carbon::parse($value)->format('H\hi');
+        }
+        return null;    }
 
     public function getFinJourneeAttribute($value)
     {
-        return Carbon::parse($value)->format('H\hi');
+        if ($value) {
+            return Carbon::parse($value)->format('H\hi');
+        }
+        return null;
     }
 
     public function getDebutJourneeAttribute($value)
     {
-        return Carbon::parse($value)->format('H\hi');
+        if ($value) {
+            return Carbon::parse($value)->format('H\hi');
+        }
+        return null;
     }
 
     public function getDebutPauseAttribute($value)
     {
-        return Carbon::parse($value)->format('H\hi');
+        if ($value) {
+            return Carbon::parse($value)->format('H\hi');
+        }
+        return null;
     }
 
     public function calendar ()

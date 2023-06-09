@@ -102,4 +102,20 @@ class TeamController extends Controller
     {
         //
     }
+
+    /**
+     * @param Team $team
+     * @return void
+     */
+    public function deleteLogo(Team $team): void
+    {
+        // Supprimer le fichier du système de fichiers
+        if (Storage::disk('public')->exists($team->logo)) {
+            Storage::disk('public')->delete($team->logo);
+        }
+
+
+        // Mettre à jour la colonne logo dans la base de données
+        $team->update(['logo' => null]);
+    }
 }

@@ -37,6 +37,7 @@ class HandleInertiaRequests extends Middleware
                 'team' => config('teams.active') && $request->user() && $request->user()->team_id ? Team::find($request->user()->team_id) : null,
                 'isCoordinateur' => $request->user() ? $request->user()->isCoordinateur() : false,
             ],
+            'getMaxSizeFile' => $this->getMaxSizeFile(),
             'config' => config('teams'),
             'teams' => config('teams.active') ? Team::orderBy('name')->get() : null,
             'ziggy' => function () use ($request) {
@@ -45,5 +46,24 @@ class HandleInertiaRequests extends Middleware
                 ]);
             },
         ]);
+    }
+
+    private function getMaxSizeFile (): string
+    {
+        // Get upload_max_filesize from php.ini
+        $maxUploadSize = ini_get('upload_max_filesize');
+        $multiplier = strtoupper(substr($maxUploadSize, -1));
+
+        if ($multiplier == 'M') {
+            $maxUploadSize = (int)$maxUploadSize;
+        } elseif ($multiplier == 'K') {
+            $maxUploadSize = (int)$maxUploadSize / 1024;
+        } elseif ($multiplier == 'G') {
+            $maxUploadSize = (int)$maxUploadSize * 1024;
+        } else {
+            $maxUploadSize = (int)$maxUploadSize / (1024 * 1024);
+        }
+
+        return "Taille max des fichiers : " . $maxUploadSize . " MB";
     }
 }

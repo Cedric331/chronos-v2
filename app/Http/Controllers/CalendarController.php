@@ -35,9 +35,11 @@ class CalendarController extends Controller
             ->where('date', '>=', $monday)
             ->get();
 
+
         return Inertia::render('Planning', [
             'user' => $user,
             'users' => $users,
+            'isToday' => ucwords(Carbon::now()->isoFormat('dddd D MMMM')),
             'calendar' => $calendar
         ]);
     }

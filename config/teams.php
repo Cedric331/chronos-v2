@@ -8,7 +8,7 @@ return [
 
     // Détermine les types de jours par défaut des teams lors de la création de ceux-ci
     'type_days_default' => [
-        'Travaille',
+        'Planifié',
         'RJF',
         'CP',
         'JF',

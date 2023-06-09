@@ -1,5 +1,6 @@
 <template>
     <Modal :show="showPlanning" :maxWidth="tabs === 3 ? '3xl' : '2xl'">
+        <Loading :show="isLoading"></Loading>
         <h2 class="flex justify-center my-5 text-xl w-full text-gray-400">
             {{ $t('team_rotation.title_planning') }}
         </h2>
@@ -168,7 +169,8 @@
             </div>
         </section>
 
-        <div class="flex justify-center m-4">
+        <div class="flex justify-between m-4">
+            <SecondaryButton @click="this.$emit('close')">Annuler</SecondaryButton>
             <PrimaryButton @click="generatePlanning()" :disabled="!user || !dateStart || !dateEnd || rotations.length === 0" :class="[!user || !dateStart || !dateEnd || rotations.length === 0 ? 'opacity-50 cursor-not-allowed' : '']" class="text-sm font-medium hover:bg-gray-700 bg-black text-white rounded-lg p-2">Générer le Planning</PrimaryButton>
         </div>
     </Modal>
@@ -178,10 +180,12 @@
 import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Loading from "@/Components/Loading.vue";
 
 export default {
     name: "ModalPlanning",
     components: {
+        Loading,
         Modal,
         PrimaryButton,
         SecondaryButton
@@ -189,6 +193,17 @@ export default {
     props: {
         team: Object,
         showPlanning: Boolean
+    },
+    data () {
+        return {
+            tabs: 1,
+            tabJustify: 'justify-end',
+            rotations: [],
+            isLoading: false,
+            user: null,
+            dateStart: null,
+            dateEnd: null,
+        }
     },
     computed: {
         dateLimitStart() {
@@ -218,30 +233,29 @@ export default {
             }
         }
     },
-    data () {
-        return {
-            tabs: 1,
-            tabJustify: 'justify-end',
-            rotations: [],
-            user: null,
-            dateStart: null,
-            dateEnd: null,
-        }
-    },
     methods: {
         generatePlanning () {
-          axios.post('/planning/generate', {
+            this.isLoading = true
+            axios.post('/planning/generate', {
               team: this.team.id,
               user: this.user.id,
               rotations: this.rotations,
               dateStart: this.dateStart,
               dateEnd: this.dateEnd,
           })
-              .then(response => {
-
+              .then(() => {
+                  this.$notify({
+                      title: "Planning généré",
+                      type: "success",
+                      text: "Planning généré avec succès !",
+                  });
+                  this.$emit('close')
               })
               .catch(error => {
                   console.log(error)
+              })
+              .finally(() => {
+                  this.isLoading = false
               })
         },
         getWeekNumber(d) {

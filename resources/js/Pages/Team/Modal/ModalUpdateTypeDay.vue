@@ -29,10 +29,11 @@
                 <div class="flex flex-wrap items-center">
                       <span
                           v-for="(type_day, index) in item.params.type_day"
+                          @click.prevent="this.setColor(type_day)"
                           :key="index"
                           class="bg-blue-500 text-white px-2 py-1 mb-5 rounded-full m-1">
                         {{ type_day }}
-                        <button @click="removeTypeDay(index)" class="ml-1 text-white font-bold">×</button>
+                        <button @click.prevent="removeTypeDay(index)" class="ml-1 text-white font-bold">×</button>
                       </span>
                 </div>
             </div>
