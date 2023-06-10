@@ -1,6 +1,5 @@
 <template>
     <Head :title="$t('nav.management')" />
-    <notifications position="bottom right" />
 
     <AuthenticatedLayout>
         <div>

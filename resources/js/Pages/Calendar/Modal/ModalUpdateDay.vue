@@ -1,10 +1,10 @@
 <template>
 <Modal :show="show" :closeable="false" :maxWidth="'2xl'">
     <div>
-        <div class="relative block md:flex w-full">
+        <div class="relative block md:flex w-full h-[560px]">
             <div class="w-full md:w-3/5 relative z-1  shadow-lg overflow-hidden">
                 <div class="text-lg font-medium text-gray-400 dark:text-gray-100 uppercase text-center border-b border-gray-200 tracking-wide p-4">Création d'un horaire spécifique</div>
-                <section class="container p-6 mx-auto bg-gray-100">
+                <section class="container p-6 mx-auto bg-gray-100 h-[499px]">
                     <div>
                         <div class="rounded-lg w-auto w-full">
                             <div>
@@ -90,16 +90,18 @@
                     </div>
                 </section>
             </div>
-            <div class="w-full md:w-2/5 relative z-1  overflow-hidden overflow-y-auto max-h-[560px] hidden md:block">
+            <div class="w-full md:w-2/5 relative z-1 h-[499px] hidden md:block">
                 <h1 class="text-lg font-medium text-white text-center border-b border-gray-200 tracking-wide p-4">{{ daySelected.length > 1 ? 'Dates Sélectionnées' : 'Date Sélectionnée' }}</h1>
-                <div v-for="day in daySelected" class="flex justify-around mt-2">
-                    <div class=" rounded-lg p-1 flex text-white bg-gray-600 w-[60%] justify-center">
-                        <p>{{ day.date }}</p>
+                <section class="container p-6 mx-auto h-full bg-gray-100 overflow-hidden overflow-y-auto">
+                    <div v-for="day in daySelected" class="flex justify-around mt-2">
+                        <div class=" rounded-lg p-1 flex text-white bg-gray-600 w-[80%] justify-center">
+                            <p>{{ day.date }}</p>
+                        </div>
+                        <svg @click="deleteDay(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff6b81" class="w-5 h-5 mt-2 mr-2 cursor-pointer hover:text-red-400">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        </svg>
                     </div>
-                    <svg @click="deleteDay(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff6b81" class="w-5 h-5 mt-2 mr-2 cursor-pointer hover:text-red-400">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                    </svg>
-                </div>
+                </section>
             </div>
         </div>
         <div class="px-4 py-3 sm:px-6 flex justify-between">
@@ -122,7 +124,7 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 export default {
     name: "ModalUpdateDay",
-    emits: ['deleteDayList', 'close'],
+    emits: ['deleteDayList', 'update', 'close'],
     components: {
         SecondaryButton,
         PrimaryButton,

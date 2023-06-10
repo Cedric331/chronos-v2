@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('plannings', function (Blueprint $table) {
             $table->id();
             $table->string('type_day')->default('Travaille');
-            $table->time('debut_journee')->nullable();
-            $table->time('debut_pause')->nullable();
-            $table->time('fin_pause')->nullable();
-            $table->time('fin_journee')->nullable();
+            $table->time('debut_journee')->nullable()->default(null);
+            $table->time('debut_pause')->nullable()->default(null);
+            $table->time('fin_pause')->nullable()->default(null);
+            $table->time('fin_journee')->nullable()->default(null);
             $table->boolean('is_technician')->default(false);
             $table->boolean('telework')->default(false);
             $table->foreignId('rotation_id')

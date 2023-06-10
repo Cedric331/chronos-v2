@@ -71,15 +71,27 @@ class PlanningController extends Controller
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
-            $planning->update([
-                'type_day' => $request->type_day,
-                'debut_journee' => $request->debut_journee,
-                'debut_pause' => $request->debut_pause,
-                'fin_pause' => $request->fin_pause,
-                'fin_journee' => $request->fin_journee,
-                'is_technician' => $request->is_technician,
-                'telework' => $request->telework,
-            ]);
+            if ($this->checkTypeDay($request->type_day)) {
+                $planning->update([
+                    'type_day' => $request->type_day,
+                    'debut_journee' => $request->debut_journee,
+                    'debut_pause' => $request->debut_pause,
+                    'fin_pause' => $request->fin_pause,
+                    'fin_journee' => $request->fin_journee,
+                    'is_technician' => $request->is_technician,
+                    'telework' => $request->telework,
+                ]);
+            } else {
+                $planning->update([
+                    'type_day' => $request->type_day,
+                    'debut_journee' => null,
+                    'debut_pause' => null,
+                    'fin_pause' => null,
+                    'fin_journee' => null,
+                    'is_technician' => false,
+                    'telework' => false,
+                ]);
+            }
         }
 
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
@@ -88,5 +100,13 @@ class PlanningController extends Controller
             ->find($ids);
 
         return response()->json($calendar);
+    }
+
+    private function checkTypeDay ($typeDay)
+    {
+        if ($typeDay === 'Formation' || $typeDay === 'Planifié') {
+            return true;
+        }
+        return false;
     }
 }

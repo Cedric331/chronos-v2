@@ -5,7 +5,7 @@
         <Loading :show="isLoading"></Loading>
         <template #header>
             <div class="flex justify-between">
-                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">Planning de {{ user.name }}</h2>
+                <h2 class="font-semibold text-xl flex justify-center items-center text-gray-800 dark:text-gray-200 leading-tight">Planning de {{ user.name }}</h2>
                 <div>
                     <Listbox v-model="selectedUser" class="min-w-[230px]">
                         <div class="relative mt-1">
@@ -52,7 +52,7 @@
         <div>
             <div class="w-full mx-auto">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <Calendar :days="days" :isToday="isToday"></Calendar>
+                    <Calendar :daysProps="daysProps" :isToday="isToday"></Calendar>
                 </div>
             </div>
         </div>
@@ -99,7 +99,7 @@ export default {
             isLoading: false,
             getAllPlanning: false,
             selectedUser: this.user,
-            days: this.calendar
+            daysProps: this.calendar
         }
     },
     methods: {

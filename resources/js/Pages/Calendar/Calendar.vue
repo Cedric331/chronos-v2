@@ -58,7 +58,7 @@
             </div>
         </div>
     <ButtonNav v-if="daySelected.length > 0 && $page.props.auth.isCoordinateur" :daySelected="daySelected" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
-    <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
+    <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @update="data => this.updatePlanning(data)" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
     </section>
 </template>
 
@@ -72,16 +72,35 @@ export default {
     name: "Calendar",
     components: {ModalUpdateDay, ButtonNav},
     props: {
-        days: Object,
+        daysProps: Object,
         isToday: String
     },
     data () {
         return {
+            days: this.daysProps,
             showUpdateDay: false,
             daySelected: []
         }
     },
     methods: {
+        updatePlanning(data) {
+            for (let i = 0; i < this.days.length; i++) {
+                for (let j = 0; j < data.length; j++) {
+                    if (this.days[i].id === data[j].id) {
+                        this.days[i] = data[j];
+                        break;
+                    }
+                }
+            }
+            this.$notify({
+                title: "Succès",
+                type: "success",
+                text: "Planning modifié avec succès!",
+            });
+            this.daySelected = [];
+            this.showUpdateDay = false;
+        },
+
         selectDate(day) {
             if (this.$page.props.auth.isCoordinateur) {
                 const index = this.daySelected.findIndex(selectedDay => selectedDay.date === day.date);
@@ -98,7 +117,6 @@ export default {
                 this.daySelected.sort((a, b) => a.id - b.id);
             }
         },
-
         isDaySelected(day) {
             return this.daySelected.some(selectedDay => selectedDay.date === day.date);
         },

@@ -12,6 +12,8 @@ const showingNavigationDropdown = ref(false);
 </script>
 
 <template>
+    <notifications position="bottom right" />
+
     <div :class="{ 'dark': isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -193,7 +195,7 @@ const showingNavigationDropdown = ref(false);
 
             <!-- Page Heading -->
             <header class="bg-gray-100 border-1 top-0 dark:bg-gray-800 shadow sticky top-0" v-if="$slots.header">
-                <div class="w-auto mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                <div class="w-auto mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
