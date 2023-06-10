@@ -64,6 +64,6 @@ class HandleInertiaRequests extends Middleware
             $maxUploadSize = (int)$maxUploadSize / (1024 * 1024);
         }
 
-        return "Taille max des fichiers : " . $maxUploadSize . " MB";
+        return "Taille max du fichier : " . $maxUploadSize . " MB";
     }
 }

@@ -45,7 +45,7 @@ class PlanningController extends Controller
         return response()->json('Erreur', 422);
     }
 
-    private function createPlanning($detail, $rotation, $userId, Carbon $date)
+    private function createPlanning($detail, $rotation, $userId, Carbon $date): \Illuminate\Http\JsonResponse
     {
         $calendar = Calendar::whereDate('date', $date)->firstOrFail();
 
@@ -64,5 +64,29 @@ class PlanningController extends Controller
         ]);
 
         return response()->json($planning);
+    }
+
+    public function update (Request $request)
+    {
+        $ids = array_column($request->days, 'id');
+        foreach ($request->days as $day) {
+            $planning = Planning::find($day['plannings'][0]['id']);
+            $planning->update([
+                'type_day' => $request->type_day,
+                'debut_journee' => $request->debut_journee,
+                'debut_pause' => $request->debut_pause,
+                'fin_pause' => $request->fin_pause,
+                'fin_journee' => $request->fin_journee,
+                'is_technician' => $request->is_technician,
+                'telework' => $request->telework,
+            ]);
+        }
+
+        $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
+                $query->where('user_id', $planning->user_id);
+            }])
+            ->find($ids);
+
+        return response()->json($calendar);
     }
 }

@@ -7,7 +7,7 @@
                         <div class="flex justify-center">
                             <h1 class="font-bold text-xl">{{ day.date }}</h1>
                         </div>
-                        <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 h-[8rem]">
+                        <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 h-[9rem]">
                             <div class="flex justify-center">
                                 <div class="flex items-center">
                                     <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }} {{ day.is_holiday ? '(Jour Férié)' : null }}</p>
@@ -58,7 +58,7 @@
             </div>
         </div>
     <ButtonNav v-if="daySelected.length > 0 && $page.props.auth.isCoordinateur" :daySelected="daySelected" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
-    <ModalUpdateDay :show="showUpdateDay" :daySelected="daySelected" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
+    <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
     </section>
 </template>
 
