@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RequestGeneratePlanning;
 use App\Models\Calendar;
 use App\Models\Planning;
+use App\Models\Rotation;
 use Carbon\Carbon;
+use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -45,16 +47,16 @@ class PlanningController extends Controller
         return response()->json('Erreur', 422);
     }
 
-    private function createPlanning($detail, $rotation, $userId, Carbon $date): \Illuminate\Http\JsonResponse
+    private function createPlanning($detail, $rotation, $userId, Carbon $date): void
     {
         $calendar = Calendar::whereDate('date', $date)->firstOrFail();
 
         $planning = Planning::create([
             'type_day' => $detail['is_off'] ? 'Repos' : 'Planifié',
-            'debut_journee' => str_replace('h', ':', $detail['debut_journee']),
-            'debut_pause' => $detail['debut_pause'] !== null ? str_replace('h', ':', $detail['debut_pause']) : null,
-            'fin_pause' => $detail['fin_pause'] !== null ? str_replace('h', ':', $detail['fin_pause']) : null,
-            'fin_journee' => str_replace('h', ':', $detail['fin_journee']),
+            'debut_journee' => $detail['debut_journee'],
+            'debut_pause' => $detail['debut_pause'],
+            'fin_pause' => $detail['fin_pause'],
+            'fin_journee' => $detail['fin_journee'],
             'is_technician' => $detail['technicien'],
             'telework' => $detail['teletravail'],
             'calendar_id' => $calendar->id,
@@ -63,11 +65,12 @@ class PlanningController extends Controller
             'user_id' => $userId
         ]);
 
-        return response()->json($planning);
+        response()->json($planning);
     }
 
     public function update (Request $request)
     {
+        dd($this->calculateWorkHours($request));
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
@@ -96,7 +99,39 @@ class PlanningController extends Controller
 
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
                 $query->where('user_id', $planning->user_id);
-            }])
+            }])->find($ids);
+
+        return response()->json($calendar);
+    }
+
+    public function updateWithRotation (Request $request): \Illuminate\Http\JsonResponse
+    {
+        $rotation = Rotation::find($request->rotation_id);
+        $ids = array_column($request->days, 'id');
+        foreach ($request->days as $day) {
+            $planning = Planning::find($day['plannings'][0]['id']);
+                $day = strtolower($planning->calendar->getDay());
+                foreach ($rotation->details as $detail) {
+                    if (strtolower($detail['day']) === $day) {
+
+                        $planning->update([
+                            'debut_journee' => $detail->debut_journee,
+                            'debut_pause' => $detail->debut_pause,
+                            'fin_pause' => $detail->fin_pause,
+                            'fin_journee' => $detail->fin_journee,
+                            'telework' => $detail->teletravail,
+                            'is_technician' => $detail->technicien,
+                            'rotation_id' => $rotation->id,
+                            'type_day' => $detail->is_off ? 'Repos' : 'Planifié',
+                        ]);
+
+                }
+            }
+        }
+
+        $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
+            $query->where('user_id', $planning->user_id);
+        }])
             ->find($ids);
 
         return response()->json($calendar);
@@ -109,4 +144,40 @@ class PlanningController extends Controller
         }
         return false;
     }
+
+    private function calculateWorkHours($workDay): string
+    {
+        $format = "H:i";
+
+        $startDayTime = is_array($workDay) ? str_replace('h', ':', $workDay['debut_journee']) : str_replace('h', ':', $workDay->debut_journee);
+        $endDayTime = is_array($workDay) ? str_replace('h', ':', $workDay['fin_journee']) : str_replace('h', ':', $workDay->fin_journee);
+
+        $startDay = DateTime::createFromFormat($format, $startDayTime);
+        $endDay = DateTime::createFromFormat($format, $endDayTime);
+
+        $totalWorkHours = $endDay->diff($startDay)->h + ($endDay->diff($startDay)->i / 60);
+
+        if (isset($workDay['debut_pause']) && isset($workDay['fin_pause'])) {
+            $startBreakTime = is_array($workDay) ? str_replace('h', ':', $workDay['debut_pause']) : str_replace('h', ':', $workDay->debut_pause);
+            $endBreakTime = is_array($workDay) ? str_replace('h', ':', $workDay['fin_pause']) : str_replace('h', ':', $workDay->fin_pause);
+
+            if ($startBreakTime !== null && $endBreakTime !== null) {
+                $startBreak = DateTime::createFromFormat($format, $startBreakTime);
+                $endBreak = DateTime::createFromFormat($format, $endBreakTime);
+
+                if ($startBreak && $endBreak) {
+                    $breakHours = $endBreak->diff($startBreak)->h + ($endBreak->diff($startBreak)->i / 60);
+                    $totalWorkHours -= $breakHours;
+                }
+            }
+        }
+
+        $hours = intval($totalWorkHours);
+        $minutes = ($totalWorkHours - $hours) * 60;
+
+        return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes);
+    }
+
+
+
 }

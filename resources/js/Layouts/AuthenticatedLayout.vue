@@ -225,11 +225,9 @@ export default {
             this.isDarkMode = !this.isDarkMode
             localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));
 
-            // Record the click coordinates
             this.waveX = event.clientX;
             this.waveY = event.clientY;
 
-            // Trigger the wave effect
             this.triggerWave = true;
             setTimeout(() => this.triggerWave = false, 1000); // Remove the class after the animation is done
         },

@@ -6,7 +6,7 @@
                     <label for="name" class="block mb-2 text-lg font-medium text-gray-400">*Nom de la Rotation</label>
                     <input v-model="name" type="text" id="name" max="3" class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="5 caractères maximum" required>
                 </div>
-                <InputError :message="message" :canClose="true" @close="this.message = null" class="w-1/3 mx-auto"></InputError>
+                <InputError :message="message" :canClose="true" @close="this.message = null" class="mx-auto"></InputError>
 
                 <div class="border-t-0 px-6 align-middle border-l-0 border-r-0 flex justify-between p-4">
                     <label class="inline-flex items-center mt-3">
@@ -69,13 +69,16 @@
                             </td>
                             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
                                 <select @change="checkHours(jours[days], days); synchroniseValue(jours[days], 'debut_pause')" :disabled="jours[days]['is_off']" v-model="jours[days]['debut_pause']" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
+                                    <option value="Pas de pause">
+                                        Pas de pause
+                                    </option>
                                     <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
                                         {{ horaire }}
                                     </option>
                                 </select>
                             </td>
                             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                <select @change="checkHours(jours[days], days); synchroniseValue(jours[days], 'fin_pause')" :disabled="jours[days]['is_off'] || !jours[days]['debut_journee'] || !jours[days]['debut_pause']" v-model="jours[days]['fin_pause']" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
+                                <select @change="checkHours(jours[days], days); synchroniseValue(jours[days], 'fin_pause')" :disabled="jours[days]['is_off'] || !jours[days]['debut_journee'] || !jours[days]['debut_pause'] || jours[days]['debut_pause'] === 'Pas de pause'" v-model="jours[days]['fin_pause']" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
                                     <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
                                         {{ horaire }}
                                     </option>
@@ -135,7 +138,7 @@ export default {
                     'teletravail': false,
                     'is_off': false,
                     'debut_journee': null,
-                    'debut_pause': null,
+                    'debut_pause': 'Pas de pause',
                     'fin_pause': null,
                     'fin_journee': null,
                 },
@@ -145,7 +148,7 @@ export default {
                     'teletravail': false,
                     'is_off': false,
                     'debut_journee': null,
-                    'debut_pause': null,
+                    'debut_pause': 'Pas de pause',
                     'fin_pause': null,
                     'fin_journee': null,
                 },
@@ -155,7 +158,7 @@ export default {
                     'teletravail': false,
                     'is_off': false,
                     'debut_journee': null,
-                    'debut_pause': null,
+                    'debut_pause': 'Pas de pause',
                     'fin_pause': null,
                     'fin_journee': null,
                 },
@@ -165,7 +168,7 @@ export default {
                     'teletravail': false,
                     'is_off': false,
                     'debut_journee': null,
-                    'debut_pause': null,
+                    'debut_pause': 'Pas de pause',
                     'fin_pause': null,
                     'fin_journee': null,
                 },
@@ -175,7 +178,7 @@ export default {
                     'teletravail': false,
                     'is_off': false,
                     'debut_journee': null,
-                    'debut_pause': null,
+                    'debut_pause': 'Pas de pause',
                     'fin_pause': null,
                     'fin_journee': null,
                 },
@@ -185,7 +188,7 @@ export default {
                     'teletravail': false,
                     'is_off': false,
                     'debut_journee': null,
-                    'debut_pause': null,
+                    'debut_pause': 'Pas de pause',
                     'fin_pause': null,
                     'fin_journee': null,
                 },
@@ -195,7 +198,7 @@ export default {
                     'teletravail': false,
                     'is_off': false,
                     'debut_journee': null,
-                    'debut_pause': null,
+                    'debut_pause': 'Pas de pause',
                     'fin_pause': null,
                     'fin_journee': null,
                 },

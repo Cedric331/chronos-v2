@@ -33,33 +33,39 @@ class Planning extends Model
     {
         if ($value) {
             $this->attributes['debut_journee'] = date('H:i:s', strtotime(str_replace('h', ':', $value)));
+        } else {
+            $this->attributes['debut_journee'] = null;
         }
-        $this->attributes['debut_journee'] =  null;
     }
+
 
     public function setDebutPauseAttribute($value)
     {
         if ($value) {
             $this->attributes['debut_pause'] = date('H:i:s', strtotime(str_replace('h', ':', $value)));
+        } else {
+            $this->attributes['debut_pause'] = null;
         }
-        $this->attributes['debut_pause'] = null;
     }
 
     public function setFinPauseAttribute($value)
     {
         if ($value) {
             $this->attributes['fin_pause'] = date('H:i:s', strtotime(str_replace('h', ':', $value)));
+        } else {
+            $this->attributes['fin_pause'] = null;
         }
-        $this->attributes['fin_pause'] = null;
     }
 
     public function setFinJourneeAttribute($value)
     {
         if ($value) {
             $this->attributes['fin_journee'] = date('H:i:s', strtotime(str_replace('h', ':', $value)));
+        } else {
+            $this->attributes['fin_journee'] = null;
         }
-        $this->attributes['fin_journee'] = null;
     }
+
 
     public function getFinPauseAttribute($value): ?string
     {

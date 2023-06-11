@@ -22,6 +22,14 @@ class Calendar extends Model
         'zone'
     ];
 
+    public function getDay ()
+    {
+        $explode = explode(' ', $this->date);
+
+        return $explode[0];
+    }
+
+
     public function plannings ()
     {
         return $this->hasMany(Planning::class);

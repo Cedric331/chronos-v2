@@ -6,7 +6,7 @@ defineProps(['message', 'canClose']);
     <div v-show="message">
         <div class="bg-red-50 border-l-8 border-red-900 mb-2 w-full p-2">
                 <div class="p-2 flex justify-between">
-                    <div class="ml-2">
+                    <div class="ml-2 mr-2">
                         <p class="text-md font-bold text-red-500 text-sm">{{ message }}</p>
                     </div>
                     <div>

@@ -122,10 +122,6 @@ export default {
         },
     },
     mounted() {
-        tippy('#is_technician', {
-            placement: 'top',
-            content: 'Technicien',
-        });
         tippy('#telework', {
             placement: 'top',
             content: 'Télétravail',

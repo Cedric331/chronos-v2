@@ -23,6 +23,10 @@ class RotationController extends Controller
 
             $totalHours = 0;
             foreach ($request->jours as $key => $jour) {
+                if ($jour['debut_pause'] === 'Pas de pause') {
+                    $jour['debut_pause'] = null;
+                    $jour['fin_pause'] = null;
+                }
                 $hours = 0;
                 if ($jour['is_off']) {
                     $debut_journee = null;
@@ -84,7 +88,7 @@ class RotationController extends Controller
         }
     }
 
-    public function update(Request $request, Rotation $rotation)
+    public function update(RotationRequest $request, Rotation $rotation): \Illuminate\Http\JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -96,6 +100,7 @@ class RotationController extends Controller
             $totalHours = 0;
 
             foreach ($request->jours as $key => $jour) {
+
                 $hours = 0;
 
                 if ($jour['is_off']) {
@@ -104,6 +109,10 @@ class RotationController extends Controller
                     $fin_pause = null;
                     $fin_journee = null;
                 } else {
+                    if ($jour['debut_pause'] === 'Pas de pause') {
+                        $jour['debut_pause'] = null;
+                        $jour['fin_pause'] = null;
+                    }
                     $debut_journee = $jour['debut_journee'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['debut_journee']))) : null;
                     $debut_pause = $jour['debut_pause'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['debut_pause']))) : null;
                     $fin_pause = $jour['fin_pause'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['fin_pause']))) : null;

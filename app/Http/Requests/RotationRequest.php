@@ -51,43 +51,43 @@ class RotationRequest extends FormRequest
             'jours.lundi.debut_journee' => new RequiredIf($this->jours['lundi']['fin_journee'] !== null && $this->jours['lundi']['is_off'] === false),
             'jours.lundi.fin_journee' => new RequiredIf($this->jours['lundi']['debut_journee'] !== null && $this->jours['lundi']['is_off'] === false),
             'jours.lundi.debut_pause' =>  new RequiredIf($this->jours['lundi']['fin_pause'] !== null && $this->jours['lundi']['is_off'] === false),
-            'jours.lundi.fin_pause' => new RequiredIf($this->jours['lundi']['debut_pause'] !== null && $this->jours['lundi']['is_off'] === false),
+            'jours.lundi.fin_pause' => new RequiredIf($this->jours['lundi']['debut_pause'] !== null && $this->jours['lundi']['debut_pause'] !== 'Pas de pause' && $this->jours['lundi']['is_off'] === false),
 
             'jours.mardi' => 'required',
             'jours.mardi.debut_journee' => new RequiredIf($this->jours['mardi']['fin_journee'] !== null && $this->jours['mardi']['is_off'] === false),
             'jours.mardi.fin_journee' => new RequiredIf($this->jours['mardi']['debut_journee'] !== null && $this->jours['mardi']['is_off'] === false),
             'jours.mardi.debut_pause' =>  new RequiredIf($this->jours['mardi']['fin_pause'] !== null && $this->jours['mardi']['is_off'] === false),
-            'jours.mardi.fin_pause' => new RequiredIf($this->jours['mardi']['debut_pause'] !== null && $this->jours['mardi']['is_off'] === false),
+            'jours.mardi.fin_pause' => new RequiredIf($this->jours['mardi']['debut_pause'] !== null && $this->jours['mardi']['debut_pause'] !== 'Pas de pause' && $this->jours['mardi']['is_off'] === false),
 
             'jours.mercredi' => 'required',
             'jours.mercredi.debut_journee' => new RequiredIf($this->jours['mercredi']['fin_journee'] !== null && $this->jours['mercredi']['is_off'] === false),
             'jours.mercredi.fin_journee' => new RequiredIf($this->jours['mercredi']['debut_journee'] !== null && $this->jours['mercredi']['is_off'] === false),
             'jours.mercredi.debut_pause' =>  new RequiredIf($this->jours['mercredi']['fin_pause'] !== null && $this->jours['mercredi']['is_off'] === false),
-            'jours.mercredi.fin_pause' => new RequiredIf($this->jours['mercredi']['debut_pause'] !== null && $this->jours['mercredi']['is_off'] === false),
+            'jours.mercredi.fin_pause' => new RequiredIf($this->jours['mercredi']['debut_pause'] !== null && $this->jours['mercredi']['debut_pause'] !== 'Pas de pause' && $this->jours['mercredi']['is_off'] === false),
 
             'jours.jeudi' => 'required',
             'jours.jeudi.debut_journee' => new RequiredIf($this->jours['jeudi']['fin_journee'] !== null && $this->jours['jeudi']['is_off'] === false),
             'jours.jeudi.fin_journee' => new RequiredIf($this->jours['jeudi']['debut_journee'] !== null && $this->jours['jeudi']['is_off'] === false),
             'jours.jeudi.debut_pause' =>  new RequiredIf($this->jours['jeudi']['fin_pause'] !== null && $this->jours['jeudi']['is_off'] === false),
-            'jours.jeudi.fin_pause' => new RequiredIf($this->jours['jeudi']['debut_pause'] !== null && $this->jours['jeudi']['is_off'] === false),
+            'jours.jeudi.fin_pause' => new RequiredIf($this->jours['jeudi']['debut_pause'] !== null && $this->jours['jeudi']['debut_pause'] !== 'Pas de pause' && $this->jours['jeudi']['is_off'] === false),
 
             'jours.vendredi' => 'required',
             'jours.vendredi.debut_journee' => new RequiredIf($this->jours['vendredi']['fin_journee'] !== null && $this->jours['vendredi']['is_off'] === false),
             'jours.vendredi.fin_journee' => new RequiredIf($this->jours['vendredi']['debut_journee'] !== null && $this->jours['vendredi']['is_off'] === false),
             'jours.vendredi.debut_pause' =>  new RequiredIf($this->jours['vendredi']['fin_pause'] !== null && $this->jours['vendredi']['is_off'] === false),
-            'jours.vendredi.fin_pause' => new RequiredIf($this->jours['vendredi']['debut_pause'] !== null && $this->jours['vendredi']['is_off'] === false),
+            'jours.vendredi.fin_pause' => new RequiredIf($this->jours['vendredi']['debut_pause'] !== null && $this->jours['vendredi']['debut_pause'] !== 'Pas de pause' && $this->jours['lundi']['debut_pause'] !== 'Pas de pause' && $this->jours['vendredi']['is_off'] === false),
 
             'jours.samedi' => 'required',
             'jours.samedi.debut_journee' => new RequiredIf($this->jours['samedi']['fin_journee'] !== null && $this->jours['samedi']['is_off'] === false),
             'jours.samedi.fin_journee' => new RequiredIf($this->jours['samedi']['debut_journee'] !== null && $this->jours['samedi']['is_off'] === false),
             'jours.samedi.debut_pause' =>  new RequiredIf($this->jours['samedi']['fin_pause'] !== null && $this->jours['samedi']['is_off'] === false),
-            'jours.samedi.fin_pause' => new RequiredIf($this->jours['samedi']['debut_pause'] !== null && $this->jours['samedi']['is_off'] === false),
+            'jours.samedi.fin_pause' => new RequiredIf($this->jours['samedi']['debut_pause'] !== null && $this->jours['samedi']['debut_pause'] !== 'Pas de pause' && $this->jours['samedi']['is_off'] === false),
 
             'jours.dimanche' => 'required',
             'jours.dimanche.debut_journee' => new RequiredIf($this->jours['dimanche']['fin_journee'] !== null && $this->jours['dimanche']['is_off'] === false),
             'jours.dimanche.fin_journee' => new RequiredIf($this->jours['dimanche']['debut_journee'] !== null && $this->jours['dimanche']['is_off'] === false),
             'jours.dimanche.debut_pause' =>  new RequiredIf($this->jours['dimanche']['fin_pause'] !== null && $this->jours['dimanche']['is_off'] === false),
-            'jours.dimanche.fin_pause' => new RequiredIf($this->jours['dimanche']['debut_pause'] !== null && $this->jours['dimanche']['is_off'] === false),
+            'jours.dimanche.fin_pause' => new RequiredIf($this->jours['dimanche']['debut_pause'] !== null && $this->jours['dimanche']['debut_pause'] !== 'Pas de pause' && $this->jours['dimanche']['is_off'] === false),
         ];
     }
 

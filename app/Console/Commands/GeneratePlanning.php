@@ -21,7 +21,7 @@ class GeneratePlanning extends Command
 
     public function handle()
     {
-        $dateDebut = Carbon::now()->startOfWeek()->addWeek();
+        $dateDebut = Carbon::now()->startOfWeek();
         $dateFin = $dateDebut->copy()->addYear()->addMonth();
 
         $days = CalendarController::generateDaysWithHolidays($dateDebut, $dateFin);
