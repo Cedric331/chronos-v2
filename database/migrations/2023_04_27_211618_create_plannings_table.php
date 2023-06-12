@@ -20,6 +20,7 @@ return new class extends Migration
             $table->time('fin_journee')->nullable()->default(null);
             $table->boolean('is_technician')->default(false);
             $table->boolean('telework')->default(false);
+            $table->time('hours')->nullable();
             $table->foreignId('rotation_id')
                 ->nullable()
                 ->constrained('rotations');

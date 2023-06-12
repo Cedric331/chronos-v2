@@ -88,7 +88,6 @@ export default {
                 if (typeof this.item.logo === 'object') {
                     formData.append('logo', this.item.logo)
                 }
-
                 const response = await axios.post('/team/update/' + this.item.id, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'

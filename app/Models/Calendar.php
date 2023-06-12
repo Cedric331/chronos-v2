@@ -35,11 +35,14 @@ class Calendar extends Model
         return $this->hasMany(Planning::class);
     }
 
-    public function getDateAttribute($value)
+    public function getDateFrAttribute(): ?string
     {
-        Carbon::setLocale('fr');
-        $date = Carbon::parse($value);
-        return ucwords($date->isoFormat('dddd D MMMM'));
+        if ($this->date) {
+            Carbon::setLocale('fr');
+            $date = Carbon::parse($this->date);
+            return ucwords($date->isoFormat('dddd D MMMM'));
+        } else {
+            return null;
+        }
     }
-
 }

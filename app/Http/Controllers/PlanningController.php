@@ -18,7 +18,11 @@ class PlanningController extends Controller
         $this->middleware('isCoordinateur')->only('generate');
     }
 
-    public function generate(RequestGeneratePlanning $request)
+    /**
+     * @param RequestGeneratePlanning $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function generate(RequestGeneratePlanning $request): \Illuminate\Http\JsonResponse
     {
         $dateStart = Carbon::parse($request->dateStart);
         $dateEnd = Carbon::parse($request->dateEnd)->addWeek();
@@ -49,28 +53,36 @@ class PlanningController extends Controller
 
     private function createPlanning($detail, $rotation, $userId, Carbon $date): void
     {
-        $calendar = Calendar::whereDate('date', $date)->firstOrFail();
+        $calendar = Calendar::whereDate('date', $date)->first();
 
-        $planning = Planning::create([
-            'type_day' => $detail['is_off'] ? 'Repos' : 'Planifié',
-            'debut_journee' => $detail['debut_journee'],
-            'debut_pause' => $detail['debut_pause'],
-            'fin_pause' => $detail['fin_pause'],
-            'fin_journee' => $detail['fin_journee'],
-            'is_technician' => $detail['technicien'],
-            'telework' => $detail['teletravail'],
-            'calendar_id' => $calendar->id,
-            'rotation_id' => $rotation['id'],
-            'team_id' => Auth::user()->team_id,
-            'user_id' => $userId
-        ]);
+        if ($calendar) {
+            $planning = Planning::create([
+                'type_day' => $detail['is_off'] ? 'Repos' : 'Planifié',
+                'debut_journee' => $detail['debut_journee'],
+                'debut_pause' => $detail['debut_pause'],
+                'fin_pause' => $detail['fin_pause'],
+                'fin_journee' => $detail['fin_journee'],
+                'is_technician' => $detail['technicien'],
+                'telework' => $detail['teletravail'],
+                'hours' => $this->calculateWorkHours($detail),
+                'calendar_id' => $calendar->id,
+                'rotation_id' => $rotation['id'],
+                'team_id' => Auth::user()->team_id,
+                'user_id' => $userId
+            ]);
 
-        response()->json($planning);
+            response()->json($planning);
+        } else {
+            return;
+        }
     }
 
-    public function update (Request $request)
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function update (Request $request): \Illuminate\Http\JsonResponse
     {
-        dd($this->calculateWorkHours($request));
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
@@ -83,6 +95,7 @@ class PlanningController extends Controller
                     'fin_journee' => $request->fin_journee,
                     'is_technician' => $request->is_technician,
                     'telework' => $request->telework,
+                    'hours' => $this->calculateWorkHours($request),
                 ]);
             } else {
                 $planning->update([
@@ -93,6 +106,7 @@ class PlanningController extends Controller
                     'fin_journee' => null,
                     'is_technician' => false,
                     'telework' => false,
+                    'hours' => null,
                 ]);
             }
         }
@@ -104,6 +118,10 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function updateWithRotation (Request $request): \Illuminate\Http\JsonResponse
     {
         $rotation = Rotation::find($request->rotation_id);
@@ -137,7 +155,12 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
-    private function checkTypeDay ($typeDay)
+
+    /**
+     * @param $typeDay
+     * @return bool
+     */
+    private function checkTypeDay ($typeDay): bool
     {
         if ($typeDay === 'Formation' || $typeDay === 'Planifié') {
             return true;
@@ -145,9 +168,17 @@ class PlanningController extends Controller
         return false;
     }
 
-    private function calculateWorkHours($workDay): string
+
+    /**
+     * @param $workDay
+     * @return string|null
+     */
+    private function calculateWorkHours($workDay): ?string
     {
         $format = "H:i";
+        if ($workDay['is_off'] || !$workDay['debut_journee']) {
+            return null;
+        }
 
         $startDayTime = is_array($workDay) ? str_replace('h', ':', $workDay['debut_journee']) : str_replace('h', ':', $workDay->debut_journee);
         $endDayTime = is_array($workDay) ? str_replace('h', ':', $workDay['fin_journee']) : str_replace('h', ':', $workDay->fin_journee);
@@ -177,7 +208,5 @@ class PlanningController extends Controller
 
         return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes);
     }
-
-
 
 }

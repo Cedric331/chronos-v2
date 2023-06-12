@@ -3,8 +3,8 @@
     <div>
         <TabGroup @change="changeTab">
             <TabList class="flex justify-around bg-gray-600">
-                <Tab :class="[tab === 0 ? 'bg-[#70a1ff]' : '']" class="w-2/4"><h1 class="text-lg text-white font-medium text-center p-4">Création d'un horaire spécifique</h1></Tab>
-                <Tab :class="[tab === 1 ? 'bg-[#70a1ff]' : '']" class="w-2/4"><h1 class="text-lg text-white font-medium text-center p-4">Création d'un horaire depuis une rotation</h1></Tab>
+                <Tab :class="[tab === 0 ? 'bg-[#70a1ff] rounded-lg' : '']" class="w-2/4"><h1 class="text-lg text-white font-medium text-center p-4">Création d'un horaire spécifique</h1></Tab>
+                <Tab :class="[tab === 1 ? 'bg-[#70a1ff] rounded-lg' : '']" class="w-2/4"><h1 class="text-lg text-white font-medium text-center p-4">Création d'un horaire depuis une rotation</h1></Tab>
             </TabList>
             <TabPanels>
                 <TabPanel>

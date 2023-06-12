@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Calendar;
 use App\Models\User;
 use Carbon\Traits\Date;
+use DateTime;
 use ICal\ICal;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use IntlDateFormatter;
 use Yasumi\Yasumi;
 
 class CalendarController extends Controller
@@ -35,6 +37,10 @@ class CalendarController extends Controller
             ->where('date', '>=', $monday)
             ->get();
 
+        foreach ($calendar as $day) {
+            $day->number_week = Carbon::parse($day->date)->isoFormat('W');
+            $day->date = $day->dateFr;
+        }
 
         return Inertia::render('Planning', [
             'user' => $user,
@@ -44,7 +50,7 @@ class CalendarController extends Controller
         ]);
     }
 
-    public function getPlanningCustom (Request $request)
+    public function getPlanningCustom (Request $request): \Illuminate\Http\JsonResponse
     {
         $monday = Carbon::now()->startOfWeek();
 
@@ -56,6 +62,11 @@ class CalendarController extends Controller
             }])
             ->where('date', '>=', $monday)
             ->get();
+
+        foreach ($calendar as $day) {
+            $day->number_week = Carbon::parse($day->date)->isoFormat('W');
+            $day->date = $day->dateFr;
+        }
 
         return response()->json($calendar);
     }
@@ -121,7 +132,7 @@ class CalendarController extends Controller
         return $holidayDates;
     }
 
-    private static function isSchoolHoliday($date, $holidaysByZone)
+    private static function isSchoolHoliday($date, $holidaysByZone): array
     {
         $zonesInHolidays = [];
 

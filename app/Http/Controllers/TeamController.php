@@ -65,7 +65,7 @@ class TeamController extends Controller
 
 
 
-    public function update(TeamRequest $request, Team $team)
+    public function update(TeamRequest $request, Team $team): \Illuminate\Http\JsonResponse
     {
         $data = $request->validated();
 

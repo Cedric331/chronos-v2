@@ -34,7 +34,7 @@ class RotationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'team_id' => 'required', 'integer',
+            'team_id' => $this->method() === 'POST' ? 'required|integer' : 'nullable|integer',
             'name' => [
                 'required',
                 'max:5',

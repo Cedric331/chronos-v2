@@ -3,27 +3,39 @@
         <div class="mx-5 py-10 mx-auto">
             <div v-if="days.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
                 <div v-for="day in days" :key="day" class="h-full rounded-lg flex flex-col justify-between">
-                    <div @click.prevent="selectDate(day)" class="w-full rounded-lg p-1 min-h-72 dark:bg-gray-600 bg-gray-300" :class="{ 'cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#f1f2f6]' : this.$page.props.auth.isCoordinateur, 'selected': isDaySelected(day), 'isToday' : isToday === day.date }">
-                        <div class="flex justify-center">
-                            <h1 class="font-bold text-xl">{{ day.date }}</h1>
-                        </div>
+                    <div
+                        @click.prevent="selectDate(day)"
+                        class="w-full rounded-lg p-1 min-h-72 cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#ced6e0]"
+                        :class="[
+                                {'selected': isDaySelected(day)},
+                                {'isToday' : isToday === day.date},
+                                checkBgColor(day.plannings[0].type_day)
+                            ]">
+                            <div class="flex justify-center">
+                                <h1 class="font-bold text-lg mr-2">{{ day.date }}</h1>
+                                <svg @click.stop="showPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-1 w-6 h-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                </svg>
+                            </div>
                         <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 h-[9rem]">
                             <div class="flex justify-center">
                                 <div class="flex items-center">
-                                    <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }} {{ day.is_holiday ? '(Jour Férié)' : null }}</p>
+                                    <div class="mr-1">
+                                        <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }} {{ day.is_holiday ? '(Jour Férié)' : null }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <div v-if="planning.hours" class="font-bold">
+                                        {{ planning.hours }}
+                                    </div>
                                     <div v-if="planning.is_technician" id="is_technician">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-4">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
                                         </svg>
                                     </div>
                                     <div v-if="planning.telework" id="telework">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                        </svg>
-                                    </div>
-                                    <div v-else id="entreprise">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" />
                                         </svg>
                                     </div>
                                 </div>
@@ -83,6 +95,24 @@ export default {
         }
     },
     methods: {
+        showPlanningTeam (day) {
+            this.$emit('showPlanningTeam', day);
+        },
+        checkBgColor (type_day) {
+            let color = '';
+            if (type_day === 'Planifié') {
+                color = 'bg-[#78e08f]';
+            } else if (type_day === 'Congé Payé' || type_day === 'Récup JF') {
+                color = 'bg-[#60a3bc]';
+            } else if (type_day === 'Repos' || type_day === 'JF') {
+                color = 'bg-[#82ccdd]';
+            } else if (type_day === 'Maladie') {
+                color = 'bg-[#f8c291]';
+            } else {
+                color = 'bg-[#b8e994]';
+            }
+            return { [color]: true };
+        },
         updatePlanning(data) {
             for (let i = 0; i < this.days.length; i++) {
                 for (let j = 0; j < data.length; j++) {
@@ -100,7 +130,6 @@ export default {
             this.daySelected = [];
             this.showUpdateDay = false;
         },
-
         selectDate(day) {
             if (this.$page.props.auth.isCoordinateur) {
                 const index = this.daySelected.findIndex(selectedDay => selectedDay.date === day.date);
@@ -113,7 +142,6 @@ export default {
                     }
                 }
 
-                // Tri des éléments daySelected par ID
                 this.daySelected.sort((a, b) => a.id - b.id);
             }
         },
@@ -126,9 +154,9 @@ export default {
             placement: 'top',
             content: 'Télétravail',
         });
-        tippy('#entreprise', {
+        tippy('#is_technician', {
             placement: 'top',
-            content: 'Hub',
+            content: 'Technicien',
         });
         tippy('#zoneA', {
             placement: 'top',
@@ -148,14 +176,24 @@ export default {
 
 <style>
 .selected {
-    border: 3px solid #2ed573;
+    background-image: linear-gradient(
+        45deg,
+        rgba(0, 0, 0, 0.15) 25%,
+        transparent 25%,
+        transparent 50%,
+        rgba(0, 0, 0, 0.15) 50%,
+        rgba(0, 0, 0, 0.15) 75%,
+        transparent 75%,
+        transparent
+    );
+    background-size: 40px 40px;
 }
 .isToday {
     box-shadow: 0 0 3px 3px cornflowerblue;
     transition: box-shadow 0.3s, transform 0.3s;
 }
-.selected.isToday {
-    box-shadow: 0 0 3px 3px #2ed573;
-    transition: box-shadow 0.3s, transform 0.3s;
-}
+/*.selected.isToday {*/
+/*    box-shadow: 0 0 3px 3px #eb2f06;*/
+/*    transition: box-shadow 0.3s, transform 0.3s;*/
+/*}*/
 </style>

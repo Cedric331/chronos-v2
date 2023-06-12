@@ -88,6 +88,12 @@ class RotationController extends Controller
         }
     }
 
+    /**
+     * @param RotationRequest $request
+     * @param Rotation $rotation
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
+     */
     public function update(RotationRequest $request, Rotation $rotation): \Illuminate\Http\JsonResponse
     {
         DB::beginTransaction();
@@ -126,7 +132,7 @@ class RotationController extends Controller
                             $pauseStartTime = strtotime($debut_pause);
                             $pauseEndTime = strtotime($fin_pause);
 
-                            $workHours = ($endTime - $startTime) - ($pauseEndTime - $pauseStartTime); // Soustraire la durée de la pause
+                            $workHours = ($endTime - $startTime) - ($pauseEndTime - $pauseStartTime);
                         } else {
                             $workHours = ($endTime - $startTime);
                         }

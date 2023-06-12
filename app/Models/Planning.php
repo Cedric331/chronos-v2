@@ -23,6 +23,7 @@ class Planning extends Model
         'fin_journee',
         'is_technician',
         'telework',
+        'hours',
         'calendar_id',
         'rotation_id',
         'team_id',
@@ -66,6 +67,15 @@ class Planning extends Model
         }
     }
 
+    public function setHoursAttribute($value)
+    {
+        if ($value) {
+            $this->attributes['hours'] = date('H:i:s', strtotime(str_replace('h', ':', $value)));
+        } else {
+            $this->attributes['hours'] = null;
+        }
+    }
+
 
     public function getFinPauseAttribute($value): ?string
     {
@@ -92,6 +102,14 @@ class Planning extends Model
     }
 
     public function getDebutPauseAttribute($value): ?string
+    {
+        if ($value) {
+            return Carbon::parse($value)->format('H\hi');
+        }
+        return null;
+    }
+
+    public function getHoursAttribute($value): ?string
     {
         if ($value) {
             return Carbon::parse($value)->format('H\hi');
