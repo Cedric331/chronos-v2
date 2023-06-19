@@ -50,7 +50,7 @@ class User extends Authenticatable
 
     protected $with = ['team'];
 
-    public function planning ()
+    public function plannings ()
     {
         return $this->hasMany(Planning::class);
     }

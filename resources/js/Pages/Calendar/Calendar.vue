@@ -1,7 +1,7 @@
 <template>
     <section class="bg-white dark:bg-gray-900">
         <div class="mx-5 py-10 mx-auto">
-            <div v-if="days.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
+            <div v-if="days && days.length > 0" :class="{ 'fade': animateDays }" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
                 <div v-for="day in days" :key="day" class="h-full rounded-lg flex flex-col justify-between">
                     <div
                         @click.prevent="selectDate(day)"
@@ -12,8 +12,8 @@
                                 checkBgColor(day.plannings[0].type_day)
                             ]">
                             <div class="flex justify-center">
-                                <h1 class="font-bold text-lg mr-2">{{ day.date }}</h1>
-                                <svg @click.stop="showPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-1 w-6 h-6">
+                                <h1 class="font-bold text-lg mr-2">{{ day.date_fr }}</h1>
+                                <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-1 w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
                             </div>
@@ -53,8 +53,6 @@
                                 <p class="invisible">Invisible text</p>
                                 <p class="invisible">Invisible text</p>
                             </div>
-
-
                         </div>
                     </div>
 
@@ -69,6 +67,7 @@
                 <h2 class="text-2xl dark:text-white ">-- Aucun planning --</h2>
             </div>
         </div>
+    <ModalShowPlanningTeam v-if="showPlanningTeam && showDay" :show="showPlanningTeam" :showDay="showDay" @close="this.showPlanningTeam = false"></ModalShowPlanningTeam>
     <ButtonNav v-if="daySelected.length > 0 && $page.props.auth.isCoordinateur" :daySelected="daySelected" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
     <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @update="data => this.updatePlanning(data)" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
     </section>
@@ -79,10 +78,11 @@
 import ButtonNav from "@/Components/ButtonNav.vue";
 import tippy from "tippy.js";
 import ModalUpdateDay from "@/Pages/Calendar/Modal/ModalUpdateDay.vue";
-
+import ModalShowPlanningTeam from "@/Pages/Calendar/Modal/ModalShowPlanningTeam.vue";
+import 'tippy.js/dist/tippy.css';
 export default {
     name: "Calendar",
-    components: {ModalUpdateDay, ButtonNav},
+    components: {ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
     props: {
         daysProps: Object,
         isToday: String
@@ -90,18 +90,35 @@ export default {
     data () {
         return {
             days: this.daysProps,
+            showDay: null,
             showUpdateDay: false,
+            showPlanningTeam: false,
+            animateDays: false,
             daySelected: []
         }
     },
+    watch: {
+        daysProps () {
+            this.days = this.daysProps
+            this.animateDays = true;
+
+            setTimeout(() => {
+                this.animateDays = false;
+            }, 1000);
+        }
+    },
     methods: {
-        showPlanningTeam (day) {
-            this.$emit('showPlanningTeam', day);
+        resetDaySelected () {
+            this.daySelected = [];
+        },
+        viewPlanningTeam (day) {
+            this.showDay = day;
+            this.showPlanningTeam = true;
         },
         checkBgColor (type_day) {
             let color = '';
             if (type_day === 'Planifié') {
-                color = 'bg-[#78e08f]';
+                color = 'bg-[#7bed9f]';
             } else if (type_day === 'Congé Payé' || type_day === 'Récup JF') {
                 color = 'bg-[#60a3bc]';
             } else if (type_day === 'Repos' || type_day === 'JF') {
@@ -141,7 +158,6 @@ export default {
                         this.showUpdateDay = false
                     }
                 }
-
                 this.daySelected.sort((a, b) => a.id - b.id);
             }
         },
@@ -175,6 +191,16 @@ export default {
 </script>
 
 <style>
+.fade {
+    animation: fadeEffect 1s;
+}
+
+@keyframes fadeEffect {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+
 .selected {
     background-image: linear-gradient(
         45deg,

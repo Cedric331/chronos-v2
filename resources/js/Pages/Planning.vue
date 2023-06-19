@@ -31,14 +31,14 @@
                                         :value="user"
                                         as="template">
                                         <li :class="[
-                  active ? 'bg-amber-100 text-amber-900' : 'text-gray-900',
-                  'relative cursor-default select-none py-2 pl-10 pr-4',]">
+                                          active ? 'bg-amber-100 text-amber-900' : 'text-gray-900',
+                                          'relative cursor-default select-none py-2 pl-10 pr-4',]">
 
-                <span :class="[selectedUser ? 'font-medium' : 'font-normal', 'block truncate']">{{ user.name }}</span>
-                <span
-                    v-if="selectedUser"
-                    class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                </span>
+                                        <span :class="[selectedUser ? 'font-medium' : 'font-normal', 'block truncate']">{{ user.name }}</span>
+                                        <span
+                                            v-if="selectedUser"
+                                            class="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
+                                        </span>
                                         </li>
                                     </ListboxOption>
                                 </ListboxOptions>
@@ -52,7 +52,7 @@
         <div>
             <div class="w-full mx-auto">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <Calendar :daysProps="daysProps" :isToday="isToday"></Calendar>
+                    <Calendar ref="calendar" :daysProps="daysProps" :isToday="isToday"></Calendar>
                 </div>
             </div>
         </div>
@@ -91,7 +91,7 @@ export default {
     watch: {
         selectedUser () {
             this.isLoading = true
-            this.refreshData()
+            this.getPlanning()
         }
     },
     data() {
@@ -103,13 +103,13 @@ export default {
         }
     },
     methods: {
-        refreshData () {
+        getPlanning () {
             axios.post('/planning', {
                 user: this.selectedUser,
                 getAllPlanning: this.getAllPlanning
             })
             .then(response => {
-                this.days = response.data
+                this.daysProps = response.data
             })
             .catch(error => {
                 console.log(error)
@@ -117,7 +117,8 @@ export default {
             .finally(() => {
                 setTimeout(() => {
                     this.isLoading = false
-                }, 500)
+                    this.$refs.calendar.resetDaySelected()
+                }, 200)
             })
         }
     }

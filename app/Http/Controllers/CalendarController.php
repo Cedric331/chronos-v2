@@ -39,7 +39,6 @@ class CalendarController extends Controller
 
         foreach ($calendar as $day) {
             $day->number_week = Carbon::parse($day->date)->isoFormat('W');
-            $day->date = $day->dateFr;
         }
 
         return Inertia::render('Planning', [
@@ -65,7 +64,6 @@ class CalendarController extends Controller
 
         foreach ($calendar as $day) {
             $day->number_week = Carbon::parse($day->date)->isoFormat('W');
-            $day->date = $day->dateFr;
         }
 
         return response()->json($calendar);

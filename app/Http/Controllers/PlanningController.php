@@ -6,6 +6,7 @@ use App\Http\Requests\RequestGeneratePlanning;
 use App\Models\Calendar;
 use App\Models\Planning;
 use App\Models\Rotation;
+use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
@@ -72,8 +73,6 @@ class PlanningController extends Controller
             ]);
 
             response()->json($planning);
-        } else {
-            return;
         }
     }
 
@@ -155,6 +154,43 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
+    public function getPlanningTeam(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $user = User::find(Auth::id());
+        $day = Calendar::find($request->day_id);
+        $date = Carbon::parse($day->date);
+
+        $startOfWeek = $date->copy()->startOfWeek(Carbon::MONDAY);
+        $endOfWeek = $date->copy()->endOfWeek(Carbon::SUNDAY);
+
+        if ($request->mobile) {
+            $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
+                $query->where('team_id', $user->team_id);
+            })
+                ->with(['plannings' => function ($query) use ($user, $date) {
+                    $query->where('team_id', $user->team_id);
+                }, 'plannings.user'])
+                ->where('date', '=', $date)
+                ->get();
+        } else {
+            $calendar = User::where('team_id', $user->team_id)
+                ->whereHas('plannings', function ($query) use ($startOfWeek, $endOfWeek) {
+                    $query->whereHas('calendar', function ($query) use ($startOfWeek, $endOfWeek) {
+                        $query->where('date', '>=', $startOfWeek)
+                            ->where('date', '<=', $endOfWeek);
+                    });
+                })
+                ->with(['plannings' => function ($query) use ($startOfWeek, $endOfWeek) {
+                    $query->whereHas('calendar', function ($query) use ($startOfWeek, $endOfWeek) {
+                        $query->where('date', '>=', $startOfWeek)
+                            ->where('date', '<=', $endOfWeek);
+                    });
+                }, 'plannings.calendar'])
+                ->get();
+        }
+
+        return response()->json($calendar);
+    }
 
     /**
      * @param $typeDay

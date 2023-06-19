@@ -273,6 +273,11 @@ export default {
                     this.message = 'Le début de pause de ' + days + ' doit commencer avant la fin de pause';
                 }
             }
+            if (fin_pause && fin_journee) {
+                if (fin_pause >= fin_journee) {
+                    this.message = 'La fin de pause de ' + days + ' doit se terminer avant la fin de journée';
+                }
+            }
         },
         submit () {
             if (this.rotation) {

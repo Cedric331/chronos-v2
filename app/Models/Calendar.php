@@ -22,7 +22,9 @@ class Calendar extends Model
         'zone'
     ];
 
-    public function getDay ()
+    protected $appends = ['date_fr'];
+
+    public function getDay (): string
     {
         $explode = explode(' ', $this->date);
 
@@ -34,6 +36,7 @@ class Calendar extends Model
     {
         return $this->hasMany(Planning::class);
     }
+
 
     public function getDateFrAttribute(): ?string
     {

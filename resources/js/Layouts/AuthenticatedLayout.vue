@@ -119,6 +119,9 @@ const showingNavigationDropdown = ref(false);
                                             <DropdownLink :href="route('profile.edit')">
                                                 {{ $t('nav.profil') }}
                                             </DropdownLink>
+                                            <DropdownLink :href="route('login.google')">
+                                                Google Agenda
+                                            </DropdownLink>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 {{ $t('nav.logout') }}
                                             </DropdownLink>
