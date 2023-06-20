@@ -59,7 +59,9 @@ const submit = () => {
 
                         <InputError class="mt-2" :message="form.errors.email" />
                     </div>
-
+                    <a href="/redirect/google" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
+                        Google Agenda
+                    </a>
                     <div class="mt-4">
                         <InputLabel for="password" value="Mot de passe" />
 

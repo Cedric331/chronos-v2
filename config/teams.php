@@ -10,7 +10,7 @@ return [
     'type_days_default' => [
         'Planifié',
         'Récup JF',
-        'Congé Payé',
+        'Congés Payés',
         'JF',
         'Maladie',
         'Repos',

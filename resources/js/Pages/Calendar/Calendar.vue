@@ -5,12 +5,13 @@
                 <div v-for="day in days" :key="day" class="h-full rounded-lg flex flex-col justify-between">
                     <div
                         @click.prevent="selectDate(day)"
-                        class="w-full rounded-lg p-1 min-h-72 cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#ced6e0]"
+                        class="w-full rounded-lg p-1 min-h-72 cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#ffffff]"
                         :class="[
                                 {'selected': isDaySelected(day)},
-                                {'isToday' : isToday === day.date},
+                                {'isToday' : isToday === day.date_fr},
                                 checkBgColor(day.plannings[0].type_day)
                             ]">
+
                             <div class="flex justify-center">
                                 <h1 class="font-bold text-lg mr-2">{{ day.date_fr }}</h1>
                                 <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-1 w-6 h-6">
@@ -215,8 +216,10 @@ export default {
     background-size: 40px 40px;
 }
 .isToday {
-    box-shadow: 0 0 3px 3px cornflowerblue;
+    box-shadow: cornflowerblue 0px 22px 70px 4px;
+    /*box-shadow: 0 0 4px 4px cornflowerblue;*/
     transition: box-shadow 0.3s, transform 0.3s;
+
 }
 /*.selected.isToday {*/
 /*    box-shadow: 0 0 3px 3px #eb2f06;*/

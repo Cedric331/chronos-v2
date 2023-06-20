@@ -6,6 +6,7 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
+import Loading from "@/Components/Loading.vue";
 
 const showingNavigationDropdown = ref(false);
 
@@ -13,7 +14,7 @@ const showingNavigationDropdown = ref(false);
 
 <template>
     <notifications position="bottom right" />
-
+<Loading :show="isLoading"></Loading>
     <div :class="{ 'dark': isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -79,11 +80,17 @@ const showingNavigationDropdown = ref(false);
                             </div>
 
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                                <label class="relative inline-flex items-center cursor-pointer">
-                                    <input @click="updateDarkMode($event)" type="checkbox" value="" :checked="isDarkMode" class="sr-only peer">
-                                    <div class="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-white dark:peer-focus:ring-white rounded-full peer dark:bg-white peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[23px] after:left-[2px] after:bg-black after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-white"></div>
-                                    <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ isDarkMode ? 'Mode Dark' : 'Mode Light' }}</span>
-                                </label>
+<!--                                <label class="relative inline-flex items-center cursor-pointer">-->
+<!--                                    <input @click="updateDarkMode($event)" type="checkbox" value="" :checked="isDarkMode" class="sr-only peer">-->
+<!--                                    <div class="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-white dark:peer-focus:ring-white rounded-full peer dark:bg-white peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[23px] after:left-[2px] after:bg-black after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-white"></div>-->
+<!--                                    <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ isDarkMode ? 'Mode Dark' : 'Mode Light' }}</span>-->
+<!--                                </label>-->
+                                <div class="checkbox-wrapper-54 relative inline-flex items-center cursor-pointer">
+                                    <label class="switch">
+                                        <input @click="updateDarkMode($event)" :checked="isDarkMode" type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
                             </div>
 
 
@@ -119,9 +126,9 @@ const showingNavigationDropdown = ref(false);
                                             <DropdownLink :href="route('profile.edit')">
                                                 {{ $t('nav.profil') }}
                                             </DropdownLink>
-                                            <DropdownLink :href="route('login.google')">
+                                            <a @click="this.isLoading = true" href="/redirect/google" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
                                                 Google Agenda
-                                            </DropdownLink>
+                                            </a>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 {{ $t('nav.logout') }}
                                             </DropdownLink>
@@ -214,10 +221,12 @@ const showingNavigationDropdown = ref(false);
 <script>
 
 export default {
+    name: 'AuthenticatedLayout',
     data () {
         return {
             team: {'name': null},
             isDarkMode: false,
+            isLoading: false,
             triggerWave: false,
             waveX: 0,
             waveY: 0
@@ -284,5 +293,67 @@ export default {
     }
 }
 
+ .checkbox-wrapper-54 input[type="checkbox"] {
+     visibility: hidden;
+     display: none;
+ }
+
+.checkbox-wrapper-54 *,
+.checkbox-wrapper-54 ::after,
+.checkbox-wrapper-54 ::before {
+    box-sizing: border-box;
+}
+
+/* The switch - the box around the slider */
+.checkbox-wrapper-54 .switch {
+    --width-of-switch: 3.5em;
+    --height-of-switch: 2em;
+    /* size of sliding icon -- sun and moon */
+    --size-of-icon: 1.4em;
+    /* it is like a inline-padding of switch */
+    --slider-offset: 0.3em;
+    position: relative;
+    width: var(--width-of-switch);
+    height: var(--height-of-switch);
+    display: inline-block;
+}
+
+/* The slider */
+.checkbox-wrapper-54 .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #303136;
+    transition: .4s;
+    border-radius: 30px;
+}
+
+.checkbox-wrapper-54 .slider:before {
+    position: absolute;
+    content: "";
+    height: var(--size-of-icon,1.4em);
+    width: var(--size-of-icon,1.4em);
+    border-radius: 20px;
+    left: var(--slider-offset,0.3em);
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(40deg,#ff0080,#ff8c00 70%);
+;
+    transition: .4s;
+}
+
+.checkbox-wrapper-54 input:checked + .slider {
+    background-color: #ffffff;
+}
+
+.checkbox-wrapper-54 input:checked + .slider:before {
+    left: calc(100% - (var(--size-of-icon,1.4em) + var(--slider-offset,0.3em)));
+    background: #ffffff;
+    /* change the value of second inset in box-shadow to change the angle and direction of the moon  */
+    box-shadow: inset -3px -2px 5px -2px #8983f7, inset -10px -4px 0 0 #a3dafb;
+}
 
 </style>
