@@ -1,20 +1,6 @@
-<script setup>
-import { ref } from 'vue';
-import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import Dropdown from '@/Components/Dropdown.vue';
-import DropdownLink from '@/Components/DropdownLink.vue';
-import NavLink from '@/Components/NavLink.vue';
-import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
-import Loading from "@/Components/Loading.vue";
-
-const showingNavigationDropdown = ref(false);
-
-</script>
-
 <template>
     <notifications position="bottom right" />
-<Loading :show="isLoading"></Loading>
+    <Loading :show="isLoading" :messageLoading="messageLoading"></Loading>
     <div :class="{ 'dark': isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -80,11 +66,6 @@ const showingNavigationDropdown = ref(false);
                             </div>
 
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-<!--                                <label class="relative inline-flex items-center cursor-pointer">-->
-<!--                                    <input @click="updateDarkMode($event)" type="checkbox" value="" :checked="isDarkMode" class="sr-only peer">-->
-<!--                                    <div class="w-10 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-white dark:peer-focus:ring-white rounded-full peer dark:bg-white peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[23px] after:left-[2px] after:bg-black after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-white"></div>-->
-<!--                                    <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">{{ isDarkMode ? 'Mode Dark' : 'Mode Light' }}</span>-->
-<!--                                </label>-->
                                 <div class="checkbox-wrapper-54 relative inline-flex items-center cursor-pointer">
                                     <label class="switch">
                                         <input @click="updateDarkMode($event)" :checked="isDarkMode" type="checkbox">
@@ -126,9 +107,12 @@ const showingNavigationDropdown = ref(false);
                                             <DropdownLink :href="route('profile.edit')">
                                                 {{ $t('nav.profil') }}
                                             </DropdownLink>
-                                            <a @click="this.isLoading = true" href="/redirect/google" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
-                                                Google Agenda
-                                            </a>
+<!--                                            <a @click="this.isLoading = true" href="/redirect/google" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">-->
+<!--                                                Google Agenda-->
+<!--                                            </a>-->
+                                            <button @click.prevent="openAuthWindow()" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
+                                                    Google Agenda
+                                            </button>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 {{ $t('nav.logout') }}
                                             </DropdownLink>
@@ -219,20 +203,69 @@ const showingNavigationDropdown = ref(false);
 </template>
 
 <script>
+import ApplicationLogo from '@/Components/ApplicationLogo.vue';
+import Dropdown from '@/Components/Dropdown.vue';
+import DropdownLink from '@/Components/DropdownLink.vue';
+import NavLink from '@/Components/NavLink.vue';
+import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
+import { Link } from '@inertiajs/vue3';
+import Loading from "@/Components/Loading.vue";
 
 export default {
     name: 'AuthenticatedLayout',
+    components: {
+        ApplicationLogo,
+        Dropdown,
+        DropdownLink,
+        NavLink,
+        ResponsiveNavLink,
+        Link,
+        Loading
+    },
     data () {
         return {
             team: {'name': null},
             isDarkMode: false,
             isLoading: false,
+            messageLoading: '',
+            showingNavigationDropdown: false,
             triggerWave: false,
+            authWindow: null,
             waveX: 0,
             waveY: 0
         }
     },
+    watch: {
+        show(newValue) {
+            if (newValue) {
+                this.openAuthWindow();
+            } else if (this.authWindow) {
+                this.authWindow.close();
+            }
+        }
+    },
     methods: {
+        openAuthWindow() {
+            this.messageLoading = "Synchronisation en cours..."
+            this.isLoading = true;
+            this.authWindow = window.open('/redirect/google', 'authWindow', 'width=500,height=500');
+
+            this.authWindow.addEventListener('load', () => {
+                this.isLoading = false;
+            });
+        },
+        handleAuthMessage(event) {
+            // Vérifiez l'origine de l'événement pour des raisons de sécurité
+            if (event.origin !== 'http://127.0.0.1:8000') {
+                return;
+            }
+
+            if (this.authWindow) {
+                this.authWindow.close();
+                this.authWindow = null;
+            }
+            this.isLoading = false;
+        },
         updateDarkMode (event) {
             this.isDarkMode = !this.isDarkMode
             localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));
@@ -253,13 +286,17 @@ export default {
         }
     },
     mounted () {
+        window.addEventListener('message', this.handleAuthMessage);
         if (this.$page.props.auth.user.team_id && this.$page.props.config.active) {
             this.team = this.$page.props.teams.find(item => {
                 return item.id === this.$page.props.auth.user.id
             })
         }
         this.darkMode()
-    }
+    },
+    beforeDestroy() {
+        window.removeEventListener('message', this.handleAuthMessage);
+    },
 }
 </script>
 

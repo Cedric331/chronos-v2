@@ -2,13 +2,13 @@
     <Modal :show="showUser" @close="this.$emit('close')">
         <form class="py-6 px-9">
             <h2 class="flex justify-center my-5 text-xl w-full text-gray-400">
-                {{ $t('team_user.modalUserUpdate.title') }}
+                {{ this.user ? 'Modifier' : 'Ajouter' }} un utilisateur
             </h2>
             <hr class="my-4 dark:text-white">
             <div class="mb-5">
                 <div class="relative">
                     <input v-model="item.name" type="text" id="name" class="block rounded-t-lg px-2.5 pb-2.5 pt-5 w-full text-sm text-gray-900 bg-gray-50 dark:bg-gray-700 border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " required />
-                    <label for="name" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nom</label>
+                    <label for="name" class="absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] left-2.5 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Nom Prénom</label>
                 </div>
             </div>
 
@@ -44,8 +44,11 @@
             <InputError :message="message" :canClose="true" @close="this.message = null"></InputError>
 
             <div class="flex justify-center">
-                <SecondaryButton @click.prevent="updateUser()" class="w-2/4 flex justify-center">
-                    {{ $t('team_user.modalUserUpdate.button') }}
+                <SecondaryButton v-if="this.user" @click.prevent="updateUser()" class="w-2/4 flex justify-center">
+                    Modifier
+                </SecondaryButton>
+                <SecondaryButton v-else @click.prevent="storeUser()" class="w-2/4 flex justify-center">
+                    Enregistrer
                 </SecondaryButton>
             </div>
         </form>
@@ -59,8 +62,8 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 
 export default {
-    name: "ModalUserUpdate",
-    emits: ['update-users', 'close'],
+    name: "ModalUser",
+    emits: ['store-users', 'update-users', 'close'],
     components: {
         InputError,
         SecondaryButton,
@@ -74,7 +77,18 @@ export default {
     watch: {
         showUser () {
             this.message = null
-            this.item = JSON.parse(JSON.stringify(this.user))
+            if (this.user) {
+                this.item = JSON.parse(JSON.stringify(this.user))
+            } else {
+                this.item = {
+                    name: null,
+                    email: null,
+                    birthday: null,
+                    account_active: null,
+                    phone: null,
+                    team_id: this.$page.props.auth.user.team_id
+                }
+            }
         }
     },
     data() {
@@ -84,14 +98,31 @@ export default {
                 name: null,
                 email: null,
                 birthday: null,
+                account_active: null,
                 phone: null,
                 team_id: null
             },
         };
     },
     methods: {
+        storeUser () {
+            axios.post('/user', {
+                name: this.item.name,
+                team_id: this.item.team_id,
+                birthday: this.item.birthday,
+                phone: this.item.phone,
+                email: this.item.email
+            })
+                .then(response => {
+                    this.$emit('store-users', response.data)
+                })
+                .catch(error => {
+                    this.message = error.response.data.message
+                })
+        },
         updateUser() {
             axios.patch('/user/' + this.item.id, {
+                id: this.item.id,
                 name: this.item.name,
                 team_id: this.item.team_id,
                 birthday: this.item.birthday,
@@ -108,7 +139,9 @@ export default {
     },
     mounted() {
         this.message = null
-        this.item = JSON.parse(JSON.stringify(this.user))
+        if (this.user) {
+            this.item = JSON.parse(JSON.stringify(this.user))
+        }
     }
 }
 </script>

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('birthday')->nullable();
             $table->string('phone')->nullable();
             $table->string('google_id')->nullable();
+            $table->boolean('account_active')->default(false);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();

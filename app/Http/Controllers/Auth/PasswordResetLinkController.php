@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ActivationAccount;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -32,6 +36,25 @@ class PasswordResetLinkController extends Controller
         $request->validate([
             'email' => 'required|email',
         ]);
+
+        $user = User::where('email', $request->input('email'))->first();
+        if ($user) {
+            if (!$user->isActivated()) {
+                $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
+
+                $mailData = [
+                    'link' => $activationLink,
+                    'email' => $user->email,
+                    'name' => $user->name,
+                    'title' => 'Bienvenue sur Chronos'
+                ];
+
+                Mail::to($user->email)->send(new ActivationAccount($mailData));
+                throw ValidationException::withMessages([
+                    'email' => ['Votre compte n\'est pas activé. Veuillez cliquer sur le lien d\'activation dans le mail que vous avez reçu. Un nouvel email vous a été envoyé.'],
+                ]);
+            }
+        }
 
         // We will send the password reset link to this user. Once we have attempted
         // to send the link, we will examine the response then see the message we

@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRequest;
+use App\Mail\ActivationAccount;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -34,9 +39,33 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        //
+        if (!Gate::check('has-role-coordinateur')) {
+            return Inertia::render('Errors/401');
+        }
+
+        $user = User::create([
+            'name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'birthday' => $request->input('birthday'),
+            'phone' => $request->input('phone'),
+            'team_id' => $request->input('team_id'),
+            'password' => bcrypt(Str::random(30)),
+        ]);
+
+        $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
+
+        $mailData = [
+            'link' => $activationLink,
+            'email' => $user->email,
+            'name' => $user->name,
+            'title' => 'Bienvenue sur Chronos'
+        ];
+
+        Mail::to($user->email)->send(new ActivationAccount($mailData));
+
+        return response()->json($user);
     }
 
     /**
@@ -60,7 +89,7 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!Gate::check('has-authorization')) {
+        if (!Gate::check('has-role-coordinateur')) {
            return Inertia::render('Errors/401');
         }
 
@@ -73,7 +102,11 @@ class UserController extends Controller
         ]);
 
         if ($update) {
-            return response()->json($user);
+            if (Auth::user()->team_id === $user->team_id) {
+                return response()->json($user);
+            }  else {
+                return response()->json(null);
+            }
         } else {
             return response()->json(['message' => 'Erreur lors de l\'enregistrement'], 404);
         }
@@ -84,6 +117,12 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        if (!Gate::check('has-role-coordinateur')) {
+            return Inertia::render('Errors/401');
+        }
+
+        $user->delete();
+
+        return response()->json(['message' => 'Utilisateur supprimé'], 200);
     }
 }

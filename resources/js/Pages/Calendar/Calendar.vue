@@ -19,12 +19,12 @@
                                 </svg>
                             </div>
                         <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 h-[9rem]">
-                            <div class="flex justify-center">
-                                <div class="flex items-center">
-                                    <div class="mr-1">
-                                        <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }} {{ day.is_holiday ? '(Jour Férié)' : null }}</p>
-                                    </div>
+                            <div class="flex justify-center items-center">
+                                <div class="mr-1">
+                                    <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }} {{ day.is_holiday ? '(Jour Férié)' : null }}</p>
                                 </div>
+                            </div>
+                            <div class="flex justify-center">
                                 <div class="flex items-center">
                                     <div v-if="planning.hours" class="font-bold">
                                         {{ planning.hours }}

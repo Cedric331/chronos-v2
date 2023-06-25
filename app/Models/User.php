@@ -26,6 +26,7 @@ class User extends Authenticatable
         'birthday',
         'google_id',
         'phone',
+        'account_active',
         'team_id',
         'password',
     ];
@@ -84,5 +85,10 @@ class User extends Authenticatable
     public function isAdmin(): bool
     {
         return $this->hasRole(['Admin']);
+    }
+
+    public function isActivated (): bool
+    {
+        return $this->account_active;
     }
 }

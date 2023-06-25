@@ -23,7 +23,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Gate::define('has-authorization', function () {
+        Gate::define('has-role-coordinateur', function () {
             return Auth::user()->isCoordinateur();
         });
     }

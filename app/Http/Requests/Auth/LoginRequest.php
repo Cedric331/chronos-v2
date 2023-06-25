@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Mail\ActivationAccount;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 
@@ -49,6 +52,13 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        $user = Auth::user();
+
+        if ($user && !$user->isActivated()) {
+            $this->sendActivationMail($user);
+        }
+
+
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -81,5 +91,25 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
+    }
+
+    public function sendActivationMail ($user) {
+
+        $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
+
+        $mailData = [
+            'link' => $activationLink,
+            'email' => $user->email,
+            'name' => $user->name
+        ];
+
+        Mail::to($user->email)->send(new ActivationAccount($mailData));
+
+        Auth::guard('web')->logout();
+
+
+        throw ValidationException::withMessages([
+            'activation' => 'Votre compte n\'est pas activé. Vous devez activer votre compte via le mail que vous avez reçu. Un nouvel email vous a été envoyé',
+        ]);
     }
 }

@@ -174,7 +174,7 @@ import { Head } from '@inertiajs/vue3';
 import Calendar from "@/Pages/Calendar/Calendar.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import ModalUserUpdate from "@/Pages/Team/Modal/ModalUserUpdate.vue";
+import ModalUserUpdate from "@/Pages/Team/Modal/ModalUser.vue";
 import TeamUser from "@/Pages/Team/Components/TeamUser.vue";
 import TeamGestion from "@/Pages/Team/Components/TeamGestion.vue";
 import TeamRotation from "@/Pages/Team/Components/TeamRotation.vue";

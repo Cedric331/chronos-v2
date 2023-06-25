@@ -14,7 +14,7 @@ class UserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-       return Gate::allows('has-authorization');
+       return Gate::allows('has-role-coordinateur');
     }
 
     /**
@@ -24,12 +24,17 @@ class UserRequest extends FormRequest
      */
     public function rules(): array
     {
+        if ($this->id) {
+            $id = $this->id;
+        } else {
+            $id = $this->user()->id;
+        }
         return [
             'name' => ['bail', 'required', 'string', 'max:50'],
             'team_id' => ['bail', 'integer'],
             'birthday' => 'bail|nullable|date',
             'phone' => 'bail|nullable|string|size:10',
-            'email' => ['bail', 'required', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'email' => ['bail', 'required', 'email', 'max:255', Rule::unique(User::class)->ignore($id)],
         ];
     }
 
