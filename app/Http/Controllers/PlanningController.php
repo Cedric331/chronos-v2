@@ -72,6 +72,7 @@ class PlanningController extends Controller
                 'user_id' => $userId
             ]);
 
+
             response()->json($planning);
         }
     }

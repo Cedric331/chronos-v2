@@ -107,12 +107,6 @@
                                             <DropdownLink :href="route('profile.edit')">
                                                 {{ $t('nav.profil') }}
                                             </DropdownLink>
-<!--                                            <a @click="this.isLoading = true" href="/redirect/google" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">-->
-<!--                                                Google Agenda-->
-<!--                                            </a>-->
-                                            <button @click.prevent="openAuthWindow()" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
-                                                    Google Agenda
-                                            </button>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 {{ $t('nav.logout') }}
                                             </DropdownLink>
@@ -230,42 +224,11 @@ export default {
             messageLoading: '',
             showingNavigationDropdown: false,
             triggerWave: false,
-            authWindow: null,
             waveX: 0,
             waveY: 0
         }
     },
-    watch: {
-        show(newValue) {
-            if (newValue) {
-                this.openAuthWindow();
-            } else if (this.authWindow) {
-                this.authWindow.close();
-            }
-        }
-    },
     methods: {
-        openAuthWindow() {
-            this.messageLoading = "Synchronisation en cours..."
-            this.isLoading = true;
-            this.authWindow = window.open('/redirect/google', 'authWindow', 'width=500,height=500');
-
-            this.authWindow.addEventListener('load', () => {
-                this.isLoading = false;
-            });
-        },
-        handleAuthMessage(event) {
-            // Vérifiez l'origine de l'événement pour des raisons de sécurité
-            if (event.origin !== 'http://127.0.0.1:8000') {
-                return;
-            }
-
-            if (this.authWindow) {
-                this.authWindow.close();
-                this.authWindow = null;
-            }
-            this.isLoading = false;
-        },
         updateDarkMode (event) {
             this.isDarkMode = !this.isDarkMode
             localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));

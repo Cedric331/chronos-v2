@@ -121,7 +121,6 @@ export default {
         handleUpdateUsers(updatedUser) {
             if (!updatedUser.id) {
                 const index = this.users.findIndex((user) => user.id === this.user.id)
-
                 this.users.splice(index, 1)
                 this.$emit('update:users', this.users)
             } else {

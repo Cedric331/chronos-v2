@@ -69,7 +69,7 @@
             </div>
         </div>
     <ModalShowPlanningTeam v-if="showPlanningTeam && showDay" :show="showPlanningTeam" :showDay="showDay" @close="this.showPlanningTeam = false"></ModalShowPlanningTeam>
-    <ButtonNav v-if="daySelected.length > 0 && $page.props.auth.isCoordinateur" :daySelected="daySelected" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
+    <ButtonNav :daySelected="daySelected" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
     <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @update="data => this.updatePlanning(data)" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
     </section>
 </template>

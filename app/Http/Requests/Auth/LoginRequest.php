@@ -54,7 +54,7 @@ class LoginRequest extends FormRequest
 
         $user = Auth::user();
 
-        if ($user && !$user->isActivated()) {
+        if (!$user->isActivated()) {
             $this->sendActivationMail($user);
         }
 
