@@ -52,9 +52,17 @@
         <div>
             <div class="w-full mx-auto">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                    <Calendar ref="calendar" :daysProps="daysProps" :isToday="isToday"></Calendar>
+                    <Calendar
+                        ref="calendar"
+                        :daysProps="daysProps"
+                        :isToday="isToday"
+                        @shareSchedule="this.showShare = true"
+                        @planningFull="this.getAllPlanning = !this.getAllPlanning">
+                    </Calendar>
                 </div>
             </div>
+            <ModalSharePlanning v-if="showShare" :show="showShare" @close="this.showShare = false"></ModalSharePlanning>
+
         </div>
     </AuthenticatedLayout>
 </template>
@@ -70,9 +78,11 @@ import {
     ListboxOption,
 } from '@headlessui/vue'
 import Loading from "@/Components/Loading.vue";
+import ModalSharePlanning from "@/Pages/Calendar/Modal/ModalSharePlanning.vue";
 
 export default {
     components: {
+        ModalSharePlanning,
         Loading,
         ListboxOption,
         Listbox,
@@ -88,18 +98,23 @@ export default {
         users: Object,
         calendar: Object
     },
-    watch: {
-        selectedUser () {
-            this.isLoading = true
-            this.getPlanning()
-        }
-    },
     data() {
         return {
             isLoading: false,
             getAllPlanning: false,
+            showShare: false,
             selectedUser: this.user,
             daysProps: this.calendar
+        }
+    },
+    watch: {
+        selectedUser () {
+            this.isLoading = true
+            this.getPlanning()
+        },
+        getAllPlanning () {
+            this.isLoading = true
+            this.getPlanning()
         }
     },
     methods: {

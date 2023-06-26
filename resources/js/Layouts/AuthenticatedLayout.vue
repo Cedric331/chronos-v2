@@ -32,12 +32,20 @@
                             <div v-if="$page.props.config.active && team.name" class="hidden sm:flex sm:items-center sm:ml-6">
                                 <!-- Settings Dropdown -->
                                 <div class="ml-3 relative">
-                                    <Dropdown align="right" width="48">
+                                    <div v-if="!$page.props.auth.isCoordinateur">
+                                        <span class="inline-flex rounded-md">
+                                            <strong
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                                {{ team.name }}
+                                            </strong>
+                                        </span>
+                                    </div>
+                                    <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48">
                                         <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button
                                                     type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
                                                     {{ team.name }}
 
                                                     <svg
@@ -57,8 +65,8 @@
                                         </template>
 
                                         <template #content>
-                                            <div v-for="team in $page.props.teams" :key="team.id">
-                                                <div @click="this.team = team" class="text-gray-600 hover:bg-gray-200 p-1 dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </div>
+                                            <div v-if="$page.props.auth.isCoordinateur" v-for="team in $page.props.teams" :key="team.id">
+                                                <div @click="this.team = team" class="text-gray-600 hover:bg-gray-200 p-1 text-md dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </div>
                                             </div>
                                         </template>
                                     </Dropdown>

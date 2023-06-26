@@ -1,27 +1,25 @@
 <template>
-    <section class="bg-white dark:bg-gray-900">
+    <ShareLayout>
+    <section class="bg-gray-900">
         <div class="mx-5 py-10 mx-auto">
+            <h1 class="flex justify-center text-2xl font-bold text-white my-5">Bienvenue sur Chronos</h1>
+            <p class="flex justify-center mb-5 text-lg text-white">Vous consulter actuellement le planning de {{ user }}</p>
             <div v-if="days && days.length > 0" :class="{ 'fade': animateDays }" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
                 <div v-for="day in days" :key="day" class="h-full rounded-lg flex flex-col justify-between">
                     <div
-                        @click.prevent="selectDate(day)"
-                        class="w-full rounded-lg p-1 min-h-72 cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#ffffff]"
+                        class="w-full rounded-lg p-1 min-h-72"
                         :class="[
-                                {'selected': isDaySelected(day)},
                                 {'isToday' : isToday === day.date_fr},
                                 checkBgColor(day.plannings[0].type_day)
                             ]">
 
-                            <div class="flex justify-center">
-                                <h1 class="font-bold text-md mr-2">{{ day.date_fr }} {{ day.is_holiday ? '(Férié)' : null }}</h1>
-                                <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-1 w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                </svg>
-                            </div>
+                        <div class="flex justify-center">
+                            <h1 class="font-bold text-md mr-2">{{ day.date_fr }} {{ day.is_holiday ? '(Férié)' : null }}</h1>
+                        </div>
                         <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 h-[9rem]">
                             <div class="flex justify-center items-center">
                                 <div class="mr-1">
-                                    <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }}</p>
+                                    <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }} {{ day.is_holiday ? '(Jour Férié)' : null }}</p>
                                 </div>
                             </div>
                             <div class="flex justify-center">
@@ -64,59 +62,34 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="flex justify-center bg-white dark:bg-gray-900">
-                <h2 class="text-2xl dark:text-white ">-- Aucun planning --</h2>
+            <div v-else class="flex justify-center bg-gray-900">
+                <h2 class="text-2xl text-white ">-- Aucun planning --</h2>
             </div>
         </div>
-    <ModalShowPlanningTeam v-if="showPlanningTeam && showDay" :show="showPlanningTeam" :showDay="showDay" @close="this.showPlanningTeam = false"></ModalShowPlanningTeam>
-    <ButtonNav :daySelected="daySelected" @shareSchedule="this.$emit('shareSchedule')" @planningFull="this.$emit('planningFull')" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
-    <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @update="data => this.updatePlanning(data)" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
     </section>
+    </ShareLayout>
 </template>
 
 <script>
 
-import ButtonNav from "@/Components/ButtonNav.vue";
 import tippy from "tippy.js";
-import ModalUpdateDay from "@/Pages/Calendar/Modal/ModalUpdateDay.vue";
-import ModalShowPlanningTeam from "@/Pages/Calendar/Modal/ModalShowPlanningTeam.vue";
 import 'tippy.js/dist/tippy.css';
+import ShareLayout from "@/Layouts/ShareLayout.vue";
 export default {
-    name: "Calendar",
-    emits: ['planningFull', 'shareSchedule'],
-    components: {ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
+    name: "ShareCalendar",
+    components: {ShareLayout},
     props: {
         daysProps: Object,
+        user: String,
         isToday: String
     },
     data () {
         return {
             days: this.daysProps,
-            showDay: null,
-            showUpdateDay: false,
-            showPlanningTeam: false,
             animateDays: false,
-            daySelected: []
-        }
-    },
-    watch: {
-        daysProps () {
-            this.days = this.daysProps
-            this.animateDays = true;
-
-            setTimeout(() => {
-                this.animateDays = false;
-            }, 1000);
         }
     },
     methods: {
-        resetDaySelected () {
-            this.daySelected = [];
-        },
-        viewPlanningTeam (day) {
-            this.showDay = day;
-            this.showPlanningTeam = true;
-        },
         checkBgColor (type_day) {
             let color = '';
             if (type_day === 'Planifié') {
@@ -131,40 +104,6 @@ export default {
                 color = 'bg-[#b8e994]';
             }
             return { [color]: true };
-        },
-        updatePlanning(data) {
-            for (let i = 0; i < this.days.length; i++) {
-                for (let j = 0; j < data.length; j++) {
-                    if (this.days[i].id === data[j].id) {
-                        this.days[i] = data[j];
-                        break;
-                    }
-                }
-            }
-            this.$notify({
-                title: "Succès",
-                type: "success",
-                text: "Planning modifié avec succès!",
-            });
-            this.daySelected = [];
-            this.showUpdateDay = false;
-        },
-        selectDate(day) {
-            if (this.$page.props.auth.isCoordinateur) {
-                const index = this.daySelected.findIndex(selectedDay => selectedDay.date === day.date);
-                if (index === -1) {
-                    this.daySelected.push(day);
-                } else {
-                    this.daySelected.splice(index, 1);
-                    if (this.daySelected.length === 0) {
-                        this.showUpdateDay = false
-                    }
-                }
-                this.daySelected.sort((a, b) => a.id - b.id);
-            }
-        },
-        isDaySelected(day) {
-            return this.daySelected.some(selectedDay => selectedDay.date === day.date);
         },
     },
     mounted() {
@@ -202,28 +141,10 @@ export default {
     to {opacity: 1;}
 }
 
-
-.selected {
-    background-image: linear-gradient(
-        45deg,
-        rgba(0, 0, 0, 0.15) 25%,
-        transparent 25%,
-        transparent 50%,
-        rgba(0, 0, 0, 0.15) 50%,
-        rgba(0, 0, 0, 0.15) 75%,
-        transparent 75%,
-        transparent
-    );
-    background-size: 40px 40px;
-}
 .isToday {
     box-shadow: cornflowerblue 0px 22px 70px 4px;
     /*box-shadow: 0 0 4px 4px cornflowerblue;*/
     transition: box-shadow 0.3s, transform 0.3s;
 
 }
-/*.selected.isToday {*/
-/*    box-shadow: 0 0 3px 3px #eb2f06;*/
-/*    transition: box-shadow 0.3s, transform 0.3s;*/
-/*}*/
 </style>

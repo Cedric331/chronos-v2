@@ -6,11 +6,14 @@ use App\Http\Requests\RequestGeneratePlanning;
 use App\Models\Calendar;
 use App\Models\Planning;
 use App\Models\Rotation;
+use App\Models\ShareLink;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Inertia\Inertia;
 
 class PlanningController extends Controller
 {
@@ -153,6 +156,75 @@ class PlanningController extends Controller
             ->find($ids);
 
         return response()->json($calendar);
+    }
+
+    public function generateShareLink(Request $request) {
+
+        $request->validate([
+            'selected_time' => 'required|string'
+        ]);
+
+        $token = Str::random(32);
+        $selectedTime = $request->input('selected_time');
+
+
+        $validity = match ($selectedTime) {
+            '1 semaine' => 7,
+            '1 mois' => 30,
+            '1 an' => 365,
+            default => 1,
+        };
+
+        ShareLink::create([
+            'token' => $token,
+            'user_id' => Auth::id(),
+            'valid_until' => now()->addDays($validity)
+        ]);
+
+
+        return response()->json(['link' => url("/planning/{$token}")]);
+    }
+
+    public function getPlanningShare($token): \Inertia\Response
+    {
+        $shareLink = ShareLink::where('token', $token)
+            ->where('valid_until', '>', now())
+            ->first();
+
+        $user = User::find($shareLink->user_id);
+
+        if (!$shareLink || !$user) {
+            abort(404, 'Lien de partage non valide ou expiré');
+        }
+
+        // Récupérer et afficher le planning de l'utilisateur
+        $days = $this->getPlanning($user->id);
+
+        return Inertia::render('Calendar/ShareCalendar', [
+            'user' => $user->name,
+            'daysProps' => $days,
+            'isToday' => ucwords(Carbon::now()->isoFormat('dddd D MMMM'))
+        ]);
+    }
+
+    private function getPlanning ($id)
+    {
+        $user = User::find($id);
+
+        $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+            ->with(['plannings' => function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            }])
+            ->where('date', '>=', Carbon::now()->startOfWeek())
+            ->get();
+
+        foreach ($calendar as $day) {
+            $day->number_week = Carbon::parse($day->date)->isoFormat('W');
+        }
+
+        return $calendar;
     }
 
     public function getPlanningTeam(Request $request): \Illuminate\Http\JsonResponse

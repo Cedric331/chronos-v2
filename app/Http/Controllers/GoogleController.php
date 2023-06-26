@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Calendar;
+use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
 use Google_Client;
 use Google_Service_Calendar;
@@ -35,11 +36,15 @@ class GoogleController extends Controller
      */
     public function handleGoogleCallback(): \Inertia\Response
     {
-        $user = Socialite::driver($this->provider)->user();
+        if (Auth::check()) {
+            $user = Socialite::driver($this->provider)->user();
 
-        $this->createGoogleCalendarEvent($user->token);
+            $this->createGoogleCalendarEvent($user->token);
 
-        return Inertia::render('Agenda/CongratulationAgenda');
+            return Inertia::render('Agenda/CongratulationAgenda');
+        } else {
+            return Inertia::render(RouteServiceProvider::LOGIN);
+        }
     }
 
     public function createGoogleCalendarEvent($accessToken)
