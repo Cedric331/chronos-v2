@@ -164,9 +164,14 @@ class PlanningController extends Controller
             'selected_time' => 'required|string'
         ]);
 
-        $token = Str::random(32);
-        $selectedTime = $request->input('selected_time');
+        $user = User::find(Auth::id());
 
+        if ($user->getLinks()->count() >= 5) {
+            return response()->json(['errors' => 'Vous avez atteint le nombre maximum de liens de partage. Veuillez en supprimer dans votre compte afin de pouvoir en générér'], 422);
+        }
+
+        $token = Str::random(24);
+        $selectedTime = $request->input('selected_time');
 
         $validity = match ($selectedTime) {
             '1 semaine' => 7,
@@ -177,28 +182,45 @@ class PlanningController extends Controller
 
         ShareLink::create([
             'token' => $token,
-            'user_id' => Auth::id(),
-            'valid_until' => now()->addDays($validity)
+            'user_id' => $user->id,
+            'expired_at' => now()->addDays($validity)
         ]);
 
 
         return response()->json(['link' => url("/planning/{$token}")]);
     }
 
+    public function deleteShareLink (ShareLink $link)
+    {
+        $user = User::find(Auth::id());
+        if ($user->id === $link->user_id) {
+            $link->delete();
+        } else {
+            return response()->json(['message' => 'Vous n\'êtes pas autorisé à supprimer ce lien'], 403);
+        }
+
+        return response()->json('Lien supprimé avec succès!');
+    }
+
     public function getPlanningShare($token): \Inertia\Response
     {
         $shareLink = ShareLink::where('token', $token)
-            ->where('valid_until', '>', now())
+            ->where('expired_at', '>', now())
             ->first();
 
-        $user = User::find($shareLink->user_id);
-
-        if (!$shareLink || !$user) {
+        if (!$shareLink) {
             abort(404, 'Lien de partage non valide ou expiré');
         }
 
+        $user = User::find($shareLink->user_id);
+
+
         // Récupérer et afficher le planning de l'utilisateur
         $days = $this->getPlanning($user->id);
+
+        $shareLink->update([
+            'count_view' => $shareLink->count_view + 1
+        ]);
 
         return Inertia::render('Calendar/ShareCalendar', [
             'user' => $user->name,

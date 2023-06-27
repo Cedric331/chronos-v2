@@ -91,4 +91,9 @@ class User extends Authenticatable
     {
         return $this->account_active;
     }
+
+    public function getLinks()
+    {
+        return $this->hasMany(ShareLink::class);
+    }
 }

@@ -4,7 +4,7 @@
 
         <div id="fixed-background" class="absolute inset-0 z-10"></div>
 
-        <div class="w-full shadow-md overflow-hidden z-20 relative">
+        <div class="w-full overflow-hidden z-20 relative">
             <slot />
         </div>
     </div>

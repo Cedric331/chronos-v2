@@ -16,7 +16,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/planning', [CalendarController::class, 'getPlanning'])->name('planning');
     Route::post('/planning', [CalendarController::class, 'getPlanningCustom'])->name('planning.custom');
     Route::post('/planning/team', [PlanningController::class, 'getPlanningTeam'])->name('planning.team');
-    Route::post('/planning/share', [PlanningController::class, 'generateShareLink'])->name('planning.share')->middleware('throttle:3,1');
+    Route::post('/planning/share', [PlanningController::class, 'generateShareLink'])->name('planning.share');
+    Route::delete('/planning/share/{link}', [PlanningController::class, 'deleteShareLink'])->name('planning.share.delete');
 });
 
-Route::get('/planning/{token}', [PlanningController::class, 'getPlanningShare'])->name('planning.share.get')->middleware('throttle:3,1');
+Route::get('/planning/{token}', [PlanningController::class, 'getPlanningShare'])->name('planning.share.get');

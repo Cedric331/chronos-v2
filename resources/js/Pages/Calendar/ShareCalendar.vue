@@ -1,9 +1,9 @@
 <template>
     <ShareLayout>
-    <section class="bg-gray-900">
+    <section>
         <div class="mx-5 py-10 mx-auto">
-            <h1 class="flex justify-center text-2xl font-bold text-white my-5">Bienvenue sur Chronos</h1>
-            <p class="flex justify-center mb-5 text-lg text-white">Vous consulter actuellement le planning de {{ user }}</p>
+            <h1 class="flex justify-center text-2xl font-bold my-5">Bienvenue sur Chronos</h1>
+            <p class="flex justify-center mb-5 text-lg">Vous consulter actuellement le planning de {{ user }}</p>
             <div v-if="days && days.length > 0" :class="{ 'fade': animateDays }" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
                 <div v-for="day in days" :key="day" class="h-full rounded-lg flex flex-col justify-between">
                     <div
@@ -62,8 +62,8 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="flex justify-center bg-gray-900">
-                <h2 class="text-2xl text-white ">-- Aucun planning --</h2>
+            <div v-else class="flex justify-center">
+                <h2 class="text-2xl">-- Aucun planning défini --</h2>
             </div>
         </div>
     </section>

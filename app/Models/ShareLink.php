@@ -11,7 +11,28 @@ class ShareLink extends Model
 
     protected $fillable = [
         'token',
-        'valid_until',
+        'expired_at',
+        'count_view',
         'user_id',
     ];
+
+    protected $dates = ['expired_at'];
+
+    protected $appends = ['linkValide', 'DateExpired'];
+
+
+    public function getTokenAttribute(): string
+    {
+        return url("/planning/".$this->attributes['token']);
+    }
+
+    public function getDateExpiredAttribute ()
+    {
+        return \Carbon\Carbon::parse($this->attributes['expired_at'])->format('d/m/Y H:i');
+    }
+
+    public function getLinkValideAttribute(): bool
+    {
+        return $this->expired_at > now();
+    }
 }
