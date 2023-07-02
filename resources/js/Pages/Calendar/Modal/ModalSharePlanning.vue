@@ -86,6 +86,11 @@ export default {
                 selected_time: this.timeshare,
             }).then((response) => {
                this.url = response.data.link
+                this.$notify({
+                    title: "Succès",
+                    type: "success",
+                    text: "Lien généré avec succès!",
+                });
             }).catch((error) => {
                 this.errors = error.response.data.errors;
             })

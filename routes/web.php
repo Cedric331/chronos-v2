@@ -33,3 +33,4 @@ require __DIR__.'/team_params.php';
 require __DIR__.'/rotation.php';
 require __DIR__.'/team.php';
 require __DIR__.'/planning.php';
+require __DIR__.'/team_schedule.php';

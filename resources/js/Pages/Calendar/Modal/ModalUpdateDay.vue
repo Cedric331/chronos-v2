@@ -282,6 +282,11 @@ export default {
                     })
                     .catch(error => {
                         console.log(error)
+                        this.$notify({
+                            type: 'error',
+                            title: 'Erreur',
+                            text: this.error.response.data.message,
+                        })
                     })
             } else {
                 axios.patch('planning/update/rotation', {

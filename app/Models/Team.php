@@ -24,6 +24,7 @@ class Team extends Model
     ];
 
     protected $appends = ['logo_url'];
+
     protected $with = ['params'];
 
     public function users (): \Illuminate\Database\Eloquent\Relations\HasMany
@@ -47,5 +48,20 @@ class Team extends Model
     public function rotations (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Rotation::class);
+    }
+
+    public function teamSchedules (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(TeamSchedule::class);
+    }
+
+    public function moduleAlertActive ()
+    {
+        return $this->params->module_alert;
+    }
+
+    public function alerts (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(AlertSchedule::class);
     }
 }

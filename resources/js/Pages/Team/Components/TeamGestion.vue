@@ -11,16 +11,16 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-white dark:bg-gray-800">
                         <tr>
-                            <th v-if="$page.props.config.logo" scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th v-if="$page.props.config.logo" scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                 Logo
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                 {{ $t('name') }}
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                 {{ $t('department') }}
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider"></th>
                         </tr>
                         </thead>
 
@@ -60,10 +60,10 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-white dark:bg-gray-800">
                         <tr>
-                            <th v-if="$page.props.config.logo" scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th v-if="$page.props.config.logo" scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                 Paramètre
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase dark:text-white tracking-wider">
                                 Valeur
                             </th>
                             <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
@@ -87,11 +87,27 @@
 <!--                            </td>-->
 <!--                        </tr>-->
                         <tr>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <svg id="updatePlanning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                </svg>
                                 Autoriser la modification du planning
                             </th>
                             <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <checkbox @update:checked="data => {updateTeamParamsCheck(data)}" :checked="team.params.update_planning"></checkbox>
+                                <checkbox @update:checked="val => updateTeamParamsCheck('update_planning', val)" :checked="team.params.update_planning"></checkbox>
+                            </th>
+                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <svg id="moduleAlert" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                </svg>
+                                Activer le module alerte
+                            </th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <checkbox @update:checked="val => updateTeamParamsCheck('module_alert', val)" :checked="team.params.module_alert"></checkbox>
                             </th>
                             <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                             </td>
@@ -114,6 +130,7 @@ import Checkbox from "@/Components/Checkbox.vue";
 // import ModalUpdateTypeDay from "@/Pages/Team/Modal/ModalUpdateTypeDay.vue";
 import tippy from "tippy.js";
 import {Inertia} from "@inertiajs/inertia";
+import { router } from '@inertiajs/vue3'
 
 export default {
     name: "TeamGestion",
@@ -153,23 +170,27 @@ export default {
                     console.log(error)
                 })
         },
-        updateTeamParamsCheck (update_planning) {
+        updateTeamParamsCheck (paramName, newVal) {
+            this.team.params[paramName] = newVal;
             axios.patch('/team/params/update/' + this.team.team_params_id, {
-                update_planning: update_planning,
+                update_planning: this.team.params.update_planning,
+                module_alert: this.team.params.module_alert,
                 // type_day: this.team.params.type_day
             })
-            .then(response => {
-                this.$notify({
-                    title: "Succès",
-                    type: "success",
-                    text: "Modification effectuée avec succès!",
-                });
-                this.team.params = response.data
-            })
-            .catch(error => {
-                console.log(error)
-            })
+                .then(response => {
+                    this.$notify({
+                        title: "Succès",
+                        type: "success",
+                        text: "Modification effectuée avec succès!",
+                    });
+                    this.team.params = response.data
+                    router.reload({ only: ['auth'] })
+                })
+                .catch(error => {
+                    console.log(error)
+                })
         },
+
         editTeam () {
             this.show = true
         },
@@ -185,6 +206,14 @@ export default {
         tippy('#deleteImage', {
             placement: 'top',
             content: 'Supprimer le logo',
+        });
+        tippy('#updatePlanning', {
+            placement: 'top',
+            content: 'Permets d\'autoriser aux membres de l\'équipe de modifier leurs plannings respectifs.',
+        });
+        tippy('#moduleAlert', {
+            placement: 'top',
+            content: 'Permets d\'activer le module d\'alerte afin d\'être informé si le nombre de personnes présentes est inférieur au nombre de personnes attendues par créneau. (Pause déjeuner non pris en compte et vérification effectuée sur deux semaines)',
         });
     }
 }

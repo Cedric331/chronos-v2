@@ -4,15 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Calendar;
 use App\Models\User;
-use Carbon\Traits\Date;
-use DateTime;
 use ICal\ICal;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
-use IntlDateFormatter;
 use Yasumi\Yasumi;
 
 class CalendarController extends Controller
@@ -29,7 +26,8 @@ class CalendarController extends Controller
         $monday = Carbon::now()->startOfWeek();
 
         $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
+            $query->where('user_id', $user->id)
+                ->where('team_id', $user->team_id);
         })
             ->with(['plannings' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
@@ -52,12 +50,15 @@ class CalendarController extends Controller
     public function getPlanningCustom (Request $request): \Illuminate\Http\JsonResponse
     {
         $monday = Carbon::now()->startOfWeek();
+        $user = User::findOrFail($request->user['id']);
 
-        $calendar = Calendar::whereHas('plannings', function ($query) use ($request, $monday) {
-                $query->where('user_id', $request->user['id']);
-            })
-            ->with(['plannings' => function ($query) use ($request, $monday) {
-                $query->where('user_id', $request->user['id']);
+        $calendar = Calendar::whereHas('plannings', function ($query) use ($request, $monday, $user) {
+                $query->where('user_id', $user->id)
+                        ->where('team_id', $user->team_id);
+
+        })
+            ->with(['plannings' => function ($query) use ($request, $monday, $user) {
+                $query->where('user_id', $user->id);
             }])
             ->where('date', '>=', $monday)
             ->get();

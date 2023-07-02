@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Models\Team;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -25,6 +26,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         Gate::define('has-role-coordinateur', function () {
             return Auth::user()->isCoordinateur();
+        });
+
+        Gate::define('can-update-planning', function () {
+            $team = Team::with('params')->find(Auth::user()->team_id);
+            return Auth::user()->isCoordinateur() || $team->params->update_planning;
         });
     }
 }

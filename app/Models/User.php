@@ -52,6 +52,8 @@ class User extends Authenticatable
 
     protected $with = ['team'];
 
+    protected $appends = ['hasPlanning'];
+
     public function plannings ()
     {
         return $this->hasMany(Planning::class);
@@ -92,8 +94,14 @@ class User extends Authenticatable
         return $this->account_active;
     }
 
-    public function getLinks()
+    public function getLinks(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(ShareLink::class);
     }
+    public function getHasPlanningAttribute (): bool
+    {
+        return $this->plannings()->count() > 0;
+    }
+
+
 }

@@ -29,24 +29,65 @@
 
                         <div class="flex justify-between h-16">
 
-                            <div v-if="$page.props.config.active && team.name" class="hidden sm:flex sm:items-center sm:ml-6">
-                                <!-- Settings Dropdown -->
-                                <div class="ml-3 relative">
-                                    <div v-if="!$page.props.auth.isCoordinateur">
+                            <div v-if="$page.props.auth.team.name" class="hidden sm:flex sm:items-center sm:ml-6">
+                                <div v-if="$page.props.auth.isCoordinateur && $page.props.auth.team.params.module_alert">
+                                    <div v-if="$page.props.auth.alerts && $page.props.auth.alerts.length > 0 && $page.props.auth.alerts.find(item => !item.is_read)">
+                                        <Dropdown align="right" width="96" contentClasses="bg-white dark:bg-gray-700 mt-1 border-1 overflow-y-auto max-h-72">
+                                            <template #trigger>
+                                            <div class="inline-flex rounded-md">
+                                                <button
+                                                    class="inline-flex relative items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                      <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                                    </svg>
+                                                    <span class="absolute top-3 right-4 bg-[#ff4757] text-white rounded-full w-2 h-2 p-2 text-xs flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                                                        {{ unreadAlertsItems.length }}
+                                                    </span>
+                                                </button>
+                                            </div>
+                                            </template>
+
+                                            <template #content>
+                                                <div v-if="$page.props.auth.alerts.find(item => !item.is_read)">
+                                                    <div class="flex justify-center text-blue-400 p-1 text-xs cursor-pointer" @click="markAllRead()">
+                                                        Marquer comme lu
+                                                    </div>
+                                                </div>
+                                                <div v-for="alert in $page.props.auth.alerts" :key="alert.id">
+                                                    <div v-if="!alert.is_read" @click="markAllReadOne(alert.id)" class="dark:text-white w-full hover:bg-gray-200 p-1 text-xs dark:hover:bg-gray-50 dark:hover:text-black cursor-pointer"> {{ alert.message }} </div>
+                                                </div>
+                                            </template>
+                                        </Dropdown>
+                                    </div>
+                                    <div v-else>
+                                        <div class="inline-flex rounded-md">
+                                            <div
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
+                                                </svg>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div v-if="$page.props.config.active">
+                                    <div class="ml-3 relative">
+                                        <div v-if="!$page.props.auth.isCoordinateur">
                                         <span class="inline-flex rounded-md">
                                             <strong
                                                 class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                                {{ team.name }}
+                                                {{ $page.props.auth.team.name }}
                                             </strong>
                                         </span>
-                                    </div>
-                                    <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48">
-                                        <template #trigger>
+                                        </div>
+                                        <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48">
+                                            <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button
                                                     type="button"
                                                     class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-500 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                                    {{ team.name }}
+                                                    {{ $page.props.auth.team.name }}
 
                                                     <svg
                                                         class="ml-2 -mr-0.5 h-4 w-4"
@@ -62,14 +103,15 @@
                                                     </svg>
                                                 </button>
                                             </span>
-                                        </template>
+                                            </template>
 
-                                        <template #content>
-                                            <div v-if="$page.props.auth.isCoordinateur" v-for="team in $page.props.teams" :key="team.id">
-                                                <div @click="this.team = team" class="text-gray-600 hover:bg-gray-200 p-1 text-md dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </div>
-                                            </div>
-                                        </template>
-                                    </Dropdown>
+                                            <template #content>
+                                                <div v-if="$page.props.auth.isCoordinateur" v-for="team in $page.props.teams" :key="team.id">
+                                                    <div @click="switchTeam(team)" class="text-gray-600 hover:bg-gray-200 p-1 text-md dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </div>
+                                                </div>
+                                            </template>
+                                        </Dropdown>
+                                    </div>
                                 </div>
                             </div>
 
@@ -226,6 +268,7 @@ export default {
     },
     data () {
         return {
+            unreadAlertsItems: [],
             team: {'name': null},
             isDarkMode: false,
             isLoading: false,
@@ -237,6 +280,20 @@ export default {
         }
     },
     methods: {
+        switchTeam (team) {
+            axios.patch('/switch/team/' + team.id)
+                .then(() => {
+                    this.$inertia.visit(this.$page.url)
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.$notify({
+                        title: "Erreur",
+                        text: "Oups désolé une erreur est survenue",
+                        type: 'info',
+                    });
+                })
+        },
         updateDarkMode (event) {
             this.isDarkMode = !this.isDarkMode
             localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));
@@ -246,6 +303,51 @@ export default {
 
             this.triggerWave = true;
             setTimeout(() => this.triggerWave = false, 1000); // Remove the class after the animation is done
+        },
+        unreadAlerts () {
+            if (this.$page.props.auth.alerts) {
+                this.unreadAlertsItems = this.$page.props.auth.alerts.filter(item => !item.is_read);
+            }
+        },
+        markAllReadOne (id) {
+            axios.patch('/mark-read/' + id)
+                .then(() => {
+                    this.$notify({
+                        title: "Succès",
+                        text: "La notification a été marquée comme lue",
+                        type: 'success',
+                    });
+                    this.$page.props.auth.alerts = this.$page.props.auth.alerts.filter(item => item.id !== id);
+                    this.unreadAlerts()
+                })
+                .catch(error => {
+                    console.log(error)
+                    this.$notify({
+                        title: "Erreur",
+                        text: "Oups désolé une erreur est survenue",
+                        type: 'info',
+                    });
+                })
+        },
+        markAllRead () {
+          axios.patch('/mark-all-read')
+              .then(() => {
+                  this.$notify({
+                      title: "Succès",
+                      text: "Toutes les notifications ont été marquées comme lues",
+                      type: 'success',
+                  });
+                  this.$page.props.auth.alerts = [];
+                    this.unreadAlerts()
+              })
+              .catch(error => {
+                  console.log(error)
+                  this.$notify({
+                      title: "Erreur",
+                      text: "Oups désolé une erreur est survenue",
+                      type: 'info',
+                  });
+              })
         },
         darkMode () {
             const isDarkMode = localStorage.getItem('isDarkMode');
@@ -263,6 +365,7 @@ export default {
                 return item.id === this.$page.props.auth.user.id
             })
         }
+        this.unreadAlerts()
         this.darkMode()
     },
     beforeDestroy() {

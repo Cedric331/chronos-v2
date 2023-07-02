@@ -34,8 +34,10 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
             'auth' => [
                 'user' => $request->user(),
-                'team' => config('teams.active') && $request->user() && $request->user()->team_id ? Team::with('rotations.details')->find($request->user()->team_id) : null,
+                'team' => config('teams.active') && $request->user() && $request->user()->team_id ? Team::with(['rotations.details', 'params'])->find($request->user()->team_id) : null,
                 'isCoordinateur' => $request->user() ? $request->user()->isCoordinateur() : false,
+                'isResponsable' => $request->user() ? $request->user()->isResponsable() : false,
+                'alerts' => $request->user() &&  config('teams.active') && $request->user()->isCoordinateur() && $request->user()->team_id ? Team::find($request->user()->team_id)->alerts : null
             ],
             'getMaxSizeFile' => $this->getMaxSizeFile(),
             'config' => config('teams'),

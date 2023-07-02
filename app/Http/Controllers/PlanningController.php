@@ -12,11 +12,43 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class PlanningController extends Controller
 {
+
+    protected array $hours =  [
+        '08h00',
+        '08h30',
+        '09h00',
+        '09h30',
+        '10h00',
+        '10h30',
+        '11h00',
+        '11h30',
+        '12h00',
+        '12h30',
+        '13h00',
+        '13h30',
+        '14h00',
+        '14h30',
+        '15h00',
+        '15h30',
+        '16h00',
+        '16h30',
+        '17h00',
+        '17h30',
+        '18h00',
+        '18h30',
+        '19h00',
+        '19h30',
+        '20h00',
+        '20h30',
+        '21h00'
+    ];
+
     public function __construct()
     {
         $this->middleware('isCoordinateur')->only('generate');
@@ -82,19 +114,24 @@ class PlanningController extends Controller
 
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Inertia\Response
      */
-    public function update (Request $request): \Illuminate\Http\JsonResponse
+    public function update (Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!Gate::check('can-update-planning')) {
+            return response()->json(['message' => 'Action non autorisée'], 401);
+        }
+
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
             if ($this->checkTypeDay($request->type_day)) {
+
                 $planning->update([
                     'type_day' => $request->type_day,
                     'debut_journee' => $request->debut_journee,
-                    'debut_pause' => $request->debut_pause,
-                    'fin_pause' => $request->fin_pause,
+                    'debut_pause' => array_search($request->debut_pause, $this->hours) && array_search($request->fin_pause, $this->hours) ? $request->debut_pause : null,
+                    'fin_pause' => array_search($request->debut_pause, $this->hours) && array_search($request->fin_pause, $this->hours) ? $request->fin_pause : null,
                     'fin_journee' => $request->fin_journee,
                     'is_technician' => $request->is_technician,
                     'telework' => $request->telework,
@@ -121,12 +158,17 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
+
     /**
      * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\JsonResponse|\Inertia\Response
      */
-    public function updateWithRotation (Request $request): \Illuminate\Http\JsonResponse
+    public function updateWithRotation (Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!Gate::check('can-update-planning')) {
+            return response()->json(['message' => 'Action non autorisée'], 401);
+        }
+
         $rotation = Rotation::find($request->rotation_id);
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
@@ -158,8 +200,8 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
-    public function generateShareLink(Request $request) {
-
+    public function generateShareLink(Request $request): \Illuminate\Http\JsonResponse
+    {
         $request->validate([
             'selected_time' => 'required|string'
         ]);
@@ -168,6 +210,10 @@ class PlanningController extends Controller
 
         if ($user->getLinks()->count() >= 5) {
             return response()->json(['errors' => 'Vous avez atteint le nombre maximum de liens de partage. Veuillez en supprimer dans votre compte afin de pouvoir en générér'], 422);
+        }
+
+        if (!$user->hasPlanning) {
+            return response()->json(['errors' => 'Vous n\'avez pas de planning. Vous devez avoir un planning afin de pouvoir générer un lien de partage'], 422);
         }
 
         $token = Str::random(24);
@@ -190,7 +236,7 @@ class PlanningController extends Controller
         return response()->json(['link' => url("/planning/{$token}")]);
     }
 
-    public function deleteShareLink (ShareLink $link)
+    public function deleteShareLink (ShareLink $link): \Illuminate\Http\JsonResponse
     {
         $user = User::find(Auth::id());
         if ($user->id === $link->user_id) {

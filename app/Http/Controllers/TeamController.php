@@ -6,6 +6,7 @@ use App\Http\Requests\TeamRequest;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -48,10 +49,16 @@ class TeamController extends Controller
             return Inertia::location('/');
         }
 
+        $teamSchedules = null;
+        if ($team->moduleAlertActive()) {
+            $teamSchedules = $team->teamSchedules;
+        }
+
         $teamWithUsers = $team->load('users');
 
         return Inertia::render('Team/Team', [
-            'team' => $teamWithUsers
+            'team' => $teamWithUsers,
+            'schedules' => $teamSchedules
         ]);
     }
 
@@ -117,5 +124,16 @@ class TeamController extends Controller
 
         // Mettre à jour la colonne logo dans la base de données
         $team->update(['logo' => null]);
+    }
+
+    public function switch (Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
+    {
+        if (!Gate::check('has-role-coordinateur') || !config('teams.active')) {
+            return Inertia::render('Errors/401');
+        }
+
+        Auth::user()->update(['team_id' => $team->id]);
+
+        return response()->json(['url' => route('team.show', ['name' => $team->name])]);
     }
 }

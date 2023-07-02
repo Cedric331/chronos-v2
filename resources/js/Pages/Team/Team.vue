@@ -14,6 +14,9 @@
                             <div class="w-full grid grid-cols-1 gap-4 mb-10">
                                 <TeamRotation :team="team"></TeamRotation>
                             </div>
+                            <div v-if="this.team.params.module_alert" class="w-full grid grid-cols-1 gap-4 mb-10">
+                                <TeamHoraire :team="team" :schedules="schedules"></TeamHoraire>
+                            </div>
                             <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
                                 <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">
                                     <div class="flex items-center">
@@ -178,10 +181,12 @@ import ModalUserUpdate from "@/Pages/Team/Modal/ModalUser.vue";
 import TeamUser from "@/Pages/Team/Components/TeamUser.vue";
 import TeamGestion from "@/Pages/Team/Components/TeamGestion.vue";
 import TeamRotation from "@/Pages/Team/Components/TeamRotation.vue";
+import TeamHoraire from "@/Pages/Team/Components/TeamHoraire.vue";
 
 export default {
     name: 'Team',
     components: {
+        TeamHoraire,
         TeamRotation,
         TeamGestion,
         TeamUser,
@@ -193,7 +198,8 @@ export default {
         Head
     },
     props: {
-        team: Object
+        team: Object,
+        schedules: Object
     }
 }
 </script>

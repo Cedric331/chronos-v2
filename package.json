@@ -24,6 +24,7 @@
         "@kyvg/vue3-notification": "^2.9.0",
         "flowbite": "^1.6.4",
         "flowbite-vue": "^0.0.10",
+        "lodash": "^4.17.21",
         "tippy.js": "^6.3.7",
         "vue-i18n": "^9.3.0-beta.17"
     }

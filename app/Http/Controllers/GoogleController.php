@@ -27,6 +27,10 @@ class GoogleController extends Controller
      */
     public function redirectToGoogle()
     {
+        $user = Auth::user();
+        if (!$user->hasPlanning) {
+            return response()->json(['errors' => 'Vous n\'avez pas de planning. Vous devez avoir un planning afin de pouvoir générer un lien de partage'], 422);
+        }
         return Socialite::driver($this->provider)->scopes(['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'])->redirect();
     }
 

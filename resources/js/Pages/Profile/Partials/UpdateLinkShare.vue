@@ -68,7 +68,7 @@ function copyUrlToClipboard(url) {
                         <td class="px-6 py-4 text-right">
                             Utilisé {{ link.count_view }} fois
                         </td>
-                        <td class="px-6 py-4 text-right">
+                        <td class="px-6 py-4 text-right" :class="[!link.linkValide ? 'text-[#ff4757]' : 'text-[#2ed573]']">
                             Expire le {{ link.DateExpired }}
                         </td>
 

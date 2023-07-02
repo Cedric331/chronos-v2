@@ -14,7 +14,7 @@
 
                             <div class="flex justify-center">
                                 <h1 class="font-bold text-md mr-2">{{ day.date_fr }} {{ day.is_holiday ? '(Férié)' : null }}</h1>
-                                <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="mt-1 w-6 h-6">
+                                <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
                             </div>
@@ -43,10 +43,10 @@
                             </div>
 
                             <div v-if="planning.type_day !== 'Repos'">
-                                <p v-if="planning.debut_journee" class="text-lg font-bold">Début de Journée : {{ planning.debut_journee }}</p>
-                                <p v-if="planning.debut_pause" class="text-lg font-bold">Début de Pause : {{ planning.debut_pause }}</p>
-                                <p v-if="planning.fin_pause" class="text-lg font-bold">Fin de Pause : {{ planning.fin_pause }}</p>
-                                <p v-if="planning.fin_journee" class="text-lg font-bold">Fin de Journée : {{ planning.fin_journee }}</p>
+                                <p v-if="planning.debut_journee" class="text-lg font-bold">Début Journée : {{ planning.debut_journee }}</p>
+                                <p v-if="planning.debut_pause" class="text-lg font-bold">Début Pause : {{ planning.debut_pause }}</p>
+                                <p v-if="planning.fin_pause" class="text-lg font-bold">Fin Pause : {{ planning.fin_pause }}</p>
+                                <p v-if="planning.fin_journee" class="text-lg font-bold">Fin Journée : {{ planning.fin_journee }}</p>
                             </div>
                             <div v-else>
                                 <p class="invisible">Invisible text</p>
@@ -141,6 +141,7 @@ export default {
                     }
                 }
             }
+
             this.$notify({
                 title: "Succès",
                 type: "success",
@@ -150,7 +151,7 @@ export default {
             this.showUpdateDay = false;
         },
         selectDate(day) {
-            if (this.$page.props.auth.isCoordinateur) {
+            if (this.$page.props.auth.isCoordinateur || this.$page.props.auth.team.params.update_planning) {
                 const index = this.daySelected.findIndex(selectedDay => selectedDay.date === day.date);
                 if (index === -1) {
                     this.daySelected.push(day);

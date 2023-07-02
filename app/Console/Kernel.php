@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')->hourly();
         $schedule->command(GeneratePlanning::class)->weeklyOn(0, '23:00');
+        $schedule->call('App\Http\Controllers\TeamScheduleController@checkHoraire')->weeklyOn(1, '1:00');
 
     }
 

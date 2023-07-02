@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-white dark:bg-gray-800 shadow rounded-lg mb-4 p-4 sm:p-6 h-full shadow-2xl">
+    <div class="bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 p-4 sm:p-6 h-full">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Gestion des rotations</h3>
             <div>
