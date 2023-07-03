@@ -18,8 +18,10 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+        $team = $request->user()->team;
+
         return Inertia::render('Profile/Edit', [
-            'links' => $request->user()->getLinks,
+            'links' => $team->params->share_link_planning ? $request->user()->getLinks : null,
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => session('status'),
         ]);

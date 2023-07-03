@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LinkShareController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -12,7 +13,11 @@ Route::middleware('isCoordinateur')->group(function () {
     Route::patch('/switch/team/{team}', [TeamController::class, 'switch'])->name('team.switch');
 
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.delete');
-    Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
 
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/information', [TeamController::class, 'getInformation'])->name('information.index');
+    Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
 });

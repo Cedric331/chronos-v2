@@ -122,6 +122,10 @@ class PlanningController extends Controller
             return response()->json(['message' => 'Action non autorisée'], 401);
         }
 
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
@@ -169,6 +173,10 @@ class PlanningController extends Controller
             return response()->json(['message' => 'Action non autorisée'], 401);
         }
 
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
         $rotation = Rotation::find($request->rotation_id);
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
@@ -200,8 +208,12 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
-    public function generateShareLink(Request $request): \Illuminate\Http\JsonResponse
+    public function generateShareLink(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
         $request->validate([
             'selected_time' => 'required|string'
         ]);
@@ -236,8 +248,12 @@ class PlanningController extends Controller
         return response()->json(['link' => url("/planning/{$token}")]);
     }
 
-    public function deleteShareLink (ShareLink $link): \Illuminate\Http\JsonResponse
+    public function deleteShareLink (Request $request, ShareLink $link): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
         $user = User::find(Auth::id());
         if ($user->id === $link->user_id) {
             $link->delete();
@@ -295,8 +311,12 @@ class PlanningController extends Controller
         return $calendar;
     }
 
-    public function getPlanningTeam(Request $request): \Illuminate\Http\JsonResponse
+    public function getPlanningTeam(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
         $user = User::find(Auth::id());
         $day = Calendar::find($request->day_id);
         $date = Carbon::parse($day->date);

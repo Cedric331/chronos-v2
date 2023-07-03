@@ -11,13 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('team_params', function (Blueprint $table) {
+        Schema::create('companies', function (Blueprint $table) {
             $table->id();
-            $table->json('type_day');
-            $table->boolean('module_alert')->default(false);
-            $table->boolean('update_planning')->default(false);
-            $table->boolean('share_link_planning')->default(true);
-            $table->boolean('share_link')->default(true);
+            $table->string('name');
+            $table->longText('description')->nullable();
+            $table->string('logo')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
     }
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('team_params');
+        Schema::dropIfExists('companies');
     }
 };

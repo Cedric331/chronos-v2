@@ -71,9 +71,12 @@ class TeamController extends Controller
     }
 
 
-
-    public function update(TeamRequest $request, Team $team): \Illuminate\Http\JsonResponse
+    public function update(TeamRequest $request, Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
         $data = $request->validated();
 
         if ($request->hasFile('logo')) {
@@ -111,16 +114,18 @@ class TeamController extends Controller
     }
 
     /**
+     * @param Request $request
      * @param Team $team
-     * @return void
      */
-    public function deleteLogo(Team $team): void
+    public function deleteLogo(Request $request,Team $team)
     {
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
         // Supprimer le fichier du système de fichiers
         if (Storage::disk('public')->exists($team->logo)) {
             Storage::disk('public')->delete($team->logo);
         }
-
 
         // Mettre à jour la colonne logo dans la base de données
         $team->update(['logo' => null]);
@@ -135,5 +140,23 @@ class TeamController extends Controller
         Auth::user()->update(['team_id' => $team->id]);
 
         return response()->json(['url' => route('team.show', ['name' => $team->name])]);
+    }
+
+    public function getInformation (Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    {
+
+        $team = Auth::user()->team;
+
+        if (!config('teams.active') || !$team || !$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
+        if ($team->params->share_link) {
+            $team = $team->load(['linkTeam', 'users']);
+        } else {
+            $team = $team->load('users');
+        }
+
+        return response()->json($team);
     }
 }

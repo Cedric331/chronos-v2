@@ -89,7 +89,8 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, User $user): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!Gate::check('has-role-coordinateur')) {
+
+        if (!Gate::check('has-role-coordinateur') && Auth::id() !== $user->id) {
            return Inertia::render('Errors/401');
         }
 
@@ -98,15 +99,16 @@ class UserController extends Controller
             'email' => $request->input('email'),
             'birthday' => $request->input('birthday'),
             'phone' => $request->input('phone'),
-            'team_id' => $request->input('team_id')
         ]);
 
+        if (Auth::user()->isCoordinateur() && $request->input('team_id')) {
+            $user->update([
+                'team_id' => $request->input('team_id')
+            ]);
+        }
+
         if ($update) {
-            if (Auth::user()->team_id === $user->team_id) {
-                return response()->json($user);
-            }  else {
-                return response()->json(null);
-            }
+            return response()->json($user);
         } else {
             return response()->json(['message' => 'Erreur lors de l\'enregistrement'], 404);
         }

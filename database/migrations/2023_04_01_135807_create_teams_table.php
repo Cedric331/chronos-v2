@@ -17,7 +17,9 @@ return new class extends Migration
             $table->string('logo')->nullable();
             $table->string('departement')->nullable();
             $table->unsignedSmallInteger('code_departement')->nullable();
-            // Coordinateur de la Team
+            $table->foreignId('company_id')
+                ->constrained('companies');
+            // Responsable de la Team
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users')

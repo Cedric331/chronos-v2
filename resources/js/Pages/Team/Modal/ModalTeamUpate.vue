@@ -81,9 +81,17 @@ export default {
         async updateTeam() {
             try {
                 const formData = new FormData()
-                formData.append('name', this.item.name)
-                formData.append('departement', this.item.departement)
-                formData.append('code_departement', this.item.code_departement)
+
+                if (this.item.name !== null) {
+                    formData.append('name', this.item.name)
+                }
+                if (this.item.departement !== null) {
+                    formData.append('departement', this.item.departement)
+                }
+                if (this.item.code_departement !== null) {
+                    formData.append('code_departement', this.item.code_departement)
+                }
+
 
                 if (typeof this.item.logo === 'object') {
                     formData.append('logo', this.item.logo)

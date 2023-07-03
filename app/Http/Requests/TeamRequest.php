@@ -35,8 +35,8 @@ class TeamRequest extends FormRequest
                 Rule::unique('teams')->ignore($this->team),
             ],
             'logo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'departement' => 'required|string|max:255',
-            'code_departement' => 'required|integer|min:1|max:999',
+            'departement' => 'nullable|string|max:255',
+            'code_departement' => 'nullable|integer|min:1|max:999',
             'user_id' => 'nullable|exists:users,id',
         ];
     }

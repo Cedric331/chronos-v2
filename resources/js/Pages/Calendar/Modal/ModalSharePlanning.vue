@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <InputError :message="errors" :can-close="true"></InputError>
+            <InputError :message="errors" :can-close="true" @close="this.errors = null"></InputError>
 
             <div class="flex justify-center">
                 <PrimaryButton v-if="url" @close="this.$emit('close')" class="w-2/4 flex justify-center">

@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
 
@@ -14,7 +15,7 @@ class UserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-       return Gate::allows('has-role-coordinateur');
+       return Gate::allows('has-role-coordinateur') || Auth::id() === $this->user->id;
     }
 
     /**

@@ -101,6 +101,19 @@
                         </tr>
                         <tr>
                             <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <svg id="shareLinkPlanning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                </svg>
+                                Activer le partage de planning
+                            </th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <checkbox @update:checked="val => updateTeamParamsCheck('share_link_planning', val)" :checked="team.params.share_link_planning"></checkbox>
+                            </th>
+                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <svg id="moduleAlert" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
                                 </svg>
@@ -108,6 +121,19 @@
                             </th>
                             <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <checkbox @update:checked="val => updateTeamParamsCheck('module_alert', val)" :checked="team.params.module_alert"></checkbox>
+                            </th>
+                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <svg id="shareLink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                </svg>
+                                Activer le module de partage des liens
+                            </th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <checkbox @update:checked="val => updateTeamParamsCheck('share_link', val)" :checked="team.params.share_link"></checkbox>
                             </th>
                             <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                             </td>
@@ -175,6 +201,8 @@ export default {
             axios.patch('/team/params/update/' + this.team.team_params_id, {
                 update_planning: this.team.params.update_planning,
                 module_alert: this.team.params.module_alert,
+                share_link: this.team.params.share_link,
+                share_link_planning: this.team.params.share_link_planning,
                 // type_day: this.team.params.type_day
             })
                 .then(response => {
@@ -214,6 +242,14 @@ export default {
         tippy('#moduleAlert', {
             placement: 'top',
             content: 'Permets d\'activer le module d\'alerte afin d\'être informé si le nombre de personnes présentes est inférieur au nombre de personnes attendues par créneau. (Pause déjeuner non pris en compte et vérification effectuée sur deux semaines)',
+        });
+        tippy('#shareLink', {
+            placement: 'top',
+            content: 'Permets d\'activer le module de partage des liens dans l\'équipe. En cas de désactivation, les liens déjà partagés ne seront pas supprimés.',
+        });
+        tippy('#shareLinkPlanning', {
+            placement: 'top',
+            content: 'Permets d\'autoriser la partage du planning de l\'équipe via un lien unique. Ce lien permet de partage son planning à des personnes externes à l\'équipe.',
         });
     }
 }

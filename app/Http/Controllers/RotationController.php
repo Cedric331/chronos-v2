@@ -8,11 +8,15 @@ use App\Models\RotationDetail;
 use App\Models\Team;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Inertia\Inertia;
 
 class RotationController extends Controller
 {
-    public function store (RotationRequest $request, Team $team): \Illuminate\Http\JsonResponse
+    public function store (RotationRequest $request, Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
 
         DB::beginTransaction();
         try {
@@ -88,14 +92,13 @@ class RotationController extends Controller
         }
     }
 
-    /**
-     * @param RotationRequest $request
-     * @param Rotation $rotation
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Exception
-     */
-    public function update(RotationRequest $request, Rotation $rotation): \Illuminate\Http\JsonResponse
+
+    public function update(RotationRequest $request, Rotation $rotation): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
+        if (!$request->ajax()) {
+            return Inertia::render('Errors/404');
+        }
+
         DB::beginTransaction();
         try {
             $rotation->update([

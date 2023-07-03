@@ -232,7 +232,7 @@
             </nav>
 
             <!-- Page Heading -->
-            <header class="bg-gray-100 border-1 top-0 dark:bg-gray-800 sticky top-0" v-if="$slots.header">
+            <header class="bg-gray-200 border-1 top-0 dark:bg-gray-800 sticky top-0" v-if="$slots.header">
                 <div class="w-auto mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>

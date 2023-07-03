@@ -17,6 +17,8 @@ class TeamParams extends Model
     protected $fillable = [
         'module_alert',
         'update_planning',
+        'share_link_planning',
+        'share_link',
         'type_day',
         'teams'
     ];

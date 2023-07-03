@@ -31,17 +31,35 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $team = null;
+        $alerts = null;
+
+        if($user){
+            if(config('teams.active') && $user->team_id){
+                $team = Team::with(['rotations.details', 'params'])->find($user->team_id);
+                if($user->isCoordinateur()){
+                    $alerts = $team->alerts;
+                }
+            }
+        }
+
+        $teams = null;
+        if(config('teams.active') && $user){
+            $teams = Team::where('company_id', $user->company_id)->orderBy('name')->get();
+        }
+
         return array_merge(parent::share($request), [
             'auth' => [
-                'user' => $request->user(),
-                'team' => config('teams.active') && $request->user() && $request->user()->team_id ? Team::with(['rotations.details', 'params'])->find($request->user()->team_id) : null,
-                'isCoordinateur' => $request->user() ? $request->user()->isCoordinateur() : false,
-                'isResponsable' => $request->user() ? $request->user()->isResponsable() : false,
-                'alerts' => $request->user() &&  config('teams.active') && $request->user()->isCoordinateur() && $request->user()->team_id ? Team::find($request->user()->team_id)->alerts : null
+                'user' => $user,
+                'team' => $team,
+                'isCoordinateur' => $user ? $user->isCoordinateur() : false,
+                'isResponsable' => $user ? $user->isResponsable() : false,
+                'alerts' => $alerts
             ],
             'getMaxSizeFile' => $this->getMaxSizeFile(),
             'config' => config('teams'),
-            'teams' => config('teams.active') ? Team::orderBy('name')->get() : null,
+            'teams' => $teams,
             'ziggy' => function () use ($request) {
                 return array_merge((new Ziggy)->toArray(), [
                     'location' => $request->url(),
@@ -49,6 +67,7 @@ class HandleInertiaRequests extends Middleware
             },
         ]);
     }
+
 
     private function getMaxSizeFile (): string
     {

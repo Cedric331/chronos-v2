@@ -15,18 +15,24 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            CompanieSeeder::class,
+        ]);
+        $this->call([
             RoleSeeder::class,
         ]);
         $this->call([
             TeamSeeder::class,
         ]);
-        $users = User::factory(1)->create([
-            'email' => "limacedric@hotmail.fr"
+        $user = User::factory(1)->create([
+            'email' => "limacedric@hotmail.fr",
+            'company_id' => 1
         ]);
-        $user = $users->first();
-        $users = User::factory(5)->create();
+        User::first()->assignRole('Admin');
 
-        $user->assignRole('Admin');
+        User::factory(5)->create([
+            'company_id' => 1
+        ]);
+
 
         Artisan::call('planning:generate');
 

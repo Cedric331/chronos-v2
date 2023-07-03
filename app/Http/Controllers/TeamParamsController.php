@@ -24,6 +24,8 @@ class TeamParamsController extends Controller
 
         $teamParams->update([
 //            'type_day' => json_encode($unique_type->unique()->all()),
+            'share_link_planning' => $request->share_link_planning,
+            'share_link' => $request->share_link,
             'update_planning' => $request->update_planning,
             'module_alert' => $request->module_alert,
         ]);

@@ -20,6 +20,7 @@ class Team extends Model
         'departement',
         'code_departement',
         'team_params_id',
+        'company_id',
         'user_id'
     ];
 
@@ -63,5 +64,10 @@ class Team extends Model
     public function alerts (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(AlertSchedule::class);
+    }
+
+    public function linkTeam (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(LinkTeam::class);
     }
 }
