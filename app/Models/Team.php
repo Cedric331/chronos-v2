@@ -66,7 +66,7 @@ class Team extends Model
         return $this->hasMany(AlertSchedule::class);
     }
 
-    public function linkTeam (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function links (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(LinkTeam::class);
     }

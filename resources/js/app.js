@@ -8,9 +8,6 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import dateFormatPlugin from './Plugin/date-format-plugin';
 import Notifications from '@kyvg/vue3-notification'
-import { Quasar } from 'quasar'
-import '@quasar/extras/material-icons/material-icons.css'
-import 'quasar/src/css/index.sass'
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -22,7 +19,6 @@ createInertiaApp({
             .use(plugin)
             .use(tippy)
             .use(i18n)
-            .use(Quasar, { config: { dark: true } })
             .use(Notifications)
             .use(ZiggyVue, Ziggy)
             .use(dateFormatPlugin)

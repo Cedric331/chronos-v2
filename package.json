@@ -22,12 +22,10 @@
         "@fullcalendar/interaction": "^6.1.4",
         "@headlessui/vue": "^1.7.13",
         "@kyvg/vue3-notification": "^2.9.0",
-        "@quasar/extras": "^1.16.4",
         "@quasar/vite-plugin": "^1.4.1",
         "flowbite": "^1.6.4",
         "flowbite-vue": "^0.0.10",
         "lodash": "^4.17.21",
-        "quasar": "^2.12.2",
         "tippy.js": "^6.3.7",
         "vue-i18n": "^9.3.0-beta.17"
     }

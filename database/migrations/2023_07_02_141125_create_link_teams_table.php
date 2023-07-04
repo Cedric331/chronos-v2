@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('link_teams', function (Blueprint $table) {
             $table->id();
             $table->string('link');
-            $table->longText('description')->nullable();
+            $table->string('description', 100)->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('team_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

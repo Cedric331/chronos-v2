@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TeamRequest;
+use App\Models\LinkTeam;
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -151,12 +153,21 @@ class TeamController extends Controller
             return Inertia::render('Errors/404');
         }
 
+
+        $users = User::where('team_id', $team->id)->select('id', 'name', 'phone', 'email', 'birthday', 'account_active')->get();
+        $links = null;
+
         if ($team->params->share_link) {
-            $team = $team->load(['linkTeam', 'users']);
-        } else {
-            $team = $team->load('users');
+            $links = LinkTeam::where('team_id', $team->id)
+                ->with(['user' => function($query) {
+                    $query->select('id', 'name');
+                }])
+                ->get();
         }
 
-        return response()->json($team);
+        return response()->json([
+            'users' => $users,
+            'links' => $links
+        ]);
     }
 }
