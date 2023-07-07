@@ -2,8 +2,6 @@
     <Head :title="$t('nav.management')" />
 
     <AuthenticatedLayout>
-        <div>
-            <div>
                 <div id="main-content" class="h-full w-full bg-gray-50 relative overflow-y-auto">
                     <main>
                         <div class="pt-6 px-4">
@@ -166,8 +164,6 @@
                         </div>
                     </main>
                 </div>
-            </div>
-        </div>
     </AuthenticatedLayout>
 </template>
 

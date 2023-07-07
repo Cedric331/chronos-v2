@@ -144,15 +144,14 @@ class TeamController extends Controller
         return response()->json(['url' => route('team.show', ['name' => $team->name])]);
     }
 
-    public function getInformation (Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function getInformation (Request $request)
     {
 
         $team = Auth::user()->team;
 
-        if (!config('teams.active') || !$team || !$request->ajax()) {
+        if (!config('teams.active') || !$team || $request->ajax()) {
             return Inertia::render('Errors/404');
         }
-
 
         $users = User::where('team_id', $team->id)->select('id', 'name', 'phone', 'email', 'birthday', 'account_active')->get();
         $links = null;
@@ -165,9 +164,9 @@ class TeamController extends Controller
                 ->get();
         }
 
-        return response()->json([
-            'users' => $users,
-            'links' => $links
+        return Inertia::render('Information/InformationTeam', [
+            'usersProps' => $users,
+            'linksProps' => $links
         ]);
     }
 }

@@ -69,9 +69,8 @@
             </div>
         </div>
 
-    <ModalInfoTeam v-if="showInfo" :showInfo="showInfo" @close="this.showInfo = false"></ModalInfoTeam>
     <ModalShowPlanningTeam v-if="showPlanningTeam && showDay" :show="showPlanningTeam" :showDay="showDay" @close="this.showPlanningTeam = false"></ModalShowPlanningTeam>
-    <ButtonNav :daySelected="daySelected" @showModalTeam="this.showInfo = true" @shareSchedule="this.$emit('shareSchedule')" @planningFull="this.$emit('planningFull')" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
+    <ButtonNav :daySelected="daySelected" @shareSchedule="this.$emit('shareSchedule')" @planningFull="this.$emit('planningFull')" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
     <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @update="data => this.updatePlanning(data)" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
     </section>
 </template>
@@ -83,11 +82,11 @@ import tippy from "tippy.js";
 import ModalUpdateDay from "@/Pages/Calendar/Modal/ModalUpdateDay.vue";
 import ModalShowPlanningTeam from "@/Pages/Calendar/Modal/ModalShowPlanningTeam.vue";
 import 'tippy.js/dist/tippy.css';
-import ModalInfoTeam from "@/Pages/Team/Modal/ModalInfoTeam.vue";
+
 export default {
     name: "Calendar",
     emits: ['planningFull', 'shareSchedule'],
-    components: {ModalInfoTeam, ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
+    components: {ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
     props: {
         daysProps: Object,
         isToday: String
@@ -96,7 +95,6 @@ export default {
         return {
             days: this.daysProps,
             showDay: null,
-            showInfo: false,
             showUpdateDay: false,
             showPlanningTeam: false,
             animateDays: false,
