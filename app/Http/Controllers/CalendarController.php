@@ -4,20 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Models\Calendar;
 use App\Models\User;
-use ICal\ICal;
-use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use ICal\ICal;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Yasumi\Yasumi;
 
 class CalendarController extends Controller
 {
-
-    /**
-     * @return \Inertia\Response
-     */
     public function getPlanning(): \Inertia\Response
     {
         $user = User::find(Auth::id());
@@ -43,21 +39,21 @@ class CalendarController extends Controller
             'user' => $user,
             'users' => $users,
             'isToday' => ucwords(Carbon::now()->isoFormat('dddd D MMMM')),
-            'calendar' => $calendar
+            'calendar' => $calendar,
         ]);
     }
 
-    public function getPlanningCustom (Request $request): \Illuminate\Http\JsonResponse
+    public function getPlanningCustom(Request $request): \Illuminate\Http\JsonResponse
     {
         $monday = Carbon::now()->startOfWeek();
         $user = User::findOrFail($request->user['id']);
 
-        $calendar = Calendar::whereHas('plannings', function ($query) use ($request, $monday, $user) {
-                $query->where('user_id', $user->id)
-                        ->where('team_id', $user->team_id);
+        $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
+            $query->where('user_id', $user->id)
+                ->where('team_id', $user->team_id);
 
         })
-            ->with(['plannings' => function ($query) use ($request, $monday, $user) {
+            ->with(['plannings' => function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             }])
             ->where('date', '>=', $monday)
@@ -70,10 +66,6 @@ class CalendarController extends Controller
         return response()->json($calendar);
     }
 
-    /**
-     * @param $dateDebut
-     * @param $dateFin
-     */
     public static function generateDaysWithHolidays($dateDebut = null, $dateFin = null): array
     {
         date_default_timezone_set('Europe/Paris');
@@ -102,7 +94,7 @@ class CalendarController extends Controller
             $isHoliday = isset($holidays[$currentDateString]);
             $holidayName = $isHoliday ? $holidays[$currentDateString] : '';
 
-            list($isSchoolHoliday, $schoolHolidayZones) = self::isSchoolHoliday($currentDateString, $holidaysByZone);
+            [$isSchoolHoliday, $schoolHolidayZones] = self::isSchoolHoliday($currentDateString, $holidaysByZone);
 
             $days[] = [
                 'date' => $formattedDate,
@@ -143,9 +135,8 @@ class CalendarController extends Controller
             }
         }
 
-        return [!empty($zonesInHolidays), $zonesInHolidays];
+        return [! empty($zonesInHolidays), $zonesInHolidays];
     }
-
 
     private static function getSchoolHolidays($year)
     {
@@ -159,13 +150,12 @@ class CalendarController extends Controller
             'A' => [],
             'B' => [],
             'C' => [],
-//            'Corse' => [],
+            //            'Corse' => [],
         ];
 
         foreach ($ical->events() as $event) {
             $startDate = $event->dtstart_array[2];
             $endDate = $event->dtend_array[2];
-
 
             $zones = [];
 
@@ -178,11 +168,11 @@ class CalendarController extends Controller
             if (strpos($event->summary, 'C') !== false) {
                 $zones[] = 'C';
             }
-//            if (strpos($event->summary, 'Corse') !== false) {
-//                $zones[] = 'Corse';
-//            }
+            //            if (strpos($event->summary, 'Corse') !== false) {
+            //                $zones[] = 'Corse';
+            //            }
 
-            if (!empty($zones)) {
+            if (! empty($zones)) {
                 foreach ($zones as $zone) {
                     $holidaysByZone[$zone][] = [
                         'name' => $event->summary,

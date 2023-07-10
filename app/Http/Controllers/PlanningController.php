@@ -18,8 +18,7 @@ use Inertia\Inertia;
 
 class PlanningController extends Controller
 {
-
-    protected array $hours =  [
+    protected array $hours = [
         '08h00',
         '08h30',
         '09h00',
@@ -46,7 +45,7 @@ class PlanningController extends Controller
         '19h30',
         '20h00',
         '20h30',
-        '21h00'
+        '21h00',
     ];
 
     public function __construct()
@@ -54,10 +53,6 @@ class PlanningController extends Controller
         $this->middleware('isCoordinateur')->only('generate');
     }
 
-    /**
-     * @param RequestGeneratePlanning $request
-     * @return \Illuminate\Http\JsonResponse
-     */
     public function generate(RequestGeneratePlanning $request): \Illuminate\Http\JsonResponse
     {
         $dateStart = Carbon::parse($request->dateStart);
@@ -71,7 +66,7 @@ class PlanningController extends Controller
         Planning::where('user_id', $request->user)->delete();
 
         $countDayGenerate = 0;
-        while (!$dateStart->eq($dateEnd)) {
+        while (! $dateStart->eq($dateEnd)) {
             foreach ($request->rotations as $rotation) {
                 foreach ($rotation['details'] as $detail) {
                     $this->createPlanning($detail, $rotation, $request->user, $dateStart);
@@ -84,6 +79,7 @@ class PlanningController extends Controller
                 }
             }
         }
+
         return response()->json('Erreur', 422);
     }
 
@@ -104,25 +100,20 @@ class PlanningController extends Controller
                 'calendar_id' => $calendar->id,
                 'rotation_id' => $rotation['id'],
                 'team_id' => Auth::user()->team_id,
-                'user_id' => $userId
+                'user_id' => $userId,
             ]);
-
 
             response()->json($planning);
         }
     }
 
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|\Inertia\Response
-     */
-    public function update (Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function update(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!Gate::check('can-update-planning')) {
+        if (! Gate::check('can-update-planning')) {
             return response()->json(['message' => 'Action non autorisée'], 401);
         }
 
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
@@ -156,24 +147,19 @@ class PlanningController extends Controller
         }
 
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
-                $query->where('user_id', $planning->user_id);
-            }])->find($ids);
+            $query->where('user_id', $planning->user_id);
+        }])->find($ids);
 
         return response()->json($calendar);
     }
 
-
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|\Inertia\Response
-     */
-    public function updateWithRotation (Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function updateWithRotation(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!Gate::check('can-update-planning')) {
+        if (! Gate::check('can-update-planning')) {
             return response()->json(['message' => 'Action non autorisée'], 401);
         }
 
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
@@ -181,20 +167,20 @@ class PlanningController extends Controller
         $ids = array_column($request->days, 'id');
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
-                $day = strtolower($planning->calendar->getDay());
-                foreach ($rotation->details as $detail) {
-                    if (strtolower($detail['day']) === $day) {
+            $day = strtolower($planning->calendar->getDay());
+            foreach ($rotation->details as $detail) {
+                if (strtolower($detail['day']) === $day) {
 
-                        $planning->update([
-                            'debut_journee' => $detail->debut_journee,
-                            'debut_pause' => $detail->debut_pause,
-                            'fin_pause' => $detail->fin_pause,
-                            'fin_journee' => $detail->fin_journee,
-                            'telework' => $detail->teletravail,
-                            'is_technician' => $detail->technicien,
-                            'rotation_id' => $rotation->id,
-                            'type_day' => $detail->is_off ? 'Repos' : 'Planifié',
-                        ]);
+                    $planning->update([
+                        'debut_journee' => $detail->debut_journee,
+                        'debut_pause' => $detail->debut_pause,
+                        'fin_pause' => $detail->fin_pause,
+                        'fin_journee' => $detail->fin_journee,
+                        'telework' => $detail->teletravail,
+                        'is_technician' => $detail->technicien,
+                        'rotation_id' => $rotation->id,
+                        'type_day' => $detail->is_off ? 'Repos' : 'Planifié',
+                    ]);
 
                 }
             }
@@ -210,12 +196,12 @@ class PlanningController extends Controller
 
     public function generateShareLink(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
         $request->validate([
-            'selected_time' => 'required|string'
+            'selected_time' => 'required|string',
         ]);
 
         $user = User::find(Auth::id());
@@ -224,7 +210,7 @@ class PlanningController extends Controller
             return response()->json(['errors' => 'Vous avez atteint le nombre maximum de liens de partage. Veuillez en supprimer dans votre compte afin de pouvoir en générér'], 422);
         }
 
-        if (!$user->hasPlanning) {
+        if (! $user->hasPlanning) {
             return response()->json(['errors' => 'Vous n\'avez pas de planning. Vous devez avoir un planning afin de pouvoir générer un lien de partage'], 422);
         }
 
@@ -241,16 +227,15 @@ class PlanningController extends Controller
         ShareLink::create([
             'token' => $token,
             'user_id' => $user->id,
-            'expired_at' => now()->addDays($validity)
+            'expired_at' => now()->addDays($validity),
         ]);
-
 
         return response()->json(['link' => url("/planning/{$token}")]);
     }
 
-    public function deleteShareLink (Request $request, ShareLink $link): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function deleteShareLink(Request $request, ShareLink $link): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
@@ -270,28 +255,27 @@ class PlanningController extends Controller
             ->where('expired_at', '>', now())
             ->first();
 
-        if (!$shareLink) {
+        if (! $shareLink) {
             abort(404, 'Lien de partage non valide ou expiré');
         }
 
         $user = User::find($shareLink->user_id);
 
-
         // Récupérer et afficher le planning de l'utilisateur
         $days = $this->getPlanning($user->id);
 
         $shareLink->update([
-            'count_view' => $shareLink->count_view + 1
+            'count_view' => $shareLink->count_view + 1,
         ]);
 
         return Inertia::render('Calendar/ShareCalendar', [
             'user' => $user->name,
             'daysProps' => $days,
-            'isToday' => ucwords(Carbon::now()->isoFormat('dddd D MMMM'))
+            'isToday' => ucwords(Carbon::now()->isoFormat('dddd D MMMM')),
         ]);
     }
 
-    private function getPlanning ($id)
+    private function getPlanning($id)
     {
         $user = User::find($id);
 
@@ -313,7 +297,7 @@ class PlanningController extends Controller
 
     public function getPlanningTeam(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
@@ -328,7 +312,7 @@ class PlanningController extends Controller
             $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
                 $query->where('team_id', $user->team_id);
             })
-                ->with(['plannings' => function ($query) use ($user, $date) {
+                ->with(['plannings' => function ($query) use ($user) {
                     $query->where('team_id', $user->team_id);
                 }, 'plannings.user'])
                 ->where('date', '=', $date)
@@ -353,27 +337,19 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
-    /**
-     * @param $typeDay
-     * @return bool
-     */
-    private function checkTypeDay ($typeDay): bool
+    private function checkTypeDay($typeDay): bool
     {
         if ($typeDay === 'Formation' || $typeDay === 'Planifié') {
             return true;
         }
+
         return false;
     }
 
-
-    /**
-     * @param $workDay
-     * @return string|null
-     */
     private function calculateWorkHours($workDay): ?string
     {
-        $format = "H:i";
-        if ($workDay['is_off'] || !$workDay['debut_journee']) {
+        $format = 'H:i';
+        if ($workDay['is_off'] || ! $workDay['debut_journee']) {
             return null;
         }
 
@@ -403,7 +379,6 @@ class PlanningController extends Controller
         $hours = intval($totalWorkHours);
         $minutes = ($totalWorkHours - $hours) * 60;
 
-        return sprintf("%02d", $hours) . 'h' . sprintf("%02d", $minutes);
+        return sprintf('%02d', $hours).'h'.sprintf('%02d', $minutes);
     }
-
 }

@@ -75,7 +75,7 @@
                      @update-users="(data) => { this.handleUpdateUsers(data) }"
                      @close="closeUser()">
         </ModalUser>
-        <ModalConfirm :show="confirmDeleteUser" :title="title" :message="message" @delete-user="this.deleteUser()" @close="this.closeConfirm()"></ModalConfirm>
+        <ModalConfirm v-if="confirmDeleteUser" :title="title" :message="message" @delete-confirm="this.deleteUser()" @close="this.closeConfirm()"></ModalConfirm>
     </div>
 </template>
 

@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 
@@ -19,7 +19,7 @@ class AccountActivationController extends Controller
         $this->middleware('signed');
     }
 
-    public function activate (Request $request): \Inertia\Response
+    public function activate(Request $request): \Inertia\Response
     {
         $name = $request->input('name');
         $email = $request->input('email');
@@ -29,8 +29,7 @@ class AccountActivationController extends Controller
         return Inertia::render('Auth/ActivateAccount', ['urlSigned' => $urlSigned, 'name' => $name, 'email' => $email]);
     }
 
-
-    public function activeAccount (Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
+    public function activeAccount(Request $request): \Illuminate\Foundation\Application|\Illuminate\Routing\Redirector|\Illuminate\Http\RedirectResponse|\Illuminate\Contracts\Foundation\Application
     {
         $validated = $request->validate([
             'password' => ['required', 'confirmed', Rules\Password::defaults()],

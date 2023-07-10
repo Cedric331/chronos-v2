@@ -188,7 +188,6 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         App\Providers\MailjetServiceProvider::class,
 
-
         /*
          * Application Service Providers...
          */

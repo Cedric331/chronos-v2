@@ -3,7 +3,6 @@
 use App\Http\Controllers\TeamScheduleController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::middleware('isCoordinateur')->group(function () {
     Route::post('/team/schedule', [TeamScheduleController::class, 'store'])->name('team.schedule.store');
     Route::get('/team/check/schedule', [TeamScheduleController::class, 'checkHoraire'])->name('team.schedule.check');

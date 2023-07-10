@@ -39,14 +39,14 @@ class PasswordResetLinkController extends Controller
 
         $user = User::where('email', $request->input('email'))->first();
         if ($user) {
-            if (!$user->isActivated()) {
+            if (! $user->isActivated()) {
                 $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
 
                 $mailData = [
                     'link' => $activationLink,
                     'email' => $user->email,
                     'name' => $user->name,
-                    'title' => 'Bienvenue sur Chronos'
+                    'title' => 'Bienvenue sur Chronos',
                 ];
 
                 Mail::to($user->email)->send(new ActivationAccount($mailData));

@@ -4,9 +4,9 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\CalendarController;
 use App\Models\Calendar;
+use App\Models\Planning;
+use Carbon\Carbon; // Assurez-vous d'importer le modèle Planning
 use Illuminate\Console\Command;
-use App\Models\Planning; // Assurez-vous d'importer le modèle Planning
-use Carbon\Carbon;
 
 class GeneratePlanning extends Command
 {
@@ -24,14 +24,13 @@ class GeneratePlanning extends Command
         $dateDebut = Carbon::now()->startOfWeek();
         $dateFin = $dateDebut->copy()->addYear()->addMonth()->endOfWeek();
 
-
         $days = CalendarController::generateDaysWithHolidays($dateDebut, $dateFin);
 
         foreach ($days as $day) {
 
             $existingPlanningEntry = Calendar::where('date', $day['date'])->first();
 
-            if (!$existingPlanningEntry) {
+            if (! $existingPlanningEntry) {
 
                 $zonesString = null;
                 if ($day['vacance'][0]) {

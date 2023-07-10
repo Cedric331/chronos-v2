@@ -20,13 +20,12 @@ class ShareLink extends Model
 
     protected $appends = ['linkValide', 'DateExpired'];
 
-
     public function getTokenAttribute(): string
     {
-        return url("/planning/".$this->attributes['token']);
+        return url('/planning/'.$this->attributes['token']);
     }
 
-    public function getDateExpiredAttribute ()
+    public function getDateExpiredAttribute()
     {
         return \Carbon\Carbon::parse($this->attributes['expired_at'])->format('d/m/Y H:i');
     }

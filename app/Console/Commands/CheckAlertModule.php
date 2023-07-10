@@ -51,7 +51,7 @@ class CheckAlertModule extends Command
                 $endOfDay = Carbon::createFromTime(21, 0); // And ends at 9 PM
 
                 for ($time = $startOfDay; $time->lessThan($endOfDay); $time->addHour()) {
-                    $timeSlot = $time->format('H:i:s') . ' - ' . $time->copy()->addHour()->format('H:i:s');
+                    $timeSlot = $time->format('H:i:s').' - '.$time->copy()->addHour()->format('H:i:s');
                     $day = ucfirst($date->locale('fr')->isoFormat('dddd'));
 
                     $requiredSchedule = $requiredSchedules->where('day', $day)
@@ -69,13 +69,13 @@ class CheckAlertModule extends Command
                             $timeSlot = $this->formatTime($timeSlot);
                             if ($realCount == 0) {
                                 $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                $message = "Aucun conseiller n'est prévu pour le créneau $timeSlot le " . $date->isoFormat('dddd D MMMM YYYY') . ", alors que $required.\n";
-                            } else if ($realCount == 1) {
+                                $message = "Aucun conseiller n'est prévu pour le créneau $timeSlot le ".$date->isoFormat('dddd D MMMM YYYY').", alors que $required.\n";
+                            } elseif ($realCount == 1) {
                                 $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                $message = "Seulement 1 conseiller est prévu pour le créneau $timeSlot le " . $date->isoFormat('dddd D MMMM YYYY') . ", alors que $required.\n";
+                                $message = "Seulement 1 conseiller est prévu pour le créneau $timeSlot le ".$date->isoFormat('dddd D MMMM YYYY').", alors que $required.\n";
                             } else {
                                 $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                $message = "Seulement $realCount conseillers sont prévus pour le créneau $timeSlot le " . $date->isoFormat('dddd D MMMM YYYY') . ", alors que $required.\n";
+                                $message = "Seulement $realCount conseillers sont prévus pour le créneau $timeSlot le ".$date->isoFormat('dddd D MMMM YYYY').", alors que $required.\n";
                             }
 
                             AlertSchedule::create([
@@ -83,7 +83,7 @@ class CheckAlertModule extends Command
                                 'time' => $timeSlot,
                                 'date' => $date->format('Y-m-d'),
                                 'message' => $message,
-                                'is_read' => false
+                                'is_read' => false,
                             ]);
                         }
                     }
@@ -99,7 +99,6 @@ class CheckAlertModule extends Command
         $start = DateTime::createFromFormat('H:i:s', $times[0]);
         $end = DateTime::createFromFormat('H:i:s', $times[1]);
 
-        return $start->format('G\hi') . ' - ' . $end->format('G\hi');
+        return $start->format('G\hi').' - '.$end->format('G\hi');
     }
-
 }

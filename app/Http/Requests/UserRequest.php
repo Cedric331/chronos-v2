@@ -15,7 +15,7 @@ class UserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-       return Gate::allows('has-role-coordinateur') || Auth::id() === $this->user->id;
+        return Gate::allows('has-role-coordinateur') || Auth::id() === $this->user->id;
     }
 
     /**
@@ -30,6 +30,7 @@ class UserRequest extends FormRequest
         } else {
             $id = $this->user()->id;
         }
+
         return [
             'name' => ['bail', 'required', 'string', 'max:50'],
             'team_id' => ['bail', 'integer'],

@@ -13,6 +13,6 @@ class TeamSchedule extends Model
         'day',
         'time',
         'value',
-        'team_id'
+        'team_id',
     ];
 }

@@ -6,15 +6,14 @@ use App\Http\Requests\RotationRequest;
 use App\Models\Rotation;
 use App\Models\RotationDetail;
 use App\Models\Team;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class RotationController extends Controller
 {
-    public function store (RotationRequest $request, Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function store(RotationRequest $request, Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
@@ -22,7 +21,7 @@ class RotationController extends Controller
         try {
             $rotation = Rotation::create([
                 'team_id' => $team->id,
-                'name' => strtoupper($request->name)
+                'name' => strtoupper($request->name),
             ]);
 
             $totalHours = 0;
@@ -34,14 +33,14 @@ class RotationController extends Controller
                 $hours = 0;
                 if ($jour['is_off']) {
                     $debut_journee = null;
-                    $debut_pause  = null;
+                    $debut_pause = null;
                     $fin_pause = null;
                     $fin_journee = null;
                 } else {
-                    $debut_journee = $jour['debut_journee'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['debut_journee']))) : null;
-                    $debut_pause = $jour['debut_pause'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['debut_pause']))) : null;
-                    $fin_pause = $jour['fin_pause'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['fin_pause']))) : null;
-                    $fin_journee = $jour['fin_journee'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['fin_journee']))) : null;
+                    $debut_journee = $jour['debut_journee'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['debut_journee']))) : null;
+                    $debut_pause = $jour['debut_pause'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['debut_pause']))) : null;
+                    $fin_pause = $jour['fin_pause'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['fin_pause']))) : null;
+                    $fin_journee = $jour['fin_journee'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['fin_journee']))) : null;
 
                     if ($debut_journee && $fin_journee) {
                         $startTime = strtotime($debut_journee);
@@ -67,9 +66,9 @@ class RotationController extends Controller
                     'debut_pause' => $debut_pause,
                     'fin_pause' => $fin_pause,
                     'fin_journee' => $fin_journee,
-                    'technicien' => !$jour['is_off'] ? $jour['technicien'] : false,
-                    'teletravail' => !$jour['is_off'] ? $jour['teletravail'] : false,
-                    'rotation_id' => $rotation->id
+                    'technicien' => ! $jour['is_off'] ? $jour['technicien'] : false,
+                    'teletravail' => ! $jour['is_off'] ? $jour['teletravail'] : false,
+                    'rotation_id' => $rotation->id,
                 ]);
                 $totalHours += $hours;
             }
@@ -80,10 +79,11 @@ class RotationController extends Controller
 
             $minutes = ($totalHoursInHours - $hours) * 60;
 
-            $rotation->total_hours = sprintf("%02dh%02d", $hours, $minutes);
+            $rotation->total_hours = sprintf('%02dh%02d', $hours, $minutes);
             $rotation->save();
 
             DB::commit();
+
             return response()->json(Rotation::with('details')->get());
 
         } catch (\Exception $e) {
@@ -92,17 +92,16 @@ class RotationController extends Controller
         }
     }
 
-
     public function update(RotationRequest $request, Rotation $rotation): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
         DB::beginTransaction();
         try {
             $rotation->update([
-                'name' => strtoupper($request->name)
+                'name' => strtoupper($request->name),
             ]);
 
             $rotation->details()->delete();
@@ -114,7 +113,7 @@ class RotationController extends Controller
 
                 if ($jour['is_off']) {
                     $debut_journee = null;
-                    $debut_pause  = null;
+                    $debut_pause = null;
                     $fin_pause = null;
                     $fin_journee = null;
                 } else {
@@ -122,10 +121,10 @@ class RotationController extends Controller
                         $jour['debut_pause'] = null;
                         $jour['fin_pause'] = null;
                     }
-                    $debut_journee = $jour['debut_journee'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['debut_journee']))) : null;
-                    $debut_pause = $jour['debut_pause'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['debut_pause']))) : null;
-                    $fin_pause = $jour['fin_pause'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['fin_pause']))) : null;
-                    $fin_journee = $jour['fin_journee'] ? date("H:i:s", strtotime(str_replace('h', ':', $jour['fin_journee']))) : null;
+                    $debut_journee = $jour['debut_journee'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['debut_journee']))) : null;
+                    $debut_pause = $jour['debut_pause'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['debut_pause']))) : null;
+                    $fin_pause = $jour['fin_pause'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['fin_pause']))) : null;
+                    $fin_journee = $jour['fin_journee'] ? date('H:i:s', strtotime(str_replace('h', ':', $jour['fin_journee']))) : null;
 
                     if ($debut_journee && $fin_journee) {
                         $startTime = strtotime($debut_journee);
@@ -151,8 +150,8 @@ class RotationController extends Controller
                     'debut_pause' => $debut_pause,
                     'fin_pause' => $fin_pause,
                     'fin_journee' => $fin_journee,
-                    'technicien' => !$jour['is_off'] ? $jour['technicien'] : false,
-                    'teletravail' => !$jour['is_off'] ? $jour['teletravail'] : false,
+                    'technicien' => ! $jour['is_off'] ? $jour['technicien'] : false,
+                    'teletravail' => ! $jour['is_off'] ? $jour['teletravail'] : false,
                 ]);
                 $totalHours += $hours;
             }
@@ -163,15 +162,15 @@ class RotationController extends Controller
 
             $minutes = ($totalHoursInHours - $hours) * 60;
 
-            $rotation->total_hours = sprintf("%02dh%02d", $hours, $minutes);
+            $rotation->total_hours = sprintf('%02dh%02d', $hours, $minutes);
             $rotation->save();
 
             DB::commit();
+
             return response()->json(Rotation::with('details')->get());
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
         }
     }
-
 }

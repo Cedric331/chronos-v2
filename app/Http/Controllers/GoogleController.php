@@ -3,40 +3,33 @@
 namespace App\Http\Controllers;
 
 use App\Models\Calendar;
+use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Carbon\Carbon;
-use Google_Client;
-use Google_Service_Calendar;
 use Google_Service_Calendar_Calendar;
-use Google_Service_Calendar_Event;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Laravel\Socialite\Facades\Socialite;
-use Exception;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 class GoogleController extends Controller
 {
-    protected string $provider = "google";
-
+    protected string $provider = 'google';
 
     /**
      * Redirige l'utilisateur vers l'authentification Google.
-     *
      */
     public function redirectToGoogle()
     {
         $user = Auth::user();
-        if (!$user->hasPlanning) {
+        if (! $user->hasPlanning) {
             return response()->json(['errors' => 'Vous n\'avez pas de planning. Vous devez avoir un planning afin de pouvoir générer un lien de partage'], 422);
         }
+
         return Socialite::driver($this->provider)->scopes(['https://www.googleapis.com/auth/calendar', 'https://www.googleapis.com/auth/calendar.events'])->redirect();
     }
 
     /**
      * Obtient l'utilisateur de Google et le connecte à l'application.
-     *
      */
     public function handleGoogleCallback(): \Inertia\Response
     {
@@ -95,10 +88,9 @@ class GoogleController extends Controller
                 $endTime = null;
                 // Convertir les temps de début et de fin en format de date et heure ISO
                 if ($planning->debut_journee && $planning->fin_journee) {
-                    $startTime = $calendar->date . 'T' . str_replace('h', ':', $planning->debut_journee) . ':00+02:00';
-                    $endTime = $calendar->date . 'T' . str_replace('h', ':', $planning->fin_journee) . ':00+02:00';
+                    $startTime = $calendar->date.'T'.str_replace('h', ':', $planning->debut_journee).':00+02:00';
+                    $endTime = $calendar->date.'T'.str_replace('h', ':', $planning->fin_journee).':00+02:00';
                 }
-
 
                 if ($startTime && $endTime) {
                     $this->insertEventWork($calendarId, $service, $startTime, $endTime, $planning);
@@ -113,48 +105,47 @@ class GoogleController extends Controller
     private function insertEventRest($calendarId, $service, $date, $planning)
     {
 
-            $event = new \Google_Service_Calendar_Event([
-                'summary' => $planning->type_day,
-                'description' => 'Import de planning depuis Chronos',
-                'start' => [
-                    'date' => $date,
-                    'timeZone' => 'Europe/Paris',
-                ],
-                'end' => [
-                    'date' => $date,
-                    'timeZone' => 'Europe/Paris',
-                ],
-            ]);
+        $event = new \Google_Service_Calendar_Event([
+            'summary' => $planning->type_day,
+            'description' => 'Import de planning depuis Chronos',
+            'start' => [
+                'date' => $date,
+                'timeZone' => 'Europe/Paris',
+            ],
+            'end' => [
+                'date' => $date,
+                'timeZone' => 'Europe/Paris',
+            ],
+        ]);
 
-            $event = $service->events->insert($calendarId, $event);
+        $event = $service->events->insert($calendarId, $event);
 
     }
 
-
-    private function insertEventWork ($calendarId, $service, $startTime, $endTime, $planning)
+    private function insertEventWork($calendarId, $service, $startTime, $endTime, $planning)
     {
 
-            // Créer un nouvel événement
-            $event = new \Google_Service_Calendar_Event([
-                'summary' => $planning->type_day,
-                'location' => $planning->telework ? 'Télétravail' : 'Hub',
-                'description' => 'Import de planning depuis Chronos',
-                'start' => [
-                    'dateTime' => $startTime,
-                    'timeZone' => 'Europe/Paris',
-                ],
-                'end' => [
-                    'dateTime' => $endTime,
-                    'timeZone' => 'Europe/Paris',
-                ],
-            ]);
+        // Créer un nouvel événement
+        $event = new \Google_Service_Calendar_Event([
+            'summary' => $planning->type_day,
+            'location' => $planning->telework ? 'Télétravail' : 'Hub',
+            'description' => 'Import de planning depuis Chronos',
+            'start' => [
+                'dateTime' => $startTime,
+                'timeZone' => 'Europe/Paris',
+            ],
+            'end' => [
+                'dateTime' => $endTime,
+                'timeZone' => 'Europe/Paris',
+            ],
+        ]);
 
-            // Ajouter l'événement au calendrier principal de l'utilisateur
-            $event = $service->events->insert($calendarId, $event);
+        // Ajouter l'événement au calendrier principal de l'utilisateur
+        $event = $service->events->insert($calendarId, $event);
 
     }
 
-    private function getPlanning ()
+    private function getPlanning()
     {
         $user = User::find(Auth::id());
 
@@ -172,7 +163,4 @@ class GoogleController extends Controller
 
         return $calendar;
     }
-
-
-
 }

@@ -3,16 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\AlertSchedule;
-use App\Models\Calendar;
-use App\Models\Planning;
 use App\Models\Team;
 use App\Models\TeamSchedule;
-use App\Models\User;
 use Carbon\Carbon;
-use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TeamScheduleController extends Controller
@@ -22,7 +17,7 @@ class TeamScheduleController extends Controller
         $this->middleware('isCoordinateur');
     }
 
-    public function store (Request $request): \Illuminate\Http\JsonResponse
+    public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $team_id = Auth::user()->team_id;
         $data = $request->all();
@@ -37,14 +32,14 @@ class TeamScheduleController extends Controller
                 'day' => 'required|string',
                 'time' => 'required|string',
                 'value' => 'nullable|integer',
-                'team_id' => 'required|integer'
+                'team_id' => 'required|integer',
             ]);
 
             if ($validator->fails()) {
                 return response()->json(['error' => $validator->errors()], 400);
             }
 
-            list($start, $end) = explode(' - ', $item['time']);
+            [$start, $end] = explode(' - ', $item['time']);
 
             $start = Carbon::createFromFormat('G\h', $start)->format('H:i:s');
             $end = Carbon::createFromFormat('G\h', $end)->format('H:i:s');
@@ -54,9 +49,9 @@ class TeamScheduleController extends Controller
             $teamSchedule = TeamSchedule::updateOrCreate([
                 'day' => $item['day'],
                 'time' => $convertedTime,
-                'team_id' => $item['team_id']
+                'team_id' => $item['team_id'],
             ], [
-                'value' => $item['value']
+                'value' => $item['value'],
             ]);
 
             $response[] = $teamSchedule;
@@ -64,20 +59,20 @@ class TeamScheduleController extends Controller
 
         return response()->json([
             'message' => 'Information modifié avec succès',
-            'team_schedules' => $response
+            'team_schedules' => $response,
         ], 201);
     }
 
-    public function readOne (AlertSchedule $alert)
+    public function readOne(AlertSchedule $alert)
     {
         $alert->markAsRead();
 
         return response()->json([
-            'message' => 'Notification marquée comme lue'
+            'message' => 'Notification marquée comme lue',
         ], 200);
     }
 
-    public function read ()
+    public function read()
     {
         $team = Team::find(Auth::user()->team_id);
 
@@ -86,8 +81,7 @@ class TeamScheduleController extends Controller
         });
 
         return response()->json([
-            'message' => 'Notifications marquées comme lues'
+            'message' => 'Notifications marquées comme lues',
         ], 200);
     }
-
 }

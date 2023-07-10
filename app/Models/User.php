@@ -3,7 +3,6 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -13,7 +12,6 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
-
 
     /**
      * The attributes that are mass assignable.
@@ -55,42 +53,32 @@ class User extends Authenticatable
 
     protected $appends = ['hasPlanning'];
 
-    public function plannings ()
+    public function plannings()
     {
         return $this->hasMany(Planning::class);
     }
 
-
-    public function team (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Team::class);
     }
 
-    /**
-     * @return bool
-     */
     public function isCoordinateur(): bool
     {
         return $this->hasRole(['Coordinateur', 'Responsable', 'Admin']);
     }
 
-    /**
-     * @return bool
-     */
     public function isResponsable(): bool
     {
         return $this->hasRole(['Responsable', 'Admin']);
     }
 
-    /**
-     * @return bool
-     */
     public function isAdmin(): bool
     {
         return $this->hasRole(['Admin']);
     }
 
-    public function isActivated (): bool
+    public function isActivated(): bool
     {
         return $this->account_active;
     }
@@ -99,10 +87,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(ShareLink::class);
     }
-    public function getHasPlanningAttribute (): bool
+
+    public function getHasPlanningAttribute(): bool
     {
         return $this->plannings()->count() > 0;
     }
-
-
 }

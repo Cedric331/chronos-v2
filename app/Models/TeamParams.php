@@ -20,7 +20,7 @@ class TeamParams extends Model
         'share_link_planning',
         'share_link',
         'type_day',
-        'teams'
+        'teams',
     ];
 
     public function getTypeDayAttribute($value)

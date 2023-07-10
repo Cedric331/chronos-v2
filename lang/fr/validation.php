@@ -151,7 +151,6 @@ return [
     'uuid' => 'Le champ :attribute doit être un UUID valide.',
     'wrong' => 'Le champ :attribute est incorrect.',
 
-
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines
@@ -180,6 +179,5 @@ return [
     | of "email". This simply helps us make our message more expressive.
     |
     */
-
 
 ];

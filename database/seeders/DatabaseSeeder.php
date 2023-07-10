@@ -24,18 +24,16 @@ class DatabaseSeeder extends Seeder
             TeamSeeder::class,
         ]);
         $user = User::factory(1)->create([
-            'email' => "limacedric@hotmail.fr",
-            'company_id' => 1
+            'email' => 'limacedric@hotmail.fr',
+            'company_id' => 1,
         ]);
         User::first()->assignRole('Admin');
 
         User::factory(5)->create([
-            'company_id' => 1
+            'company_id' => 1,
         ]);
 
-
         Artisan::call('planning:generate');
-
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',

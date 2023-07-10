@@ -17,10 +17,10 @@ class Rotation extends Model
     protected $fillable = [
         'name',
         'total_hours',
-        'team_id'
+        'team_id',
     ];
 
-    public function details (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function details(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(RotationDetail::class);
     }

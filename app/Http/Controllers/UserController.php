@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Mail\ActivationAccount;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -41,7 +41,7 @@ class UserController extends Controller
      */
     public function store(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!Gate::check('has-role-coordinateur')) {
+        if (! Gate::check('has-role-coordinateur')) {
             return Inertia::render('Errors/401');
         }
 
@@ -60,7 +60,7 @@ class UserController extends Controller
             'link' => $activationLink,
             'email' => $user->email,
             'name' => $user->name,
-            'title' => 'Bienvenue sur Chronos'
+            'title' => 'Bienvenue sur Chronos',
         ];
 
         Mail::to($user->email)->send(new ActivationAccount($mailData));
@@ -90,8 +90,8 @@ class UserController extends Controller
     public function update(UserRequest $request, User $user): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
 
-        if (!Gate::check('has-role-coordinateur') && Auth::id() !== $user->id) {
-           return Inertia::render('Errors/401');
+        if (! Gate::check('has-role-coordinateur') && Auth::id() !== $user->id) {
+            return Inertia::render('Errors/401');
         }
 
         $update = $user->update([
@@ -103,7 +103,7 @@ class UserController extends Controller
 
         if (Auth::user()->isCoordinateur() && $request->input('team_id')) {
             $user->update([
-                'team_id' => $request->input('team_id')
+                'team_id' => $request->input('team_id'),
             ]);
         }
 
@@ -119,7 +119,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        if (!Gate::check('has-role-coordinateur')) {
+        if (! Gate::check('has-role-coordinateur')) {
             return Inertia::render('Errors/401');
         }
 

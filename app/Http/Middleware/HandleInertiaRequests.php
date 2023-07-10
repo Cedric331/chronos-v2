@@ -35,17 +35,17 @@ class HandleInertiaRequests extends Middleware
         $team = null;
         $alerts = null;
 
-        if($user){
-            if(config('teams.active') && $user->team_id){
+        if ($user) {
+            if (config('teams.active') && $user->team_id) {
                 $team = Team::with(['rotations.details', 'params'])->find($user->team_id);
-                if($user->isCoordinateur()){
+                if ($user->isCoordinateur()) {
                     $alerts = $team->alerts;
                 }
             }
         }
 
         $teams = null;
-        if(config('teams.active') && $user){
+        if (config('teams.active') && $user) {
             $teams = Team::where('company_id', $user->company_id)->orderBy('name')->get();
         }
 
@@ -55,7 +55,7 @@ class HandleInertiaRequests extends Middleware
                 'team' => $team,
                 'isCoordinateur' => $user ? $user->isCoordinateur() : false,
                 'isResponsable' => $user ? $user->isResponsable() : false,
-                'alerts' => $alerts
+                'alerts' => $alerts,
             ],
             'getMaxSizeFile' => $this->getMaxSizeFile(),
             'config' => config('teams'),
@@ -68,23 +68,22 @@ class HandleInertiaRequests extends Middleware
         ]);
     }
 
-
-    private function getMaxSizeFile (): string
+    private function getMaxSizeFile(): string
     {
         // Get upload_max_filesize from php.ini
         $maxUploadSize = ini_get('upload_max_filesize');
         $multiplier = strtoupper(substr($maxUploadSize, -1));
 
         if ($multiplier == 'M') {
-            $maxUploadSize = (int)$maxUploadSize;
+            $maxUploadSize = (int) $maxUploadSize;
         } elseif ($multiplier == 'K') {
-            $maxUploadSize = (int)$maxUploadSize / 1024;
+            $maxUploadSize = (int) $maxUploadSize / 1024;
         } elseif ($multiplier == 'G') {
-            $maxUploadSize = (int)$maxUploadSize * 1024;
+            $maxUploadSize = (int) $maxUploadSize * 1024;
         } else {
-            $maxUploadSize = (int)$maxUploadSize / (1024 * 1024);
+            $maxUploadSize = (int) $maxUploadSize / (1024 * 1024);
         }
 
-        return "Taille max du fichier : " . $maxUploadSize . " MB";
+        return 'Taille max du fichier : '.$maxUploadSize.' MB';
     }
 }

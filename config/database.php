@@ -58,10 +58,10 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => 'innoDB',
-//            'modes' => [
-//                'NO_ZERO_IN_DATE',
-//                'NO_ZERO_DATE',
-//            ],
+            //            'modes' => [
+            //                'NO_ZERO_IN_DATE',
+            //                'NO_ZERO_DATE',
+            //            ],
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],

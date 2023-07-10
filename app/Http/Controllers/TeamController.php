@@ -47,7 +47,7 @@ class TeamController extends Controller
             ->where('name', $name)
             ->firstOrFail();
 
-        if (!Auth::user()->team || Auth::user()->team->id !== $team->id || !config('teams.active')) {
+        if (! Auth::user()->team || Auth::user()->team->id !== $team->id || ! config('teams.active')) {
             return Inertia::location('/');
         }
 
@@ -60,7 +60,7 @@ class TeamController extends Controller
 
         return Inertia::render('Team/Team', [
             'team' => $teamWithUsers,
-            'schedules' => $teamSchedules
+            'schedules' => $teamSchedules,
         ]);
     }
 
@@ -72,10 +72,9 @@ class TeamController extends Controller
         //
     }
 
-
     public function update(TeamRequest $request, Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 
@@ -90,8 +89,8 @@ class TeamController extends Controller
             }
 
             // Crée le dossier portant le nom de l'équipe s'il n'existe pas
-            $teamFolder = 'teams/' . $team->name;
-            if (!Storage::disk('public')->exists($teamFolder)) {
+            $teamFolder = 'teams/'.$team->name;
+            if (! Storage::disk('public')->exists($teamFolder)) {
                 Storage::disk('public')->makeDirectory($teamFolder);
             }
 
@@ -101,7 +100,6 @@ class TeamController extends Controller
         }
 
         $team->update($data);
-
 
         return response()->json(['url' => route('team.show', ['name' => $team->name])]);
 
@@ -115,13 +113,9 @@ class TeamController extends Controller
         //
     }
 
-    /**
-     * @param Request $request
-     * @param Team $team
-     */
-    public function deleteLogo(Request $request,Team $team)
+    public function deleteLogo(Request $request, Team $team)
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
         // Supprimer le fichier du système de fichiers
@@ -133,9 +127,9 @@ class TeamController extends Controller
         $team->update(['logo' => null]);
     }
 
-    public function switch (Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function switch(Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!Gate::check('has-role-coordinateur') || !config('teams.active')) {
+        if (! Gate::check('has-role-coordinateur') || ! config('teams.active')) {
             return Inertia::render('Errors/401');
         }
 
@@ -144,12 +138,12 @@ class TeamController extends Controller
         return response()->json(['url' => route('team.show', ['name' => $team->name])]);
     }
 
-    public function getInformation (Request $request)
+    public function getInformation(Request $request)
     {
 
         $team = Auth::user()->team;
 
-        if (!config('teams.active') || !$team || $request->ajax()) {
+        if (! config('teams.active') || ! $team) {
             return Inertia::render('Errors/404');
         }
 
@@ -158,15 +152,15 @@ class TeamController extends Controller
 
         if ($team->params->share_link) {
             $links = LinkTeam::where('team_id', $team->id)
-                ->with(['user' => function($query) {
+                ->with(['user' => function ($query) {
                     $query->select('id', 'name');
                 }])
-                ->get();
+                ->paginate(5);
         }
 
         return Inertia::render('Information/InformationTeam', [
             'usersProps' => $users,
-            'linksProps' => $links
+            'linksProps' => $links,
         ]);
     }
 }

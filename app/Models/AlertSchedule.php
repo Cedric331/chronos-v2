@@ -10,11 +10,11 @@ class AlertSchedule extends Model
     use HasFactory;
 
     protected $fillable = [
-      'team_id',
-      'message',
-      'time',
-      'date',
-      'is_read'
+        'team_id',
+        'message',
+        'time',
+        'date',
+        'is_read',
     ];
 
     public function markAsRead()

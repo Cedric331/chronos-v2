@@ -1,10 +1,9 @@
 <?php
 
-use App\Http\Controllers\LinkShareController;
+use App\Http\Controllers\LinkTeamController;
 use App\Http\Controllers\TeamController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-
 
 Route::middleware('isCoordinateur')->group(function () {
     Route::get('/team/{name}', [TeamController::class, 'show'])->name('team.show');
@@ -19,5 +18,6 @@ Route::middleware('isCoordinateur')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/information', [TeamController::class, 'getInformation'])->name('information.index');
+    Route::delete('/links/{link}', [LinkTeamController::class, 'destroy'])->name('link.destroy');
     Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
 });

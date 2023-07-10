@@ -54,10 +54,9 @@ class LoginRequest extends FormRequest
 
         $user = Auth::user();
 
-        if (!$user->isActivated()) {
+        if (! $user->isActivated()) {
             $this->sendActivationMail($user);
         }
-
 
         RateLimiter::clear($this->throttleKey());
     }
@@ -93,20 +92,20 @@ class LoginRequest extends FormRequest
         return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 
-    public function sendActivationMail ($user) {
+    public function sendActivationMail($user)
+    {
 
         $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
 
         $mailData = [
             'link' => $activationLink,
             'email' => $user->email,
-            'name' => $user->name
+            'name' => $user->name,
         ];
 
         Mail::to($user->email)->send(new ActivationAccount($mailData));
 
         Auth::guard('web')->logout();
-
 
         throw ValidationException::withMessages([
             'activation' => 'Votre compte n\'est pas activé. Vous devez activer votre compte via le mail que vous avez reçu. Un nouvel email vous a été envoyé',

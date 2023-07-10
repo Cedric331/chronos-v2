@@ -13,10 +13,10 @@ class LinkTeam extends Model
         'link',
         'description',
         'user_id',
-        'team_id'
+        'team_id',
     ];
 
-    public function user (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }

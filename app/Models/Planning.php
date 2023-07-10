@@ -27,10 +27,10 @@ class Planning extends Model
         'calendar_id',
         'rotation_id',
         'team_id',
-        'user_id'
+        'user_id',
     ];
 
-    public function user (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -43,7 +43,6 @@ class Planning extends Model
             $this->attributes['debut_journee'] = null;
         }
     }
-
 
     public function setDebutPauseAttribute($value)
     {
@@ -81,12 +80,12 @@ class Planning extends Model
         }
     }
 
-
     public function getFinPauseAttribute($value): ?string
     {
         if ($value) {
             return Carbon::parse($value)->format('H\hi');
         }
+
         return null;
     }
 
@@ -95,6 +94,7 @@ class Planning extends Model
         if ($value) {
             return Carbon::parse($value)->format('H\hi');
         }
+
         return null;
     }
 
@@ -103,6 +103,7 @@ class Planning extends Model
         if ($value) {
             return Carbon::parse($value)->format('H\hi');
         }
+
         return null;
     }
 
@@ -111,6 +112,7 @@ class Planning extends Model
         if ($value) {
             return Carbon::parse($value)->format('H\hi');
         }
+
         return null;
     }
 
@@ -119,10 +121,11 @@ class Planning extends Model
         if ($value) {
             return Carbon::parse($value)->format('H\hi');
         }
+
         return null;
     }
 
-    public function calendar (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function calendar(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Calendar::class);
     }

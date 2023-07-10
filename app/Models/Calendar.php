@@ -19,30 +19,29 @@ class Calendar extends Model
         'date',
         'is_holiday',
         'name_holiday',
-        'zone'
+        'zone',
     ];
 
     protected $appends = ['date_fr'];
 
-    public function getDay (): string
+    public function getDay(): string
     {
         $explode = explode(' ', $this->date);
 
         return $explode[0];
     }
 
-
-    public function plannings ()
+    public function plannings()
     {
         return $this->hasMany(Planning::class);
     }
-
 
     public function getDateFrAttribute(): ?string
     {
         if ($this->date) {
             Carbon::setLocale('fr');
             $date = Carbon::parse($this->date);
+
             return ucwords($date->isoFormat('dddd D MMMM'));
         } else {
             return null;

@@ -24,26 +24,26 @@ class RotationDetail extends Model
         'fin_journee',
         'technicien',
         'teletravail',
-        'rotation_id'
+        'rotation_id',
     ];
 
     public function getDebutJourneeAttribute($value)
     {
-        return !empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
+        return ! empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
     }
 
     public function getDebutPauseAttribute($value)
     {
-        return !empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
+        return ! empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
     }
 
     public function getFinPauseAttribute($value)
     {
-        return !empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
+        return ! empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
     }
 
     public function getFinJourneeAttribute($value)
     {
-        return !empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
+        return ! empty($value) ? Carbon::createFromFormat('H:i:s', $value)->format('H\hi') : null;
     }
 }

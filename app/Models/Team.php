@@ -21,14 +21,14 @@ class Team extends Model
         'code_departement',
         'team_params_id',
         'company_id',
-        'user_id'
+        'user_id',
     ];
 
     protected $appends = ['logo_url'];
 
     protected $with = ['params'];
 
-    public function users (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function users(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(User::class);
     }
@@ -36,37 +36,38 @@ class Team extends Model
     public function getLogoUrlAttribute(): ?string
     {
         if ($this->logo) {
-            return asset('storage/' . $this->logo);
+            return asset('storage/'.$this->logo);
         }
+
         return null;
     }
 
-    public function params (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function params(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(TeamParams::class, 'team_params_id');
     }
 
-    public function rotations (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function rotations(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Rotation::class);
     }
 
-    public function teamSchedules (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function teamSchedules(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(TeamSchedule::class);
     }
 
-    public function moduleAlertActive ()
+    public function moduleAlertActive()
     {
         return $this->params->module_alert;
     }
 
-    public function alerts (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function alerts(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(AlertSchedule::class);
     }
 
-    public function links (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function links(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(LinkTeam::class);
     }

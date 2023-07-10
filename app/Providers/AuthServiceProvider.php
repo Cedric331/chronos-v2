@@ -30,6 +30,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('can-update-planning', function () {
             $team = Team::with('params')->find(Auth::user()->team_id);
+
             return Auth::user()->isCoordinateur() || $team->params->update_planning;
         });
     }

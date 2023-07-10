@@ -7,23 +7,17 @@ use Illuminate\Http\Request;
 
 class TeamParamsController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('isCoordinateur');
     }
 
-    /**
-     * @param Request $request
-     * @param TeamParams $teamParams
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update (Request $request, TeamParams $teamParams): \Illuminate\Http\JsonResponse
+    public function update(Request $request, TeamParams $teamParams): \Illuminate\Http\JsonResponse
     {
-//        $unique_type = collect($request->type_day);
+        //        $unique_type = collect($request->type_day);
 
         $teamParams->update([
-//            'type_day' => json_encode($unique_type->unique()->all()),
+            //            'type_day' => json_encode($unique_type->unique()->all()),
             'share_link_planning' => $request->share_link_planning,
             'share_link' => $request->share_link,
             'update_planning' => $request->update_planning,

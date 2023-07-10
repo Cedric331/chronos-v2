@@ -14,7 +14,7 @@ return [
         'JF',
         'Maladie',
         'Repos',
-        'Formation'
+        'Formation',
     ],
 
 ];
