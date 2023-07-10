@@ -1,7 +1,7 @@
 <template>
     <Modal :show="showPlanning" :maxWidth="tabs === 3 ? '3xl' : '2xl'">
         <Loading :show="isLoading"></Loading>
-        <h2 class="flex justify-center my-5 text-xl w-full text-gray-400">
+        <h2 class="flex justify-center my-5 text-xl w-full" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
             {{ $t('team_rotation.title_planning') }}
         </h2>
 
@@ -22,7 +22,7 @@
                                 </svg>
                             </div>
                             <div class="flex-grow pl-4">
-                                <h2 class="title-font mb-1 mt-3 text-sm font-medium tracking-wider text-gray-900">Sélection des dates</h2>
+                                <h2 class="title-font mb-1 mt-3 text-sm font-medium tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des dates</h2>
                             </div>
                         </div>
 
@@ -36,7 +36,7 @@
                                 </svg>
                             </div>
                             <div class="flex-grow pl-4">
-                                <h2 class="title-font mt-3 mb-1 text-sm font-medium tracking-wider text-gray-900">Sélection du collaborateur</h2>
+                                <h2 class="title-font mt-3 mb-1 text-sm font-medium tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection du collaborateur</h2>
                             </div>
                         </div>
 
@@ -47,7 +47,7 @@
                                 </svg>
                             </div>
                             <div class="flex-grow pl-4 mt-3">
-                                <h2 class="title-font mb-1 text-sm font-medium tracking-wider text-gray-900">Sélection des rotations</h2>
+                                <h2 class="title-font mb-1 text-sm font-medium tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des rotations</h2>
                             </div>
                         </div>
                     </div>
@@ -55,18 +55,18 @@
                     <div v-if="tabs === 1" class="mx-auto w-max">
                         <div class="mx-auto">
                             <div class="w-full flex flex-col bg-white rounded-lg">
-                                <h1 class="font-semibold text-center tracking-wide mb-2">Sélection des dates</h1>
+                                <h1 class="font-semibold text-center tracking-wide mb-2" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des dates</h1>
                                 <div class="flex flex-col justify-between">
-                                    <label for="start">Semaine de début:</label>
+                                    <label :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'" for="start">Semaine de début:</label>
                                     <input type="week" id="start" name="trip-start" class="w-full"
                                            v-model="dateStart"
                                            :min="dateLimitStart" :max="dateEnd">
-                                    <label for="end" class="mt-6">Semaine de Fin :</label>
+                                    <label :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'" for="end" class="mt-6">Semaine de Fin :</label>
                                     <input type="week" id="end" name="trip-end"
                                            v-model="dateEnd"
                                            :min="dateStart" :max="dateLimitEnd">
                                 </div>
-                                <p class="text-xs text-gray-500 mt-6 w-[300px]">Vous devez indiquer les dates de début et de fin du planning qui sera généré.</p>
+                                <p class="text-xs mt-6 w-[300px]" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Vous devez indiquer les dates de début et de fin du planning qui sera généré.</p>
                             </div>
                         </div>
                     </div>
@@ -74,7 +74,7 @@
                     <div v-if="tabs === 2" class="mx-auto">
                         <div class="mx-auto">
                             <div class="p-16 flex flex-col bg-white rounded-lg">
-                                <h1 class="font-semibold tracking-wide mb-2">Choisir le conseiller</h1>
+                                <h1 class="font-semibold tracking-wide mb-2" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Choisir le conseiller</h1>
 
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:pr-0">
                                     <div class="flex justify-center">
@@ -93,13 +93,13 @@
 
                     <div v-if="tabs === 3" class="mx-auto grid w-full grid-cols-12 gap-4 p-1">
                         <div class="header col-span-12 mx-auto">
-                            <h1 class="font-semibold text-lg tracking-wide mb-2">Choix des rotations</h1>
+                            <h1 class="font-semibold text-lg tracking-wide mb-2" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Choix des rotations</h1>
                         </div>
                         <div class="col-span-12 rounded-lg sm:col-span-6 overflow-y-auto h-72">
                             <table class="w-full divide-y divide-gray-200">
                                 <thead class="bg-black">
                                 <tr>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
                                         Ordre des rotations
                                     </th>
                                     <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider">
@@ -108,10 +108,10 @@
                                 </thead>
                                 <tbody class="bg-white border">
                                     <tr v-for="(rotation, index) in rotations">
-                                        <td class="p-4 whitespace-nowrap text-sm font-bold">
+                                        <td class="p-4 whitespace-nowrap text-sm font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                             {{ rotation.name }}
                                         </td>
-                                        <td @click="this.rotations.splice(index, 1)" class="p-4 cursor-pointer bg-black text-white whitespace-nowrap text-sm font-bold">
+                                        <td @click="this.rotations.splice(index, 1)" class="p-4 cursor-pointer bg-black whitespace-nowrap text-sm font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                             </svg>
@@ -124,27 +124,27 @@
                             <table class="w-full divide-y divide-gray-200">
                                 <thead class="bg-black">
                                 <tr>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
                                     </th>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
                                         Nom de la Rotation
                                     </th>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
                                         Nombre d'heures
                                     </th>
                                 </tr>
                                 </thead>
                                 <tbody class="bg-white overflow-y-auto">
                                     <tr v-for="rotation in this.team.rotations">
-                                        <td @click="this.rotations.push(rotation)" class="p-4 cursor-pointer bg-black text-white whitespace-nowrap text-sm font-bold">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                        <td @click="this.rotations.push(rotation)" class="p-4 cursor-pointer bg-black whitespace-nowrap text-sm font-bold">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" class="w-6 h-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
                                             </svg>
                                         </td>
-                                        <td class="p-4 whitespace-nowrap text-sm font-bold">
+                                        <td class="p-4 whitespace-nowrap text-sm font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                             {{ rotation.name }}
                                         </td>
-                                        <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                        <td class="p-4 whitespace-nowrap text-sm font-semibold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                             {{ rotation.total_hours }}
                                         </td>
                                     </tr>

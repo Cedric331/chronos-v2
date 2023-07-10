@@ -11,6 +11,7 @@
         "guzzlehttp/guzzle": "^7.2",
         "inertiajs/inertia-laravel": "^0.6.8",
         "johngrogg/ics-parser": "^3.2",
+        "ksubileau/color-thief-php": "^2.0",
         "laravel/framework": "^10.0",
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",

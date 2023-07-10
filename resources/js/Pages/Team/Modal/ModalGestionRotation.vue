@@ -3,14 +3,14 @@
         <div class="mx-auto w-full border p-4">
             <div class="mt-6 flex justify-between">
                 <div>
-                    <label for="name" class="block mb-2 text-lg font-medium text-gray-400">*Nom de la Rotation</label>
+                    <label for="name" class="block mb-2 text-lg font-medium ">*Nom de la Rotation</label>
                     <input v-model="name" type="text" id="name" max="3" class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="5 caractères maximum" required>
                 </div>
                 <InputError :message="message" :canClose="true" @close="this.message = null" class="mx-auto"></InputError>
 
                 <div class="border-t-0 px-6 align-middle border-l-0 border-r-0 flex justify-between p-4">
                     <label class="inline-flex items-center mt-3">
-                        <input v-model="synchronise" :checked="synchronise" type="checkbox" class="form-checkbox h-5 w-5"><span class="ml-2 text-gray-400">Synchroniser les jours</span>
+                        <input v-model="synchronise" :checked="synchronise" type="checkbox" class="form-checkbox h-5 w-5"><span class="ml-2" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Synchroniser les jours</span>
                     </label>
                 </div>
             </div>
@@ -20,35 +20,35 @@
                     <table class="items-center bg-transparent w-full border-collapse ">
                         <thead>
                         <tr>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Jour de la semaine
                             </th>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Jour OFF
                             </th>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Télétravail
                             </th>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Technicien
                             </th>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Début Journée
                             </th>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Début Pause Déjeuner
                             </th>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Fin Pause Déjeuner
                             </th>
-                            <th class="px-6 text-gray-400 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                            <th class="px-6  align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Fin Journée
                             </th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr v-for="(jour, days) in jours" :key="days">
-                            <th class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap p-4 text-left text-gray-400 font-bold">
+                            <th class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-lg whitespace-nowrap p-4 text-left  font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ days.charAt(0).toUpperCase() + days.slice(1) }}
                             </th>
                             <td class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">

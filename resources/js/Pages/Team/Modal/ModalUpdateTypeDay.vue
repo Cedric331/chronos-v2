@@ -1,7 +1,7 @@
 <template>
     <Modal :show="show" @close="this.$emit('close')">
         <div class="py-6 px-9">
-            <h2 class="flex justify-center my-5 text-xl w-full text-gray-400">
+            <h2 class="flex justify-center my-5 text-xl w-full" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
                 Modification des types de jour
             </h2>
             <hr class="my-4 dark:text-white">

@@ -8,6 +8,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import dateFormatPlugin from './Plugin/date-format-plugin';
 import Notifications from '@kyvg/vue3-notification'
+import store from './store'; // Import the store
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
@@ -18,6 +19,7 @@ createInertiaApp({
         return createApp({ render: () => h(App, props) })
             .use(plugin)
             .use(tippy)
+            .use(store)
             .use(i18n)
             .use(Notifications)
             .use(ZiggyVue, Ziggy)

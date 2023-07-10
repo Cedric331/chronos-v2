@@ -1,10 +1,10 @@
 <template>
     <notifications position="bottom right" />
     <Loading :show="isLoading" :messageLoading="messageLoading"></Loading>
-    <div :class="{ 'dark': isDarkMode }">
+    <div :class="{ 'dark': this.$store.state.isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+        <div class="min-h-screen dark:bg-gray-900" >
+            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700" :style="{background: this.$store.state.isDarkMode? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color1 + ', ' + $page.props.auth.team.params.color2 + ')'}">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -121,7 +121,7 @@
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <div class="checkbox-wrapper-54 relative inline-flex items-center cursor-pointer">
                                     <label class="switch">
-                                        <input @click="updateDarkMode($event)" :checked="isDarkMode" type="checkbox">
+                                        <input @click="updateDarkMode($event)" :checked="this.$store.state.isDarkMode" type="checkbox">
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -276,7 +276,6 @@ export default {
         return {
             unreadAlertsItems: [],
             team: {'name': null},
-            isDarkMode: false,
             isLoading: false,
             messageLoading: '',
             showingNavigationDropdown: false,
@@ -301,8 +300,7 @@ export default {
                 })
         },
         updateDarkMode (event) {
-            this.isDarkMode = !this.isDarkMode
-            localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));
+            this.$store.commit('toggleDarkMode');
 
             this.waveX = event.clientX;
             this.waveY = event.clientY;
@@ -354,14 +352,6 @@ export default {
                       type: 'info',
                   });
               })
-        },
-        darkMode () {
-            const isDarkMode = localStorage.getItem('isDarkMode');
-            if (isDarkMode) {
-                this.isDarkMode = JSON.parse(isDarkMode);
-            } else {
-                localStorage.setItem('isDarkMode', JSON.stringify(this.isDarkMode));
-            }
         }
     },
     mounted () {
@@ -372,7 +362,6 @@ export default {
             })
         }
         this.unreadAlerts()
-        this.darkMode()
     },
     beforeDestroy() {
         window.removeEventListener('message', this.handleAuthMessage);

@@ -6,6 +6,7 @@ use App\Http\Requests\TeamRequest;
 use App\Models\LinkTeam;
 use App\Models\Team;
 use App\Models\User;
+use ColorThief\ColorThief;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -80,6 +81,7 @@ class TeamController extends Controller
 
         $data = $request->validated();
 
+        $logoPath = null;
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
 
@@ -101,8 +103,32 @@ class TeamController extends Controller
 
         $team->update($data);
 
+        if ($logoPath) {
+            $colors = ColorThief::getPalette(Storage::disk('public')->path($logoPath), 4);
+            $this->getColor($colors, $team);
+        }
+
         return response()->json(['url' => route('team.show', ['name' => $team->name])]);
 
+    }
+
+    private function getColor ($colors, $team)
+    {
+        usort($colors, function($a, $b) {
+            return array_sum($b) - array_sum($a);
+        });
+
+        $data['color1'] = $this->rgbToHex($colors[0]);
+        $data['color2'] = $this->rgbToHex($colors[1]);
+        $data['color3'] = $this->rgbToHex($colors[2]);
+        $data['color4'] = $this->rgbToHex($colors[3]);
+
+        $team->params()->update($data);
+    }
+
+    private function rgbToHex($rgb): string
+    {
+        return sprintf('#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2]);
     }
 
     /**
@@ -125,6 +151,13 @@ class TeamController extends Controller
 
         // Mettre à jour la colonne logo dans la base de données
         $team->update(['logo' => null]);
+
+        $team->params()->update([
+            'color1' => null,
+            'color2' => null,
+            'color3' => null,
+            'color4' => null,
+        ]);
     }
 
     public function switch(Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response

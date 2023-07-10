@@ -18,6 +18,10 @@ return new class extends Migration
             $table->boolean('update_planning')->default(false);
             $table->boolean('share_link_planning')->default(true);
             $table->boolean('share_link')->default(true);
+            $table->string('color1')->nullable();
+            $table->string('color2')->nullable();
+            $table->string('color3')->nullable();
+            $table->string('color4')->nullable();
             $table->timestamps();
         });
     }
