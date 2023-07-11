@@ -160,9 +160,6 @@
                                             <DropdownLink :href="route('profile.edit')">
                                                 {{ $t('nav.profil') }}
                                             </DropdownLink>
-                                            <DropdownLink :href="route('information.index')">
-                                                Information de la team
-                                            </DropdownLink>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 {{ $t('nav.logout') }}
                                             </DropdownLink>
@@ -238,7 +235,7 @@
             </nav>
 
             <!-- Page Heading -->
-            <header class="bg-gray-200 border-1 top-0 dark:bg-gray-800 sticky top-0" v-if="$slots.header">
+            <header class="border-1 top-0 dark:bg-gray-800 sticky top-0" v-if="$slots.header" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                 <div class="w-auto mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>

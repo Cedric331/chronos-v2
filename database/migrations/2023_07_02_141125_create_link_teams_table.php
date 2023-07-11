@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('link');
             $table->string('description', 100)->nullable();
+            $table->integer('updated_by')->nullable();
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('team_id')->constrained()->cascadeOnDelete();
             $table->timestamps();

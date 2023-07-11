@@ -18,6 +18,8 @@ Route::middleware('isCoordinateur')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/information', [TeamController::class, 'getInformation'])->name('information.index');
+    Route::post('/links', [LinkTeamController::class, 'store'])->name('link.store');
+    Route::patch('/links/{link}', [LinkTeamController::class, 'update'])->name('link.patch');
     Route::delete('/links/{link}', [LinkTeamController::class, 'destroy'])->name('link.destroy');
     Route::patch('/user/{user}', [UserController::class, 'update'])->name('user.update');
 });

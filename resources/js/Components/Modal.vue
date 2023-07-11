@@ -77,7 +77,7 @@ const maxWidthClass = computed(() => {
                     leave-to-class="opacity-0"
                 >
                     <div v-show="show" class="fixed inset-0 transform transition-all" @click="close">
-                        <div class="absolute inset-0 opacity-75" :style="{ backgroundColor: this.$store.state.isDarkMode ? $page.props.auth.team.params.color1 : $page.props.auth.team.params.color1 }" />
+                        <div class="absolute inset-0 opacity-75 bg-gray-300" :style="{ backgroundColor: this.$store.state.isDarkMode ? $page.props.auth.team.params.color1 : $page.props.auth.team.params.color1 }" />
                     </div>
                 </transition>
 
@@ -93,7 +93,7 @@ const maxWidthClass = computed(() => {
                         v-show="show"
                         :class="[this.$store.state.isDarkMode ? 'bg-gray-800' : '', maxWidthClass]"
                         :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }"
-                        class="mb-6 rounded-lg my-auto text-black overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
+                        class="mb-6 rounded-lg my-auto bg-gray-200 text-black overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
                     >
                         <slot v-if="show" />
                     </div>

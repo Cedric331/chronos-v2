@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800 shadow rounded-lg p-4 2xl:col-span-2 min-h-screen">
+    <div class="dark:bg-gray-800 bg-gray-300 shadow rounded-lg p-4 2xl:col-span-2 min-h-screen" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
             <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -7,7 +7,7 @@
                     </h3>
                 </div>
                 <div class="flex-shrink-0">
-                    <PrimaryButton class="flex justify-center">
+                    <PrimaryButton @click="show = true" class="flex justify-center">
                         Ajouter un lien
                     </PrimaryButton>
                 </div>
@@ -46,7 +46,7 @@
                                 {{ link.user.name }}
                             </td>
                             <td class="p-4 flex items-center justify-center">
-                                <svg v-if="link.user.id === $page.props.auth.user.id || $page.props.auth.isCoordinateur" @click="editUser(link)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#70a1ff" class="w-5 h-5 mr-5 cursor-pointer">
+                                <svg v-if="link.user.id === $page.props.auth.user.id || $page.props.auth.isCoordinateur" @click="editLink(link)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#70a1ff" class="w-5 h-5 mr-5 cursor-pointer">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
                                 <svg @click="confirmDelete(link)" v-if="link.user.id === $page.props.auth.user.id || $page.props.auth.isCoordinateur" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff6b81" class="w-5 h-5 cursor-pointer">
@@ -66,13 +66,13 @@
             </span>
             <div class="inline-flex mt-2 xs:mt-0">
                 <!-- a -->
-                <a v-if="this.linksProps.prev_page_url" :href="this.linksProps.prev_page_url" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <a v-if="prev_page_url" :href="prev_page_url" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                     <svg class="w-3.5 h-3.5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
                     </svg>
                     Précédant
                 </a>
-                <a v-if="this.linksProps.next_page_url" :href="this.linksProps.next_page_url" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-r hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                <a v-if="next_page_url" :href="next_page_url" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-r hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                     Suivant
                     <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
@@ -81,6 +81,7 @@
             </div>
         </div>
     </div>
+    <ModalCreateLink v-if="show" :show="show" :link="link" @store-link="(data) => this.storeLink(data)" @update-link="(data) => this.updateLink(data)" @close="cancelDelete()"></ModalCreateLink>
     <ModalConfirm v-if="showDelete" :title="title" :message="message" @delete-confirm="deleteLink()" @close="cancelDelete()"></ModalConfirm>
 </template>
 
@@ -88,10 +89,12 @@
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {Pagination} from "flowbite-vue";
 import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
+import ModalCreateLink from "@/Pages/Information/Modal/ModalCreateLink.vue";
 
 export default {
     name: "InformationLink",
     components: {
+        ModalCreateLink,
         ModalConfirm,
         Pagination,
         PrimaryButton
@@ -105,17 +108,49 @@ export default {
     data() {
         return {
             links: [],
+            next_page_url: null,
+            prev_page_url: null,
             currentPage: null,
             total: null,
             showDelete: false,
+            show: false,
             title: '',
             message: '',
             link: null
         }
     },
     methods: {
+        editLink (link) {
+            this.link = link
+            this.show = true
+        },
+        updateLink (links) {
+            this.refreshData(links)
+
+            this.$notify({
+                type: 'success',
+                title: 'Succès',
+                text: 'Le lien a bien été modifié'
+            })
+            this.show = false
+        },
+        storeLink (links) {
+            this.refreshData(links)
+
+            this.$notify({
+                type: 'success',
+                title: 'Succès',
+                text: 'Le lien a bien été ajouté'
+            })
+            this.show = false
+        },
+        refreshData (links) {
+            this.links = links.data
+            this.total = links.total
+        },
         cancelDelete() {
             this.showDelete = false
+            this.show = false
             this.title = ''
             this.message = ''
             this.link = null
@@ -130,6 +165,12 @@ export default {
             axios.delete(`/links/${this.link.id}`)
                 .then(() => {
                     this.links = this.links.filter(item => item.id !== this.link.id)
+                    this.total = this.total - 1
+                    this.$notify({
+                        type: 'success',
+                        title: 'Succès',
+                        text: 'Le lien a bien été supprimé'
+                    })
                     this.cancelDelete()
                 })
                 .catch(error => {
@@ -145,6 +186,8 @@ export default {
         this.currentPage = this.linksProps.current_page
         this.links = this.linksProps.data
         this.total = this.linksProps.total
+        this.next_page_url = this.linksProps.next_page_url
+        this.prev_page_url = this.linksProps.prev_page_url
     }
 }
 </script>

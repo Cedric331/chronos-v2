@@ -104,7 +104,7 @@ class TeamController extends Controller
         $team->update($data);
 
         if ($logoPath) {
-            $colors = ColorThief::getPalette(Storage::disk('public')->path($logoPath), 4);
+            $colors = ColorThief::getPalette(Storage::disk('public')->path($logoPath), 8);
             $this->getColor($colors, $team);
         }
 
@@ -188,7 +188,7 @@ class TeamController extends Controller
                 ->with(['user' => function ($query) {
                     $query->select('id', 'name');
                 }])
-                ->paginate(5);
+                ->paginate(10);
         }
 
         return Inertia::render('Information/InformationTeam', [

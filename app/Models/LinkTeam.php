@@ -12,6 +12,7 @@ class LinkTeam extends Model
     protected $fillable = [
         'link',
         'description',
+        'updated_by',
         'user_id',
         'team_id',
     ];
