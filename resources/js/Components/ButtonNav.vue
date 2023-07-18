@@ -4,7 +4,7 @@
         <div class="fixed bottom-4 right-4 z-50">
 
             <!-- Bouton fixe -->
-            <div @click.prevent="isMenuOpen = !isMenuOpen" class="h-12 w-12 bg-[#70a1ff] rounded-full flex items-center justify-center text-black cursor-pointer relative">
+            <div v-show="$page.props.auth.isCoordinateur && daySelected.length > 0 || !$page.props.auth.isCoordinateur" @click.prevent="isMenuOpen = !isMenuOpen" class="h-12 w-12 bg-[#70a1ff] rounded-full flex items-center justify-center text-black cursor-pointer relative">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
@@ -17,7 +17,7 @@
             <div v-if="$page.props.auth.isCoordinateur"
                 class="absolute bottom-16 left-0 right-0 transition-all duration-300 transform origin-bottom"
                 :class="{'scale-y-0': !isMenuOpen, 'scale-y-100': isMenuOpen}">
-                <div v-if="daySelected.length > 0" class="rounded-full py-2 space-y-2">
+                <div v-show="daySelected.length > 0" class="rounded-full py-2 space-y-2">
                     <button
                         id="horaires"
                         @click.prevent="openUpdateDay()"
@@ -27,12 +27,23 @@
                         </svg>
                     </button>
                 </div>
+
+                <div v-show="daySelected.length > 0" class="rounded-full py-2 space-y-2">
+                    <button
+                        id="event"
+                        @click.prevent="openUpdateDay()"
+                        class="bg-[#00d2d3] px-3 py-3 rounded-full text-white dark:text-black text-sm flex items-center justify-center cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
 
             <div v-else
                 class="absolute bottom-16 left-0 right-0 transition-all duration-300 transform origin-bottom"
                 :class="{'scale-y-0': !isMenuOpen, 'scale-y-100': isMenuOpen}">
-                    <div v-if="daySelected.length > 0 && $page.props.auth.team.params.update_planning" class="rounded-full py-2 space-y-2">
+                    <div v-show="daySelected.length > 0 && $page.props.auth.team.params.update_planning" class="rounded-full py-2 space-y-2">
                         <button
                             id="horaires1"
                             @click.prevent="openUpdateDay()"
@@ -60,7 +71,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                         </svg>
                     </button>
-                    <button v-if="$page.props.auth.team.params.share_link_planning" @click.prevent="this.$emit('shareSchedule')"
+                    <button v-show="$page.props.auth.team.params.share_link_planning" @click.prevent="this.$emit('shareSchedule')"
                             id="shareSchedule"
                             class="bg-[#ffdd59] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
 
@@ -146,6 +157,10 @@ export default {
         tippy('#shareSchedule', {
             placement: 'left',
             content: 'Créer un lien pour partager mon planning',
+        });
+        tippy('#event', {
+            placement: 'left',
+            content: 'Créer un évènement',
         });
     }
 }

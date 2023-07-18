@@ -3,7 +3,7 @@
         <div class="mx-auto w-full border p-4">
             <div class="mt-6 flex justify-between">
                 <div>
-                    <label for="name" class="block mb-2 text-lg font-medium ">*Nom de la Rotation</label>
+                    <label for="name" class="block mb-2 text-lg font-medium" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">*Nom de la Rotation</label>
                     <input v-model="name" type="text" id="name" max="3" class="border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="5 caractères maximum" required>
                 </div>
                 <InputError :message="message" :canClose="true" @close="this.message = null" class="mx-auto"></InputError>

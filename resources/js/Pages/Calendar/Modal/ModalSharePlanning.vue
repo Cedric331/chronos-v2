@@ -1,19 +1,19 @@
 <template>
     <Modal ref="modalDark" :show="show" @close="this.$emit('close')">
         <form class="py-6 px-9">
-            <h2 :class="{'text-white' : isDarkMode}" class="flex justify-center my-5 text-2xl w-full">
+            <h2 :class="{'text-white' : this.$store.state.isDarkMode }" class="flex justify-center my-5 text-2xl w-full">
                 Générer un lien de partage
             </h2>
             <hr class="my-4 dark:text-white">
 
-            <p :class="{'text-white' : isDarkMode}" class="text-sm">Ceci permet de partager votre planning avec une ou plusieurs personne de votre choix avec durée de validité.</p><br>
-            <p :class="{'text-white' : isDarkMode}" class="text-sm">Vous pouvez gérer les liens créés directement dans votre compte dans la rubrique "Mes informations".</p><br>
-            <p :class="{'text-white' : isDarkMode}" class="text-sm mb-5">Attention, vous ne pouvez générer que 5 liens.</p>
+            <p :class="{'text-white' : this.$store.state.isDarkMode}" class="text-sm">Ceci permet de partager votre planning avec une ou plusieurs personne de votre choix avec durée de validité.</p><br>
+            <p :class="{'text-white' : this.$store.state.isDarkMode}" class="text-sm">Vous pouvez gérer les liens créés directement dans votre compte dans la rubrique "Mes informations".</p><br>
+            <p :class="{'text-white' : this.$store.state.isDarkMode}" class="text-sm mb-5">Attention, vous ne pouvez générer que 5 liens.</p>
 
             <div v-if="url" class="m-5">
-                <p :class="{'text-white' : isDarkMode}" class="text-sm">Voici votre lien : </p>
+                <p :class="{'text-white' : this.$store.state.isDarkMode}" class="text-sm">Voici votre lien : </p>
                 <div class="flex justify-between">
-                    <p :class="{'text-white' : isDarkMode}" class="text-sm mt-2">{{ url }}</p>
+                    <p :class="{'text-white' : this.$store.state.isDarkMode}" class="text-sm mt-2">{{ url }}</p>
                     <SecondaryButton @click.prevent="copyUrlToClipboard">Copier URL</SecondaryButton>
                 </div>
             </div>
@@ -58,7 +58,6 @@ export default {
     data() {
         return {
             errors: null,
-            isDarkMode: localStorage.getItem('isDarkMode') === 'true',
             times: [
                 '1 jour',
                 '1 semaine',

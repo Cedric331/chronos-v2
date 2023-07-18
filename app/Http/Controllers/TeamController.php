@@ -103,7 +103,7 @@ class TeamController extends Controller
 
         $team->update($data);
 
-        if ($logoPath) {
+        if ($logoPath && $request->checked) {
             $colors = ColorThief::getPalette(Storage::disk('public')->path($logoPath), 8);
             $this->getColor($colors, $team);
         }

@@ -108,7 +108,7 @@
                                 </thead>
                                 <tbody class="bg-white border">
                                     <tr v-for="(rotation, index) in rotations">
-                                        <td class="p-4 whitespace-nowrap text-sm font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                                        <td class="p-4 whitespace-nowrap text-sm font-bold">
                                             {{ rotation.name }}
                                         </td>
                                         <td @click="this.rotations.splice(index, 1)" class="p-4 cursor-pointer bg-black whitespace-nowrap text-sm font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
@@ -141,10 +141,10 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
                                             </svg>
                                         </td>
-                                        <td class="p-4 whitespace-nowrap text-sm font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                                        <td class="p-4 whitespace-nowrap text-sm font-bold">
                                             {{ rotation.name }}
                                         </td>
-                                        <td class="p-4 whitespace-nowrap text-sm font-semibold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                                        <td class="p-4 whitespace-nowrap text-sm font-semibold">
                                             {{ rotation.total_hours }}
                                         </td>
                                     </tr>
