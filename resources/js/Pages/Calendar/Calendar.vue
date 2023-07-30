@@ -1,7 +1,7 @@
 <template>
     <section class="dark:bg-gray-900">
         <div class="mx-5 py-10 mx-auto">
-            <div v-if="days && days.length > 0" :class="{ 'fade': animateDays }" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
+            <div v-if="days && days.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
                 <div v-for="day in days" :key="day" class="h-full rounded-lg flex flex-col justify-between">
                     <div
                         @click.prevent="selectDate(day)"
@@ -17,9 +17,6 @@
                                 <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                 </svg>
-<!--                                <svg @click.stop="showEvent(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">-->
-<!--                                    <path stroke-linecap="round" stroke-linejoin="round" d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" />-->
-<!--                                </svg>-->
                             </div>
                         <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 h-[9rem]">
                             <div class="flex justify-center items-center">
@@ -31,6 +28,11 @@
                                 <div class="flex items-center">
                                     <div v-if="planning.hours" class="font-bold">
                                         {{ planning.hours }}
+                                    </div>
+                                    <div :id="'event-'+day.id" v-if="planning.event_plannings.length" class="font-bold ml-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff9f43" class="w-5 h-5">
+                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                        </svg>
                                     </div>
                                     <div v-if="planning.is_technician" id="is_technician">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
@@ -72,8 +74,10 @@
             </div>
         </div>
 
+    <ModalConfirm v-if="showModalConfirm" :show="showModalConfirm" @close="this.showModalConfirm = false" @delete-confirm="this.deletePlanning()"></ModalConfirm>
+    <ModalManagelEvent v-if="showModalEvent" :showEvent="showModalEvent" :days="daySelected" @store="data => newEvent(data)" @close="this.showModalEvent = false"></ModalManagelEvent>
     <ModalShowPlanningTeam v-if="showPlanningTeam && showDay" :show="showPlanningTeam" :showDay="showDay" @close="this.showPlanningTeam = false"></ModalShowPlanningTeam>
-    <ButtonNav :daySelected="daySelected" @shareSchedule="this.$emit('shareSchedule')" @planningFull="this.$emit('planningFull')" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
+    <ButtonNav :daySelected="daySelected" @shareSchedule="this.$emit('shareSchedule')" @planningFull="this.$emit('planningFull')" @deleteEvent="this.confirmDeleteEvent()" @openEvent="this.showModalEvent = true" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
     <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @update="data => this.updatePlanning(data)" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
     </section>
 </template>
@@ -85,36 +89,70 @@ import tippy from "tippy.js";
 import ModalUpdateDay from "@/Pages/Calendar/Modal/ModalUpdateDay.vue";
 import ModalShowPlanningTeam from "@/Pages/Calendar/Modal/ModalShowPlanningTeam.vue";
 import 'tippy.js/dist/tippy.css';
+import ModalManagelEvent from "@/Pages/Calendar/Modal/ModalManagelEvent.vue";
+import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
 
 export default {
     name: "Calendar",
     emits: ['planningFull', 'shareSchedule'],
-    components: {ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
+    components: {ModalConfirm, ModalManagelEvent, ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
     props: {
         daysProps: Object,
         isToday: String
+    },
+    watch: {
+        daysProps () {
+            this.days = this.daysProps
+            this.loadEvent()
+        }
     },
     data () {
         return {
             days: this.daysProps,
             showDay: null,
+            showModalEvent: false,
             showUpdateDay: false,
+            showModalConfirm: false,
             showPlanningTeam: false,
-            animateDays: false,
             daySelected: []
         }
     },
-    watch: {
-        daysProps () {
-            this.days = this.daysProps
-            this.animateDays = true;
-
-            setTimeout(() => {
-                this.animateDays = false;
-            }, 1000);
-        }
-    },
     methods: {
+        deletePlanning () {
+          axios.delete('/event', {
+              data: {
+                  days: this.daySelected
+            }
+          })
+          .then(response => {
+              this.daySelected = [];
+              response.data.forEach(planning => {
+                  this.days.forEach(day => {
+                      day.plannings.forEach(item => {
+                          if (planning.id === item.id) {
+                              item.event_plannings = [];
+                          }
+                      })
+                  })
+              })
+              this.$notify({
+                  title: "Succès",
+                  type: "success",
+                  text: "Les évènements sont supprimés avec succès!",
+              });
+              this.showModalConfirm = false;
+          })
+          .catch(() => {
+              this.$notify({
+                  title: "Erreur",
+                  type: "error",
+                  text: "Une erreur est survenue lors de la suppression du planning!",
+              });
+          })
+        },
+        confirmDeleteEvent () {
+          this.showModalConfirm = true;
+        },
         resetDaySelected () {
             this.daySelected = [];
         },
@@ -138,14 +176,13 @@ export default {
             return { [color]: true };
         },
         updatePlanning(data) {
-            for (let i = 0; i < this.days.length; i++) {
-                for (let j = 0; j < data.length; j++) {
-                    if (this.days[i].id === data[j].id) {
-                        this.days[i] = data[j];
-                        break;
+            this.days.map((day, index) => {
+                data.forEach(item => {
+                    if (day.id === item.id) {
+                        this.days[index] = item
                     }
-                }
-            }
+                })
+            })
 
             this.$notify({
                 title: "Succès",
@@ -172,8 +209,50 @@ export default {
         isDaySelected(day) {
             return this.daySelected.some(selectedDay => selectedDay.date === day.date);
         },
+        newEvent (events) {
+            events.forEach(event => {
+                this.days.forEach(day => {
+                    day.plannings.forEach(planning => {
+                        if (event.planning_id === planning.id) {
+                            planning.event_plannings.push(event);
+                        }
+                    })
+                })
+            })
+
+            this.$notify({
+                title: "Succès",
+                type: "success",
+                text: "Événement ajouté avec succès!",
+            });
+            this.loadEvent()
+            this.showModalEvent = false;
+            this.daySelected = [];
+        },
+        loadEvent () {
+            this.$nextTick(() => {
+                this.days.forEach(day => {
+                    let content = "";
+                    content += '<br>'
+                    day.plannings.forEach(planning => {
+                        planning.event_plannings.forEach(event => {
+                            content += `<p>Titre : ${event.title}</p>`;
+                            content += event.description ? `<p>Description : ${event.description}</p>` : '';
+                            content += '<br>'
+                        });
+                    });
+                    tippy('#' + 'event-' + day.id, {
+                        placement: 'right',
+                        content: content,
+                        allowHTML: true,
+                    })
+                })
+            })
+        }
     },
     mounted() {
+        this.loadEvent()
+
         tippy('#telework', {
             placement: 'top',
             content: 'Télétravail',
@@ -199,15 +278,6 @@ export default {
 </script>
 
 <style>
-.fade {
-    animation: fadeEffect 1s;
-}
-
-@keyframes fadeEffect {
-    from {opacity: 0;}
-    to {opacity: 1;}
-}
-
 
 .selected {
     background-image: linear-gradient(

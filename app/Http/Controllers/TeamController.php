@@ -180,7 +180,7 @@ class TeamController extends Controller
             return Inertia::render('Errors/404');
         }
 
-        $users = User::where('team_id', $team->id)->select('id', 'name', 'phone', 'email', 'birthday', 'account_active')->get();
+        $users = User::where('team_id', $team->id)->select('id', 'name', 'phone', 'email', 'birthday', 'team_id', 'account_active')->get();
         $links = null;
 
         if ($team->params->share_link) {

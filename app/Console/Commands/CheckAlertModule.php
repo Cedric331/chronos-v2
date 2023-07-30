@@ -50,37 +50,48 @@ class CheckAlertModule extends Command
                 $startOfDay = Carbon::createFromTime(8, 0); // Assuming your day starts at 8 AM
                 $endOfDay = Carbon::createFromTime(21, 0); // And ends at 9 PM
 
-                for ($time = $startOfDay; $time->lessThan($endOfDay); $time->addHour()) {
-                    $timeSlot = $time->format('H:i:s').' - '.$time->copy()->addHour()->format('H:i:s');
+                for ($time = $startOfDay; $time->lessThan($endOfDay); $time->addMinutes(30)) {
+
+                    $timeSlot = $time->format('H:i:s').' - '.$time->copy()->addMinutes(30)->format('H:i:s');
+
+                    $timeSlot1 = $time->format('H:i:s');
+                    $timeSlot2 = $time->copy()->addMinutes(30)->format('H:i:s');
+
                     $day = ucfirst($date->locale('fr')->isoFormat('dddd'));
 
                     $requiredSchedule = $requiredSchedules->where('day', $day)
-                        ->where('time', $timeSlot)->first();
+                        ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
+                            $scheduleTime = $schedule['time'];
+                            return strpos($scheduleTime, $timeSlot1) !== false || strpos($scheduleTime, $timeSlot2) !== false;
+                        })
+                        ->first();
+
+
 
                     if ($requiredSchedule !== null && $requiredSchedule->value > 0) {
                         $realCount = Planning::whereHas('calendar', function ($query) use ($date) {
                             $query->where('date', $date->format('Y-m-d'));
                         })
-                            ->where(DB::raw('TIME(debut_journee)'), '<=', $time->format('H:i:s'))
-                            ->where(DB::raw('TIME(fin_journee)'), '>=', $time->copy()->addHour()->format('H:i:s'))
+                            ->where(function ($query) use ($time) {
+                                $query->where(function ($query) use ($time) {
+                                    $query->where(DB::raw('TIME(debut_journee)'), '<=', $time->format('H:i:s'))
+                                        ->where(DB::raw('TIME(fin_journee)'), '>=', $time->copy()->addMinutes(30)->format('H:i:s'));
+                                })
+                                    ->orWhere(function ($query) use ($time) {
+                                        $query->where(DB::raw('TIME(debut_pause)'), '<=', $time->format('H:i:s'))
+                                            ->where(DB::raw('TIME(fin_pause)'), '>=', $time->copy()->addMinutes(30)->format('H:i:s'));
+                                    });
+                            })
                             ->count();
 
                         if ($realCount < $requiredSchedule->value) {
-                            $timeSlot = $this->formatTime($timeSlot);
-                            if ($realCount == 0) {
-                                $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                $message = "Aucun conseiller n'est prévu pour le créneau $timeSlot le ".$date->isoFormat('dddd D MMMM YYYY').", alors que $required.\n";
-                            } elseif ($realCount == 1) {
-                                $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                $message = "Seulement 1 conseiller est prévu pour le créneau $timeSlot le ".$date->isoFormat('dddd D MMMM YYYY').", alors que $required.\n";
-                            } else {
-                                $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                $message = "Seulement $realCount conseillers sont prévus pour le créneau $timeSlot le ".$date->isoFormat('dddd D MMMM YYYY').", alors que $required.\n";
-                            }
 
-                            AlertSchedule::create([
+                                $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
+                                $message = "Le créneau $requiredSchedule->time du ".$date->isoFormat('dddd D MMMM YYYY')." n'est pas couvert, alors que $required.\n";
+
+                            AlertSchedule::firstOrCreate([
                                 'team_id' => $team->id,
-                                'time' => $timeSlot,
+                                'time' => $requiredSchedule->time,
                                 'date' => $date->format('Y-m-d'),
                                 'message' => $message,
                                 'is_read' => false,

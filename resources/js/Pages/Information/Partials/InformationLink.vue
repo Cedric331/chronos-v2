@@ -1,5 +1,5 @@
 <template>
-    <div class="dark:bg-gray-800 bg-gray-300 shadow rounded-lg p-4 2xl:col-span-2 min-h-screen" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div class="dark:bg-gray-800 bg-gray-300 shadow rounded-lg p-4 2xl:col-span-2 h-auto" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
             <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -13,7 +13,7 @@
                 </div>
             </div>
         <div class="flex flex-col mt-5">
-            <div class="overflow-x-auto rounded-lg">
+            <div class="rounded-lg">
                 <div class="align-middle inline-block min-w-full">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-white dark:bg-gray-800">
@@ -32,7 +32,7 @@
                         </tr>
                         </thead>
 
-                        <tbody class="bg-white dark:bg-gray-200">
+                        <tbody class="bg-white dark:bg-gray-200 overflow-x-auto">
                         <tr v-for="(link, i) in links" class="hover:bg-gray-200 dark:hover:bg-gray-400">
                             <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                 <a :href="link.link" target="_blank" class="text-[#70a1ff]">Accéder au lien</a>

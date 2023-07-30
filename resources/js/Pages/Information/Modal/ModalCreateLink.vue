@@ -88,7 +88,7 @@
                         this.$emit('store-link', response.data)
                     })
                     .catch(() => {
-                        this.message = 'Vous devez indiquer un lien valide et une description'
+                        this.message = 'Vous devez indiquer un lien valide'
                     })
             },
             updateLink() {
@@ -101,7 +101,7 @@
                         this.$emit('update-link', response.data)
                     })
                     .catch(() => {
-                        this.message = 'Vous devez indiquer un lien valide et une description'
+                        this.message = 'Vous devez indiquer un lien valide'
                     })
             }
         },

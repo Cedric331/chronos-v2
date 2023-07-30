@@ -15,6 +15,7 @@
                 <td v-for="(day, indexDay) in days" :key="indexDay" class="border px-4 py-2">
                     <input v-model="inputs[index][indexDay]"
                            type="number"
+                           :class="[inputs[index][indexDay] > 0 ? 'bg-green-200' : 'bg-red-200']"
                            class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded outline-none"
                            @input="debounceStore"
                     />

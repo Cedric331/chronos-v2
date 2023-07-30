@@ -46,9 +46,9 @@
                                 {{ team.departement && team.code_departement ? ' - ' : '' }}
                                 {{ team.code_departement ? team.code_departement : '' }}
                             </td>
-                            <td class="p-4 whitespace-nowrap items-end text-sm font-semibold text-gray-900">
+                            <td class="p-4 whitespace-nowrap items-end text-sm font-semibold">
                                 <SecondaryButton @click="editTeam()">
-                                    {{ $t('team_gestion.buttonUpdate') }}
+                                    Modifier
                                 </SecondaryButton>
                             </td>
                         </tr>
@@ -241,7 +241,7 @@ export default {
         });
         tippy('#moduleAlert', {
             placement: 'top',
-            content: 'Permets d\'activer le module d\'alerte afin d\'être informé si le nombre de personnes présentes est inférieur au nombre de personnes attendues par créneau. (Pause déjeuner non pris en compte et vérification effectuée sur deux semaines)',
+            content: 'Permets d\'activer le module d\'alerte afin d\'être informé si le nombre de personnes présentes est inférieur au nombre de personnes attendues par créneau. (Vérification effectuée sur deux semaines)',
         });
         tippy('#shareLink', {
             placement: 'top',

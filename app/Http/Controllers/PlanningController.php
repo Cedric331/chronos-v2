@@ -147,7 +147,7 @@ class PlanningController extends Controller
         }
 
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
-            $query->where('user_id', $planning->user_id);
+            $query->with('eventPlannings')->where('user_id', $planning->user_id);
         }])->find($ids);
 
         return response()->json($calendar);

@@ -129,4 +129,19 @@ class Planning extends Model
     {
         return $this->belongsTo(Calendar::class);
     }
+
+    public function rotation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Rotation::class);
+    }
+
+    public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
+    public function eventPlannings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(EventPlanning::class);
+    }
 }

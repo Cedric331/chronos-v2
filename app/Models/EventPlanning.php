@@ -11,7 +11,7 @@ class EventPlanning extends Model
 
     protected $fillable = [
         'planning_id',
-        'name',
+        'title',
         'description'
     ];
 

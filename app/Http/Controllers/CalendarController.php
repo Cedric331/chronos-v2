@@ -26,7 +26,7 @@ class CalendarController extends Controller
                 ->where('team_id', $user->team_id);
         })
             ->with(['plannings' => function ($query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->with('eventPlannings')->where('user_id', $user->id);
             }])
             ->where('date', '>=', $monday)
             ->get();
@@ -54,7 +54,7 @@ class CalendarController extends Controller
 
         })
             ->with(['plannings' => function ($query) use ($user) {
-                $query->where('user_id', $user->id);
+                $query->with('eventPlannings')->where('user_id', $user->id);
             }])
             ->where('date', '>=', $monday)
             ->get();

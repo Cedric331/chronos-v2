@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 require __DIR__.'/calendar.php';
+require __DIR__.'/event.php';
 require __DIR__.'/team_params.php';
 require __DIR__.'/rotation.php';
 require __DIR__.'/team.php';

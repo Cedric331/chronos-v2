@@ -25,7 +25,7 @@ class LinkTeamController extends Controller
 
         if (Auth::user()->isCoordinateur() || $team->params->share_link) {
             LinkTeam::create([
-                'lien' => $request->lien,
+                'link' => $request->lien,
                 'description' => $request->description,
                 'user_id' => Auth::user()->id,
                 'team_id' => $team->id,

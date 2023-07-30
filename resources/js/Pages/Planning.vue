@@ -51,7 +51,7 @@
 
         <div>
             <div class="w-full mx-auto">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="dark:bg-gray-800 overflow-hidden shadow-sm min-h-screen" :style="{background: this.$store.state.isDarkMode? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color2 + ', ' + $page.props.auth.team.params.color1 + ')'}">
                     <Calendar
                         ref="calendar"
                         :daysProps="daysProps"
@@ -104,7 +104,7 @@ export default {
             getAllPlanning: false,
             showShare: false,
             selectedUser: this.user,
-            daysProps: this.calendar
+            daysProps: null
         }
     },
     watch: {
@@ -136,6 +136,9 @@ export default {
                 }, 200)
             })
         }
+    },
+    beforeMount () {
+        this.daysProps = this.calendar
     }
 }
 </script>
