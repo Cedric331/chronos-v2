@@ -18,10 +18,11 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import InformationUser from "@/Pages/Information/Partials/InformationUser.vue";
 import InformationLink from "@/Pages/Information/Partials/InformationLink.vue";
+import {Head} from "@inertiajs/vue3";
 
 export default {
     name: "InformationTeam",
-    components: {InformationLink, InformationUser, AuthenticatedLayout},
+    components: {Head, InformationLink, InformationUser, AuthenticatedLayout},
     props: {
             usersProps: Object,
             linksProps: Object

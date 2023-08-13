@@ -1,5 +1,5 @@
 <template>
-    <section class="dark:bg-gray-900">
+    <section class="dark:bg-gray-900 bg-gray-200 min-h-screen">
         <div class="mx-5 py-10 mx-auto">
             <div v-if="days && days.length > 0" class="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 w-full p-2">
                 <div v-for="day in days" :key="day" class="h-full rounded-lg flex flex-col justify-between">
@@ -69,7 +69,7 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="flex justify-center bg-white dark:bg-gray-900">
+            <div v-else class="flex justify-center bg-gray-200 dark:bg-gray-900">
                 <h2 class="text-2xl dark:text-white ">-- Aucun planning --</h2>
             </div>
         </div>

@@ -1,6 +1,4 @@
 <template>
-    <Head :title="$t('nav.management')" />
-
     <AuthenticatedLayout>
                 <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                     <main>

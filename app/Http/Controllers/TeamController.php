@@ -85,18 +85,15 @@ class TeamController extends Controller
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
 
-            // Supprime l'ancien logo si nécessaire
             if ($team->logo) {
                 Storage::disk('public')->delete($team->logo);
             }
 
-            // Crée le dossier portant le nom de l'équipe s'il n'existe pas
             $teamFolder = 'teams/'.$team->name;
             if (! Storage::disk('public')->exists($teamFolder)) {
                 Storage::disk('public')->makeDirectory($teamFolder);
             }
 
-            // Enregistre le nouveau logo dans le dossier portant le nom de l'équipe
             $logoPath = $logo->storeAs($teamFolder, $logo->getClientOriginalName(), 'public');
             $data['logo'] = $logoPath;
         }

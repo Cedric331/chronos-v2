@@ -1,6 +1,4 @@
 <template>
-    <Head title="Planning" />
-
     <AuthenticatedLayout>
         <Loading :show="isLoading"></Loading>
         <template #header>

@@ -84,7 +84,7 @@
                                             </strong>
                                         </span>
                                         </div>
-                                        <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48">
+                                        <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" content-classes="overflow-y-auto h-96">
                                             <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button
@@ -235,7 +235,7 @@
             </nav>
 
             <!-- Page Heading -->
-            <header class="border-1 top-0 dark:bg-gray-800 sticky top-0" v-if="$slots.header" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+            <header class="border-1 top-0 dark:bg-gray-800 bg-gray-100 sticky top-0" v-if="$slots.header" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                 <div class="w-auto mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
@@ -255,12 +255,13 @@ import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
-import { Link } from '@inertiajs/vue3';
+import {Head, Link} from '@inertiajs/vue3';
 import Loading from "@/Components/Loading.vue";
 
 export default {
     name: 'AuthenticatedLayout',
     components: {
+        Head,
         ApplicationLogo,
         Dropdown,
         DropdownLink,
