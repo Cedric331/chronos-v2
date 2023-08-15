@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800 shadow rounded-lg p-4 2xl:col-span-2" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div class="bg-gray-300 dark:bg-gray-800 shadow p-4 2xl:col-span-2" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
         <div class="mb-4 flex items-center justify-between">
             <div>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -24,7 +24,10 @@
                                 <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                     Email
                                 </th>
-                                <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
+                                <th v-if="$page.props.auth.isAdmin" scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
+                                    Rôle
+                                </th>
+                                <th v-else scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                     {{ $t('birthday') }}
                                 </th>
                                 <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
@@ -40,7 +43,10 @@
                                 <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                     {{ user.email }}
                                 </td>
-                                <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                <td v-if="$page.props.auth.isAdmin" class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    {{ user.role }}
+                                </td>
+                                <td v-else class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                     {{ dateFormatFr(user.birthday) }}
                                 </td>
                                 <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">

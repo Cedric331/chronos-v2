@@ -54,6 +54,8 @@ class UserController extends Controller
             'password' => bcrypt(Str::random(30)),
         ]);
 
+        $user->assignRole($request->role);
+
         $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
 
         $mailData = [
@@ -64,6 +66,12 @@ class UserController extends Controller
         ];
 
         Mail::to($user->email)->send(new ActivationAccount($mailData));
+
+        activity($user->team->name)
+            ->event('store')
+            ->performedOn($user)
+            ->withProperties($user->getOriginal())
+            ->log('L\'utilisateur ' . $user->name . ' a été créé');
 
         return response()->json($user);
     }
@@ -105,6 +113,28 @@ class UserController extends Controller
             $user->update([
                 'team_id' => $request->input('team_id'),
             ]);
+            if ($request->hasAccessAdmin) {
+                $user->givePermissionTo('access-admin');
+            } else {
+                $user->revokePermissionTo('access-admin');
+            }
+        }
+
+        if ($user->wasChanged()) {
+            activity($user->team->name)
+                ->event('update')
+                ->performedOn($user)
+                ->withProperties($user->getOriginal())
+                ->log('L\'utilisateur ' . $user->name . ' a été modifié');
+        }
+
+        if (Auth::user()->isAdmin() && $request->role) {
+            if (Auth::user()->isCoordinateur() && Auth::user()->hasPermissionTo('access-admin') && $user->id === Auth::id() && $request->role !== Auth::user()->role) {
+                return response()->json(['message' => 'Vous n\'avez pas les droits pour modifier votre rôle'], 401);
+            }
+            if ($user->id !== Auth::id()) {
+                $user->syncRoles($request->role);
+            }
         }
 
         if ($update) {
@@ -122,6 +152,12 @@ class UserController extends Controller
         if (! Gate::check('has-role-coordinateur')) {
             return Inertia::render('Errors/401');
         }
+
+        activity($user->team->name)
+            ->event('Utilisateur supprimé')
+            ->performedOn($user)
+            ->withProperties($user->getOriginal())
+            ->log('L\'utilisateur ' . $user->name . ' a été supprimé');
 
         $user->delete();
 

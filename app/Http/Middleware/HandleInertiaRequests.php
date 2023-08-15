@@ -55,6 +55,7 @@ class HandleInertiaRequests extends Middleware
                 'team' => $team,
                 'isCoordinateur' => $user ? $user->isCoordinateur() : false,
                 'isResponsable' => $user ? $user->isResponsable() : false,
+                'isAdmin' => $user ? $user->isAdmin() : false,
                 'alerts' => $alerts,
             ],
             'getMaxSizeFile' => $this->getMaxSizeFile(),

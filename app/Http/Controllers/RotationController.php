@@ -82,6 +82,13 @@ class RotationController extends Controller
             $rotation->total_hours = sprintf('%02dh%02d', $hours, $minutes);
             $rotation->save();
 
+            $rotationWithDetails = $rotation->load('details')->toArray();
+            activity($team->name)
+                ->event('store')
+                ->performedOn($rotation)
+                ->withProperties($rotationWithDetails)
+                ->log('Une rotation a été créée');
+
             DB::commit();
 
             return response()->json(Rotation::with('details')->get());
@@ -100,6 +107,9 @@ class RotationController extends Controller
 
         DB::beginTransaction();
         try {
+
+            $rotationWithDetails = $rotation->load('details')->toArray();
+
             $rotation->update([
                 'name' => strtoupper($request->name),
             ]);
@@ -164,6 +174,12 @@ class RotationController extends Controller
 
             $rotation->total_hours = sprintf('%02dh%02d', $hours, $minutes);
             $rotation->save();
+
+            activity($rotation->team->name)
+                ->event('update')
+                ->performedOn($rotation)
+                ->withProperties($rotationWithDetails)
+                ->log('Une rotation a été modifiée');
 
             DB::commit();
 

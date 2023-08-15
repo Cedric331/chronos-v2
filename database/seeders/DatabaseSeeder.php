@@ -6,6 +6,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Artisan;
+use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,7 +28,11 @@ class DatabaseSeeder extends Seeder
             'email' => 'limacedric@hotmail.fr',
             'company_id' => 1,
         ]);
-        User::first()->assignRole('Admin');
+        User::first()->assignRole('Coordinateur');
+
+        Permission::create(['name' => 'access-admin']);
+
+        User::first()->givePermissionTo('access-admin');
 
         User::factory(5)->create([
             'company_id' => 1,

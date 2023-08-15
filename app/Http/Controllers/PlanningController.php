@@ -74,6 +74,12 @@ class PlanningController extends Controller
                     $countDayGenerate++;
 
                     if ($dateStart->eq($dateEnd)) {
+
+                        activity(Auth::user()->team->name)
+                            ->event('update')
+                            ->performedOn(User::find($request->user))
+                            ->log('Un planning a été généré pour ' . User::find($request->user)->name);
+
                         return response()->json($countDayGenerate);
                     }
                 }
@@ -121,7 +127,6 @@ class PlanningController extends Controller
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
             if ($this->checkTypeDay($request->type_day)) {
-
                 $planning->update([
                     'type_day' => $request->type_day,
                     'debut_journee' => $request->debut_journee,
@@ -144,11 +149,18 @@ class PlanningController extends Controller
                     'hours' => null,
                 ]);
             }
+
+            activity(Auth::user()->team->name)
+                ->event('update')
+                ->performedOn($planning)
+                ->withProperties($planning->getOriginal())
+                ->log('Les informations du planning ont été modifiées');
         }
 
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
             $query->with('eventPlannings')->where('user_id', $planning->user_id);
         }])->find($ids);
+
 
         return response()->json($calendar);
     }
@@ -182,6 +194,11 @@ class PlanningController extends Controller
                         'type_day' => $detail->is_off ? 'Repos' : 'Planifié',
                     ]);
 
+                    activity(Auth::user()->team->name)
+                        ->event('update')
+                        ->performedOn($planning)
+                        ->withProperties($planning->getOriginal())
+                        ->log('Les informations du planning ont été modifiées');
                 }
             }
         }
@@ -230,6 +247,10 @@ class PlanningController extends Controller
             'expired_at' => now()->addDays($validity),
         ]);
 
+        activity(Auth::user()->team->name)
+            ->event('Création de lien de partage')
+            ->log('Un lien de partage a été généré');
+
         return response()->json(['link' => url("/planning/{$token}")]);
     }
 
@@ -242,6 +263,10 @@ class PlanningController extends Controller
         $user = User::find(Auth::id());
         if ($user->id === $link->user_id) {
             $link->delete();
+
+            activity(Auth::user()->team->name)
+                ->event('Suppression de lien de partage')
+                ->log('Un lien de partage a été supprimé');
         } else {
             return response()->json(['message' => 'Vous n\'êtes pas autorisé à supprimer ce lien'], 403);
         }
@@ -261,7 +286,6 @@ class PlanningController extends Controller
 
         $user = User::find($shareLink->user_id);
 
-        // Récupérer et afficher le planning de l'utilisateur
         $days = $this->getPlanning($user->id);
 
         $shareLink->update([

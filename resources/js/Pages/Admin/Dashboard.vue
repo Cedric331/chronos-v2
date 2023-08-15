@@ -1,13 +1,12 @@
 <template>
     <AuthenticatedLayout>
-        <div class="flex overflow-hidden bg-white">
-            <div class="opacity-50 hidden fixed inset-0 z-10 bg-gray-800" id="sidebarBackdrop"></div>
-            <div id="main-content" class="h-full w-full relative overflow-y-auto dark:bg-gray-800 bg-gray-50" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+        <div class="flex overflow-hidden" :class="[this.$store.state.isDarkMode ? 'bg-gray-900' : 'bg-white']">
+            <div class="opacity-50 hidden fixed inset-0 z-10 " id="sidebarBackdrop"></div>
+            <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                 <main>
                     <div class="p-6">
                         <div class="w-full p-4 grid grid-cols-1">
                             <Teams :teams-props="teamsProps"  />
-
                         </div>
                         <div class="mt-4 w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
                             <div class="bg-white shadow rounded-lg p-4 sm:p-6 xl:p-8 ">

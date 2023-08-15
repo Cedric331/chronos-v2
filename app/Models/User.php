@@ -6,8 +6,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable
 {
@@ -51,7 +53,7 @@ class User extends Authenticatable
 
     protected $with = ['team'];
 
-    protected $appends = ['hasPlanning'];
+    protected $appends = ['hasPlanning', 'role', 'hasAccessAdmin'];
 
     public function plannings()
     {
@@ -65,17 +67,22 @@ class User extends Authenticatable
 
     public function isCoordinateur(): bool
     {
-        return $this->hasRole(['Coordinateur', 'Responsable', 'Admin']);
+        return $this->hasRole(['Coordinateur', 'Responsable', 'Administrateur']);
     }
 
     public function isResponsable(): bool
     {
-        return $this->hasRole(['Responsable', 'Admin']);
+        return $this->hasRole(['Responsable', 'Administrateur']);
     }
 
     public function isAdmin(): bool
     {
-        return $this->hasRole(['Admin']);
+        return $this->hasRole(['Administrateur']) || $this->hasPermissionTo('access-admin');
+    }
+
+    public function getHasAccessAdminAttribute (): bool
+    {
+        return $this->hasPermissionTo('access-admin');
     }
 
     public function isActivated(): bool
@@ -91,5 +98,10 @@ class User extends Authenticatable
     public function getHasPlanningAttribute(): bool
     {
         return $this->plannings()->count() > 0;
+    }
+
+    public function getRoleAttribute ()
+    {
+        return $this->getRoleNames()->first();
     }
 }

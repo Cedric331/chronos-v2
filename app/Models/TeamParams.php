@@ -26,6 +26,12 @@ class TeamParams extends Model
         'color4'
     ];
 
+    public function team(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Team::class, 'team_params_id');
+    }
+
+
     public function getTypeDayAttribute($value)
     {
         return json_decode($value);

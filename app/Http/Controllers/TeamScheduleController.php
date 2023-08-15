@@ -19,15 +19,12 @@ class TeamScheduleController extends Controller
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
-        $team_id = Auth::user()->team_id;
         $data = $request->all();
 
         $response = [];
 
         foreach ($data as $item) {
-            if ($item['team_id'] != $team_id) {
-                return response()->json(['error' => 'Vous ne pouvez pas modifier les alertes d\'horaire d\'une autre équipe'], 400);
-            }
+
             $validator = Validator::make($item, [
                 'day' => 'required|string',
                 'time' => 'required|string',

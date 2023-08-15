@@ -20,6 +20,11 @@ class Rotation extends Model
         'team_id',
     ];
 
+    public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
+
     public function details(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(RotationDetail::class);

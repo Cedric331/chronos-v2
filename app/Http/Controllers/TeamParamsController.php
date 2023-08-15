@@ -25,6 +25,12 @@ class TeamParamsController extends Controller
         ]);
         $teamParams->save();
 
+        activity($teamParams->team->name)
+            ->event('update')
+            ->performedOn($teamParams->team)
+            ->withProperties($teamParams->getOriginal())
+            ->log('Les paramètres de l\'équipe ont été modifiés');
+
         return response()->json($teamParams);
     }
 }
