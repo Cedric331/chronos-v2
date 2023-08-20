@@ -280,7 +280,7 @@ class PlanningController extends Controller
             ->where('expired_at', '>', now())
             ->first();
 
-        if (! $shareLink) {
+        if (!$shareLink) {
             abort(404, 'Lien de partage non valide ou expiré');
         }
 

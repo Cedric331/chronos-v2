@@ -87,6 +87,7 @@ export default {
     },
     data() {
         return {
+            shouldReset: true,
             message: null,
             item: null,
             check: true
@@ -117,7 +118,11 @@ export default {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
-                Inertia.visit(response.data.url);
+                if (response.data.url) {
+                    Inertia.visit(response.data.url);
+                } else {
+                    Inertia.reload();
+                }
 
             } catch (error) {
                 this.message = error.response.data.message
@@ -127,9 +132,13 @@ export default {
             this.item.logo = event.target.files[0]
         }
     },
-    mounted () {
+    mounted() {
+        if (this.shouldReset) {
+            this.item = JSON.parse(JSON.stringify(this.team));
+        }
         this.message = null
-        this.item = JSON.parse(JSON.stringify(this.team))
+        this.shouldReset = false;
     }
+
 }
 </script>

@@ -84,7 +84,7 @@
                                             </strong>
                                         </span>
                                         </div>
-                                        <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" content-classes="overflow-y-auto h-96">
+                                        <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" content-classes="overflow-y-auto max-h-96">
                                             <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button

@@ -77,7 +77,7 @@ const maxWidthClass = computed(() => {
                     leave-to-class="opacity-0"
                 >
                     <div v-show="show" class="fixed inset-0 transform transition-all" @click="close">
-                        <div class="absolute inset-0 opacity-75 bg-gray-300" :style="{ backgroundColor: this.$store.state.isDarkMode ? $page.props.auth.team.params.color2 : $page.props.auth.team.params.color1 }" />
+                        <div class="absolute inset-0 opacity-75 bg-gray-300" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }" />
                     </div>
                 </transition>
 

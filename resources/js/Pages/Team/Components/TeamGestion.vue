@@ -38,7 +38,7 @@
                                     </button>
                                 </div>
                                 <div v-else class="relative inline-block">
-                                    <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"/>
+                                        <img src="/images/logo.png" alt="Logo" :class="[$page.props.auth.user ? 'w-10 h-10' : 'w-34']" class="rounded-full" />
                                 </div>
                             </td>
                             <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">

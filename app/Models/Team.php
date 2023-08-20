@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Team extends Model
 {
-    use HasFactory;
+    use LogsActivity;
+
 
     /**
      * The attributes that are mass assignable.
@@ -27,6 +30,12 @@ class Team extends Model
     protected $appends = ['logo_url'];
 
     protected $with = ['params'];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['*']);
+    }
 
     public function users(): \Illuminate\Database\Eloquent\Relations\HasMany
     {

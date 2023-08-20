@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Spatie\Activitylog\Models\Activity;
 
 class TeamController extends Controller
 {
@@ -58,8 +59,10 @@ class TeamController extends Controller
         }
 
         $teamWithUsers = $team->load('users');
+        $activities = Activity::where('log_name', $team->name)->get();
 
         return Inertia::render('Team/Team', [
+            'activities' => $activities,
             'team' => $teamWithUsers,
             'schedules' => $teamSchedules,
         ]);
@@ -78,6 +81,10 @@ class TeamController extends Controller
         if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
+
+        $previousUrl = url()->previous();
+        $previousRoute = app('router')->getRoutes()->match(app('request')->create($previousUrl));
+        $previousRouteName = $previousRoute->getName();
 
         $data = $request->validated();
 
@@ -98,14 +105,27 @@ class TeamController extends Controller
             $data['logo'] = $logoPath;
         }
 
-        $team->update($data);
+        $activities = Activity::where('log_name', $team->name)->get();
+
+        $update = $team->update($data);
+
+        if ($update) {
+            foreach ($activities as $activity) {
+                $activity->log_name = $team->name;
+                $activity->save();
+            }
+        }
 
         if ($logoPath && $request->checked) {
             $colors = ColorThief::getPalette(Storage::disk('public')->path($logoPath), 8);
             $this->getColor($colors, $team);
         }
 
-        return response()->json(['url' => route('team.show', ['name' => $team->name])]);
+        if ($previousRouteName === 'admin.index') {
+            return response()->json($team->name);
+        } else {
+            return response()->json(['url' => route('team.show', ['name' => $team->name])]);
+        }
 
     }
 
@@ -138,7 +158,7 @@ class TeamController extends Controller
 
     public function deleteLogo(Request $request, Team $team)
     {
-        if (! $request->ajax()) {
+        if (!$request->ajax()) {
             return Inertia::render('Errors/404');
         }
         // Supprimer le fichier du système de fichiers
@@ -168,7 +188,7 @@ class TeamController extends Controller
         return response()->json(['url' => route('team.show', ['name' => $team->name])]);
     }
 
-    public function getInformation(Request $request)
+    public function getInformation(): \Inertia\Response
     {
 
         $team = Auth::user()->team;
