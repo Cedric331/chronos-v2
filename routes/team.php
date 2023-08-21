@@ -13,6 +13,7 @@ Route::middleware('isCoordinateur')->group(function () {
 
     Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.delete');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
+    Route::get('/teams/{team}/activities', [TeamController::class, 'paginateActivities'])->name('team.activities');
 
 });
 

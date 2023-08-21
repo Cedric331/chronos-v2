@@ -59,14 +59,30 @@ class TeamController extends Controller
         }
 
         $teamWithUsers = $team->load('users');
-        $activities = Activity::where('log_name', $team->name)->get();
 
         return Inertia::render('Team/Team', [
-            'activities' => $activities,
             'team' => $teamWithUsers,
             'schedules' => $teamSchedules,
         ]);
     }
+
+    public function paginateActivities(Team $team, Request $request): \Illuminate\Http\JsonResponse
+    {
+        $page = $request->input('page', 1);
+
+        $activities = Activity::where('log_name', $team->name)
+            ->with(['subject', 'causer'])
+            ->paginate(10, ['*'], 'page', $page);
+
+        $activities->getCollection()->transform(function ($activity) {
+            $activity->subject_type = class_basename($activity->subject_type) === 'User' ? 'Utilisateur' : class_basename($activity->subject_type);
+            $activity->formatted_date = $activity->created_at->format('d/m/Y H:i');
+            return $activity;
+        });
+
+        return response()->json($activities);
+    }
+
 
     /**
      * Show the form for editing the specified resource.
