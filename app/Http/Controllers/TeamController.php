@@ -66,13 +66,23 @@ class TeamController extends Controller
         ]);
     }
 
-    public function paginateActivities(Team $team, Request $request): \Illuminate\Http\JsonResponse
+    public function paginateActivities(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         $page = $request->input('page', 1);
 
-        $activities = Activity::where('log_name', $team->name)
-            ->with(['subject', 'causer'])
-            ->paginate(10, ['*'], 'page', $page);
+        if (!$request->team_id && Auth::user()->isAdmin()) {
+            $activities = Activity::with(['subject', 'causer'])
+                ->paginate(10, ['*'], 'page', $page);
+        } else {
+            if ($request->team_id == Auth::user()->team_id) {
+                $team = Team::findOrFail($request->team_id);
+                $activities = Activity::where('log_name', $team->name)
+                    ->with(['subject', 'causer'])
+                    ->paginate(10, ['*'], 'page', $page);
+            } else {
+                return Inertia::render('Errors/404');
+            }
+        }
 
         $activities->getCollection()->transform(function ($activity) {
             $activity->subject_type = class_basename($activity->subject_type) === 'User' ? 'Utilisateur' : class_basename($activity->subject_type);

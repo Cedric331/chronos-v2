@@ -7,6 +7,7 @@
                     <thead>
                     <tr>
                         <th class="px-4 bg-gray-50 text-gray-700 align-middle py-3 text-xs font-semibold text-left uppercase border-l-0 border-r-0 whitespace-nowrap">Type d'event</th>
+                        <th class="px-4 bg-gray-50 text-gray-700 align-middle py-3 text-xs font-semibold text-left uppercase border-l-0 border-r-0 whitespace-nowrap">Team</th>
                         <th class="px-4 bg-gray-50 text-gray-700 align-middle py-3 text-xs font-semibold text-left uppercase border-l-0 border-r-0 whitespace-nowrap">Information</th>
                         <th class="px-4 bg-gray-50 text-gray-700 align-middle py-3 text-xs font-semibold text-left uppercase border-l-0 border-r-0 whitespace-nowrap min-w-140-px">Type du sujet</th>
                         <th class="px-4 bg-gray-50 text-gray-700 align-middle py-3 text-xs font-semibold text-left uppercase border-l-0 border-r-0 whitespace-nowrap min-w-140-px">Sujet</th>
@@ -17,6 +18,7 @@
                     <tbody class="divide-y divide-gray-100">
                     <tr v-for="activity in activities" class="text-gray-500">
                         <th class="border-t-0 px-4 align-middle text-sm font-normal whitespace-nowrap p-4 text-left">{{ activity.event }}</th>
+                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.log_name }}</td>
                         <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.description }}</td>
                         <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.subject_type ? activity.subject_type : ''}}</td>
                         <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.subject ? activity.subject.name : ''}}</td>
@@ -54,7 +56,7 @@ export default {
     props: {
         team: {
             type: Object,
-            required: true
+            required: false
         },
     },
     data() {
@@ -87,7 +89,11 @@ export default {
         }
     },
     mounted () {
-        this.loadPage('/teams/' + this.team.id + '/activities?page=1')
+        if (this.team) {
+            this.loadPage('/teams/activities?page=&team_id=' + this.team.id)
+        } else {
+            this.loadPage('/teams/activities?page=')
+        }
     },
 }
 </script>
