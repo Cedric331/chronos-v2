@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="showPlanning" :maxWidth="tabs === 3 ? '3xl' : '2xl'">
+    <Modal :show="showPlanning" maxWidth="3xl">
         <Loading :show="isLoading"></Loading>
         <h2 class="flex justify-center my-5 text-xl w-full" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
             {{ $t('team_rotation.title_planning') }}
@@ -16,32 +16,18 @@
                             <div class="absolute inset-0 flex h-full w-10 items-center justify-center">
                                 <div class="pointer-events-none h-full w-1 bg-gray-200"></div>
                             </div>
-                            <div @click="tabs = 1" class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-white cursor-pointer" :class="[dateStart && dateEnd ? 'bg-green-600' : 'bg-blue-500']">
+                            <div @click="tabs = 1" class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-white cursor-pointer" :class="[dateStart && dateEnd && user ? 'bg-green-600' : 'bg-blue-500']">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                                 </svg>
                             </div>
                             <div class="flex-grow pl-4">
-                                <h2 class="title-font mb-1 mt-3 text-sm font-medium tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des dates</h2>
+                                <h2 class="title-font mb-1 mt-3 text-sm font-medium tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des dates et du collaborateur</h2>
                             </div>
                         </div>
 
                         <div class="relative flex pb-12">
-                            <div class="absolute inset-0 flex h-full w-10 items-center justify-center">
-                                <div class="pointer-events-none h-full w-1 bg-gray-200"></div>
-                            </div>
-                            <div @click="tabs = 2" :class="[user ? 'bg-green-600' : 'bg-blue-500']" class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                </svg>
-                            </div>
-                            <div class="flex-grow pl-4">
-                                <h2 class="title-font mt-3 mb-1 text-sm font-medium tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection du collaborateur</h2>
-                            </div>
-                        </div>
-
-                        <div class="relative flex pb-12">
-                            <div @click="tabs = 3" :class="[rotations.length > 0 ? 'bg-green-600' : 'bg-blue-500']" class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer">
+                            <div @click="tabs = 2" :class="[rotations.length > 0 ? 'bg-green-600' : 'bg-blue-500']" class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
                                 </svg>
@@ -52,46 +38,44 @@
                         </div>
                     </div>
 
-                    <div v-if="tabs === 1" class="mx-auto w-max">
+                    <div v-if="tabs === 1" class="mx-auto w-max mb-6">
                         <div class="mx-auto">
                             <div class="w-full flex flex-col bg-white rounded-lg">
-                                <h1 class="font-semibold text-center tracking-wide mb-2" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des dates</h1>
-                                <div class="flex flex-col justify-between">
-                                    <label :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'" for="start">Semaine de début:</label>
+                                <h1 class="font-semibold text-center tracking-wide mb-2 text-black">Sélection des dates et du collaborateur</h1>
+                                <div class="flex flex-col justify-between mt-6">
+                                    <label class="text-black" for="start">Semaine de début du planning:</label>
                                     <input type="week" id="start" name="trip-start" class="w-full"
                                            v-model="dateStart"
                                            :min="dateLimitStart" :max="dateEnd">
-                                    <label :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'" for="end" class="mt-6">Semaine de Fin :</label>
+                                    <label class="text-black mt-6" for="end">Semaine de fin du planning :</label>
                                     <input type="week" id="end" name="trip-end"
                                            v-model="dateEnd"
                                            :min="dateStart" :max="dateLimitEnd">
                                 </div>
-                                <p class="text-xs mt-6 w-[300px]" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Vous devez indiquer les dates de début et de fin du planning qui sera généré.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div v-if="tabs === 2" class="mx-auto">
-                        <div class="mx-auto">
-                            <div class="p-16 flex flex-col bg-white rounded-lg">
-                                <h1 class="font-semibold tracking-wide mb-2" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Choisir le conseiller</h1>
-
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:pr-0">
-                                    <div class="flex justify-center">
-                                        <div class="w-auto">
-                                            <select v-model="user" class=" block w-full text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600" aria-label="Voir le planning">
-                                                <option v-for="user in team.users" :key="user.id" :value="user">
-                                                    {{ user.name }}
-                                                </option>
-                                            </select>
+                                <div class="flex flex-col justify-between">
+                                    <label class="text-black mt-6" for="end">Choisir le conseiller</label>
+                                    <div class="inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:pr-0">
+                                        <div class="w-full">
+                                            <div class="w-auto">
+                                                <select v-model="user" class=" block w-full text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600">
+                                                    <option v-for="user in team.users" :key="user.id" :value="user">
+                                                        {{ user.name }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <div v-if="user && user.hasPlanning" class="mt-4 text-black text-sm">
+                                                <p>Ce collaborateur dispose déjà d'un planning.</p><p>Vous pouvez indiquer ne pas vouloir écraser les jours suivants <br> <strong>(Congés Payés, RJF, Maladie, Formation)</strong></p>
+                                            <Checkbox v-model="type_fix"></Checkbox>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
 
-                    <div v-if="tabs === 3" class="mx-auto grid w-full grid-cols-12 gap-4 p-1">
+                    <div v-if="tabs === 2" class="mx-auto grid w-full grid-cols-12 gap-4 p-1">
                         <div class="header col-span-12 mx-auto">
                             <h1 class="font-semibold text-lg tracking-wide mb-2" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Choix des rotations</h1>
                         </div>
@@ -152,7 +136,6 @@
                             </table>
                         </div>
                     </div>
-
                 </div>
 
 
@@ -161,7 +144,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
 
-                    <svg @click="this.tabs++" v-if="tabs !== 3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 cursor-pointer">
+                    <svg @click="this.tabs++" v-if="tabs !== 2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 cursor-pointer">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
@@ -181,10 +164,12 @@ import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Loading from "@/Components/Loading.vue";
+import Checkbox from "@/Components/Checkbox.vue";
 
 export default {
     name: "ModalPlanning",
     components: {
+        Checkbox,
         Loading,
         Modal,
         PrimaryButton,
@@ -200,6 +185,7 @@ export default {
             tabJustify: 'justify-end',
             rotations: [],
             isLoading: false,
+            type_fix: false,
             user: null,
             dateStart: null,
             dateEnd: null,
@@ -237,6 +223,7 @@ export default {
         generatePlanning () {
             this.isLoading = true
             axios.post('/planning/generate', {
+              type_fix: this.type_fix,
               team: this.team.id,
               user: this.user.id,
               rotations: this.rotations,

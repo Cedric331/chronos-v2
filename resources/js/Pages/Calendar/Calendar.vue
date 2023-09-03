@@ -164,12 +164,12 @@ export default {
             let color = '';
             if (type_day === 'Planifié') {
                 color = 'bg-[#7bed9f]';
-            } else if (type_day === 'Congé Payé' || type_day === 'Récup JF') {
-                color = 'bg-[#60a3bc]';
+            } else if (type_day === 'Congés Payés' || type_day === 'Récup JF') {
+                color = 'bg-[#7ed6df]';
             } else if (type_day === 'Repos' || type_day === 'JF') {
-                color = 'bg-[#82ccdd]';
+                color = 'bg-[#48dbfb]';
             } else if (type_day === 'Maladie') {
-                color = 'bg-[#f8c291]';
+                color = 'bg-[#feca57]';
             } else {
                 color = 'bg-[#b8e994]';
             }

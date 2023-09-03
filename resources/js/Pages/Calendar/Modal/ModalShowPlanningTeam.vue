@@ -1,7 +1,7 @@
 <template>
-    <Modal :show="show" :maxWidth="widthCustom" :classCustom="'text-black dark:text-white'">
+    <Modal :show="show" :maxWidth="widthCustom">
 
-        <div v-if="showDates[0]" class="overflow-x-auto">
+        <div v-if="showDates[0]" class="overflow-x-auto p-4 bg-white">
             <div v-if="isMobile()">
                 <ViewDayTeam :showDates="showDates"></ViewDayTeam>
             </div>

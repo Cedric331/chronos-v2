@@ -1,6 +1,6 @@
 <template>
     <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
-        <div class="h-20 flex border-b-2 border-white items-center justify-between dark:bg-gray-800 bg-gray-200" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+        <div class="h-20 flex items-center justify-between dark:bg-gray-600 bg-gray-200" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
             <div class="m-4 flex justify-start">
                 <h3 class="text-xl font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Administration de la Team</h3>
                 <select v-model="team" class="rounded-lg h-10 ml-5">
@@ -11,7 +11,8 @@
                 <PrimaryButton @click.prevent="createTeam()">Créer une Team</PrimaryButton>
             </div>
         </div>
-        <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 mb-10 border-r border-l border-b border-white">
+        <hr class="h-1 border-t-0">
+        <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 mb-2">
             <TeamGestion :team="team" :key="team"></TeamGestion>
             <TeamUser :users="team.users" :key="team"></TeamUser>
         </div>

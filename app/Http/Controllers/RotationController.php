@@ -84,7 +84,7 @@ class RotationController extends Controller
 
             $rotationWithDetails = $rotation->load('details')->toArray();
             activity($team->name)
-                ->event('store')
+                ->event('Enregistrement')
                 ->performedOn($rotation)
                 ->withProperties($rotationWithDetails)
                 ->log('Une rotation a été créée');
@@ -176,7 +176,7 @@ class RotationController extends Controller
             $rotation->save();
 
             activity($rotation->team->name)
-                ->event('update')
+                ->event('Mise à jour')
                 ->performedOn($rotation)
                 ->withProperties($rotationWithDetails)
                 ->log('Une rotation a été modifiée');

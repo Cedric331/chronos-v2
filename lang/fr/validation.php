@@ -179,5 +179,20 @@ return [
     | of "email". This simply helps us make our message more expressive.
     |
     */
-
+    'attributes' => [
+        'password' => 'mot de passe',
+        'email' => 'adresse e-mail',
+        'name' => 'nom',
+        'first_name' => 'prénom',
+        'last_name' => 'nom',
+        'username' => 'nom d\'utilisateur',
+        'phone' => 'téléphone',
+        'mobile' => 'portable',
+        'home_no' => 'numéro de la maison',
+        'office_no' => 'numéro de bureau',
+        'address' => 'adresse',
+        'city' => 'ville',
+        'country' => 'pays',
+        'website' => 'site web',
+    ]
 ];

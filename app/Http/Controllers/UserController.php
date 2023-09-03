@@ -68,7 +68,7 @@ class UserController extends Controller
         Mail::to($user->email)->send(new ActivationAccount($mailData));
 
         activity($user->team->name)
-            ->event('store')
+            ->event('Enregistrement')
             ->performedOn($user)
             ->withProperties($user->getOriginal())
             ->log('L\'utilisateur ' . $user->name . ' a été créé');
@@ -122,7 +122,7 @@ class UserController extends Controller
 
         if ($user->wasChanged()) {
             activity($user->team->name)
-                ->event('update')
+                ->event('Mise à jour')
                 ->performedOn($user)
                 ->withProperties($user->getOriginal())
                 ->log('L\'utilisateur ' . $user->name . ' a été modifié');
@@ -154,7 +154,7 @@ class UserController extends Controller
         }
 
         activity($user->team->name)
-            ->event('Utilisateur supprimé')
+            ->event('Suppression')
             ->performedOn($user)
             ->withProperties($user->getOriginal())
             ->log('L\'utilisateur ' . $user->name . ' a été supprimé');

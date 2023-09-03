@@ -17,4 +17,13 @@ return [
         'Formation',
     ],
 
+    // Détermine les types de jours à ne pas modifier
+    'type_days_fix' => [
+        'Récup JF',
+        'Congés Payés',
+        'JF',
+        'Maladie',
+        'Formation',
+    ],
+
 ];

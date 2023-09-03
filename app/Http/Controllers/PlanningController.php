@@ -62,11 +62,16 @@ class PlanningController extends Controller
             return response()->json('Erreur dans la sélection des dates', 422);
         }
 
-        // TODO Gérer les plannings déjà planifié (CP, RJF...)
-        Planning::where('user_id', $request->user)->delete();
+        if ($request->type_fix) {
+            Planning::where('user_id', $request->user)
+                ->whereNotIn('type_day', config('teams.type_days_fix'))
+                ->delete();
+        } else {
+            Planning::where('user_id', $request->user)->delete();
+        }
 
         $countDayGenerate = 0;
-        while (! $dateStart->eq($dateEnd)) {
+        while (!$dateStart->eq($dateEnd)) {
             foreach ($request->rotations as $rotation) {
                 foreach ($rotation['details'] as $detail) {
                     $this->createPlanning($detail, $rotation, $request->user, $dateStart);
@@ -74,9 +79,8 @@ class PlanningController extends Controller
                     $countDayGenerate++;
 
                     if ($dateStart->eq($dateEnd)) {
-
                         activity(Auth::user()->team->name)
-                            ->event('update')
+                            ->event('Mise à jour')
                             ->performedOn(User::find($request->user))
                             ->log('Un planning a été généré pour ' . User::find($request->user)->name);
 
@@ -94,20 +98,25 @@ class PlanningController extends Controller
         $calendar = Calendar::whereDate('date', $date)->first();
 
         if ($calendar) {
-            $planning = Planning::create([
-                'type_day' => $detail['is_off'] ? 'Repos' : 'Planifié',
-                'debut_journee' => $detail['debut_journee'],
-                'debut_pause' => $detail['debut_pause'],
-                'fin_pause' => $detail['fin_pause'],
-                'fin_journee' => $detail['fin_journee'],
-                'is_technician' => $detail['technicien'],
-                'telework' => $detail['teletravail'],
-                'hours' => $this->calculateWorkHours($detail),
-                'calendar_id' => $calendar->id,
-                'rotation_id' => $rotation['id'],
-                'team_id' => Auth::user()->team_id,
-                'user_id' => $userId,
-            ]);
+            $planning = Planning::where('calendar_id', $calendar->id)
+                ->where('user_id', $userId)
+                ->first();
+            if (!$planning) {
+                $planning = Planning::create([
+                    'type_day' => $detail['is_off'] ? 'Repos' : 'Planifié',
+                    'debut_journee' => $detail['debut_journee'],
+                    'debut_pause' => $detail['debut_pause'],
+                    'fin_pause' => $detail['fin_pause'],
+                    'fin_journee' => $detail['fin_journee'],
+                    'is_technician' => $detail['technicien'],
+                    'telework' => $detail['teletravail'],
+                    'hours' => $this->calculateWorkHours($detail),
+                    'calendar_id' => $calendar->id,
+                    'rotation_id' => $rotation['id'],
+                    'team_id' => Auth::user()->team_id,
+                    'user_id' => $userId,
+                ]);
+            }
 
             response()->json($planning);
         }
@@ -151,7 +160,7 @@ class PlanningController extends Controller
             }
 
             activity(Auth::user()->team->name)
-                ->event('update')
+                ->event('Mise à jour')
                 ->performedOn($planning)
                 ->withProperties($planning->getOriginal())
                 ->log('Les informations du planning ont été modifiées');
@@ -180,8 +189,10 @@ class PlanningController extends Controller
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
             $day = strtolower($planning->calendar->getDay());
+            $currentDate = Carbon::parse($day)->isoFormat('dddd');
+
             foreach ($rotation->details as $detail) {
-                if (strtolower($detail['day']) === $day) {
+                if (strtolower($detail['day']) === $currentDate) {
 
                     $planning->update([
                         'debut_journee' => $detail->debut_journee,
@@ -195,7 +206,7 @@ class PlanningController extends Controller
                     ]);
 
                     activity(Auth::user()->team->name)
-                        ->event('update')
+                        ->event('Mise à jour')
                         ->performedOn($planning)
                         ->withProperties($planning->getOriginal())
                         ->log('Les informations du planning ont été modifiées');
@@ -204,9 +215,8 @@ class PlanningController extends Controller
         }
 
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
-            $query->where('user_id', $planning->user_id);
-        }])
-            ->find($ids);
+            $query->with('eventPlannings')->where('user_id', $planning->user_id);
+        }])->find($ids);
 
         return response()->json($calendar);
     }
@@ -248,7 +258,7 @@ class PlanningController extends Controller
         ]);
 
         activity(Auth::user()->team->name)
-            ->event('Création de lien de partage')
+            ->event('Enregistrement')
             ->log('Un lien de partage a été généré');
 
         return response()->json(['link' => url("/planning/{$token}")]);
@@ -265,7 +275,7 @@ class PlanningController extends Controller
             $link->delete();
 
             activity(Auth::user()->team->name)
-                ->event('Suppression de lien de partage')
+                ->event('Suppression')
                 ->log('Un lien de partage a été supprimé');
         } else {
             return response()->json(['message' => 'Vous n\'êtes pas autorisé à supprimer ce lien'], 403);

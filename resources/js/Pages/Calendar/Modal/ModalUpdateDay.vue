@@ -121,7 +121,7 @@
                             <section class="container p-6 mx-auto bg-gray-100 h-[499px]">
                                 <div>
                                     <div v-for="rotation in this.$page.props.auth.team.rotations" class="flex justify-around mt-2">
-                                        <div @click.prevent="this.selectedRotation = rotation.id" :id="rotation.name" :class="[selectedRotation === rotation.id ? 'bg-[#1e90ff]' : '']" class="rounded-lg p-1 flex text-white bg-gray-600 w-[80%] justify-center cursor-pointer hover:bg-[#70a1ff]">
+                                        <div @click.prevent="selectRotation(rotation.id)" :id="rotation.name" :class="[selectedRotation === rotation.id ? 'bg-[#1dd1a1]' : '']" class="rounded-lg p-1 flex text-white bg-gray-600 w-[80%] justify-center cursor-pointer">
                                             <p>{{ rotation.name }}</p>
                                         </div>
                                     </div>
@@ -264,6 +264,13 @@ export default {
         },
         deleteDay (day) {
             this.$emit('deleteDayList', day)
+        },
+        selectRotation (rotation) {
+            if (this.selectedRotation === rotation) {
+                this.selectedRotation = null
+            } else {
+                this.selectedRotation = rotation
+            }
         },
         updatePlannig () {
             if (this.tab === 0) {

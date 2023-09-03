@@ -18,14 +18,14 @@
 
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
+                                    {{ $t('nav.management') }}
+                                </NavLink>
                                 <NavLink :href="route('planning')" :active="route().current('planning')">
                                     {{ $t('nav.dashboard') }}
                                 </NavLink>
                                 <NavLink :href="route('information.index')" :active="route().current('information.index')">
                                     Information de la team
-                                </NavLink>
-                                <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
-                                    {{ $t('nav.management') }}
                                 </NavLink>
                             </div>
                         </div>
@@ -157,6 +157,9 @@
                                         </template>
 
                                         <template #content>
+                                            <DropdownLink :href="route('admin.index')">
+                                               Administration
+                                            </DropdownLink>
                                             <DropdownLink :href="route('profile.edit')">
                                                 {{ $t('nav.profil') }}
                                             </DropdownLink>
