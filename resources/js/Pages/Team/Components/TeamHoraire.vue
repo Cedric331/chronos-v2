@@ -1,5 +1,5 @@
 <template>
-    <div class="h-auto bg-gray-300 dark:bg-gray-800 p-5" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div class="h-auto bg-gray-300 dark:bg-gray-800 p-5" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
         <h3 class="text-xl font-bold leading-none text-gray-900 my-2 dark:text-white">Gestion des alertes horaires</h3>
         <p class="dark:text-white my-2">Vous pouvez indiquer pour chaque jour de la semaine et plage horaire le nombre de conseillers souhaité, auquel cas il vous en informera.</p>
         <table class="table-auto w-full">

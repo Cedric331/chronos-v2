@@ -49,7 +49,7 @@
 
         <div>
             <div class="w-full mx-auto">
-                <div class="dark:bg-gray-800 overflow-hidden shadow-sm min-h-screen" :style="{background: this.$store.state.isDarkMode? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color2 + ', ' + $page.props.auth.team.params.color1 + ')'}">
+                <div class="dark:bg-gray-800 overflow-hidden shadow-sm min-h-screen" :style="{background: $store.state.isDarkMode? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color2 + ', ' + $page.props.auth.team.params.color1 + ')'}">
                     <Calendar
                         ref="calendar"
                         :daysProps="daysProps"

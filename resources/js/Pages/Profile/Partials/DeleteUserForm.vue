@@ -51,15 +51,15 @@ const closeModal = () => {
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">
             <div class="p-6">
-                <h2 class="text-lg font-medium" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                <h2 class="text-lg font-medium" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                     Êtes-vous sûr de vouloir supprimer votre compte ?
                 </h2>
 
-                <p class="mt-1 text-sm" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                <p class="mt-1 text-sm" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                     Une fois votre compte supprimé, toutes ses ressources et données seront définitivement effacées. Veuillez saisir votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.
                 </p>
                 <br>
-                <p class="mt-1 text-sm" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Entrez votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.</p>
+                <p class="mt-1 text-sm" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Entrez votre mot de passe pour confirmer que vous souhaitez supprimer définitivement votre compte.</p>
 
                 <div class="mt-6">
                     <InputLabel for="password" value="Password" class="sr-only" />

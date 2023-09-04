@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 p-4 sm:p-6 h-full" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div class="bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 p-4 sm:p-6 h-full" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Gestion des rotations</h3>
             <div>

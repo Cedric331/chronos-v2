@@ -1,5 +1,5 @@
 <template>
-    <div class="dark:bg-gray-800 bg-gray-300 shadow rounded-lg p-4 2xl:col-span-2" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div class="dark:bg-gray-800 bg-gray-300 shadow rounded-lg p-4 2xl:col-span-2" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
         <div class="mb-4 flex items-center justify-between">
             <div>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">

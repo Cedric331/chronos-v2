@@ -7,38 +7,38 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-white dark:bg-gray-800">
                         <tr>
-                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ $t('name') }}
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Email
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Téléphone
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <th scope="col" class="p-4 text-left text-xs  font-medium  uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ $t('birthday') }}
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium  uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'"></th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium  uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'"></th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium  uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'"></th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium  uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'"></th>
                         </tr>
                         </thead>
 
                         <tbody class="bg-white dark:bg-gray-200">
                         <tr v-for="(user, i) in users" class="hover:bg-gray-200 dark:hover:bg-gray-400">
-                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ user.name }}
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ user.email }}
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ user.phone }}
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <td class="p-4 whitespace-nowrap text-sm font-semibold" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ dateFormatFr(user.birthday) }}
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <td class="p-4 whitespace-nowrap text-sm font-semibold" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 <div v-if="user.account_active">
                                     Compte activé
                                 </div>
@@ -46,7 +46,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                                     </svg>
-                                    <p :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                                    <p :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                         Invitation envoyée
                                     </p>
                                 </div>
@@ -69,13 +69,13 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-white dark:bg-gray-800">
                         <tr>
-                            <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Lien
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Description
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 Ajouté par
                             </th>
                             <th scope="col" class="p-2 text-xs font-medium  w-1/5 tracking-wider">
@@ -89,14 +89,14 @@
                         <tbody class="bg-white dark:bg-gray-200">
                         <tr v-for="(link, i) in links" class="hover:bg-gray-200 dark:hover:bg-gray-400">
                             <td class="p-4 whitespace-nowrap text-sm font-normal ">
-                                <a :href="link.link" target="_blank" class="text-[#70a1ff]" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Accéder au lien</a>
+                                <a :href="link.link" target="_blank" class="text-[#70a1ff]" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Accéder au lien</a>
                             </td>
-                            <td class="p-4 whitespace-normal text-sm font-normal" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <td class="p-4 whitespace-normal text-sm font-normal" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 <div class="w-full">
                                     {{ link.description }}
                                 </div>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                            <td class="p-4 whitespace-nowrap text-sm font-normal" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                                 {{ link.user.name }}
                             </td>
                             <td class="p-4 flex items-center justify-center">

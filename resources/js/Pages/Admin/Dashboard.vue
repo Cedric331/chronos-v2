@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
-        <div class="flex overflow-hidden" :class="[this.$store.state.isDarkMode ? 'bg-gray-900' : 'bg-white']">
-            <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+        <div class="flex overflow-hidden" :class="[$store.state.isDarkMode ? 'bg-gray-900' : 'bg-white']">
+            <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                 <main>
                     <div class="p-6">
                         <div class="w-full p-4 grid grid-cols-1">

@@ -1,8 +1,8 @@
 <template>
-    <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
-        <div class="h-20 flex items-center justify-between dark:bg-gray-600 bg-gray-200" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+    <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+        <div class="h-20 flex items-center justify-between dark:bg-gray-600 bg-gray-200" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
             <div class="m-4 flex justify-start">
-                <h3 class="text-xl font-bold" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Administration de la Team</h3>
+                <h3 class="text-xl font-bold" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Administration de la Team</h3>
                 <select v-model="team" class="rounded-lg h-10 ml-5">
                     <option v-for="item in teams" :value="item">{{ item.name }}</option>
                 </select>

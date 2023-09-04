@@ -1,7 +1,7 @@
 <template>
     <Modal :show="show" @close="this.$emit('close')">
         <form class="py-6 px-9">
-            <h2 class="flex justify-center my-5 text-xl w-full" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+            <h2 class="flex justify-center my-5 text-xl w-full" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                 Création de la team
             </h2>
             <hr class="my-4">

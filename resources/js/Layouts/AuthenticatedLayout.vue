@@ -1,10 +1,10 @@
 <template>
     <notifications position="bottom right" />
     <Loading :show="isLoading" :messageLoading="messageLoading"></Loading>
-    <div :class="{ 'dark': this.$store.state.isDarkMode }">
+    <div :class="{ 'dark': $store.state.isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen dark:bg-gray-900" >
-            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700" :style="{background: this.$store.state.isDarkMode? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color1 + ', ' + $page.props.auth.team.params.color2 + ')'}">
+            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700" :style="{background: $store.state.isDarkMode? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color1 + ', ' + $page.props.auth.team.params.color2 + ')'}">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -121,7 +121,7 @@
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <div class="checkbox-wrapper-54 relative inline-flex items-center cursor-pointer">
                                     <label class="switch">
-                                        <input @click="updateDarkMode($event)" :checked="this.$store.state.isDarkMode" type="checkbox">
+                                        <input @click="updateDarkMode($event)" :checked="$store.state.isDarkMode" type="checkbox">
                                         <span class="slider"></span>
                                     </label>
                                 </div>
@@ -238,7 +238,7 @@
             </nav>
 
             <!-- Page Heading -->
-            <header class="border-1 top-0 dark:bg-gray-800 bg-gray-100 sticky top-0" v-if="$slots.header" :style="{ backgroundColor: this.$store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+            <header class="border-1 top-0 dark:bg-gray-800 bg-gray-100 sticky top-0" v-if="$slots.header" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                 <div class="w-auto mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>

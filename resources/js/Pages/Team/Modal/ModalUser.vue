@@ -1,7 +1,7 @@
 <template>
     <Modal :show="showUser" @close="this.$emit('close')">
         <form class="py-6 px-9">
-            <h2 class="flex justify-center my-5 text-xl w-full" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">
+            <h2 class="flex justify-center my-5 text-xl w-full" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                 {{ this.user ? 'Modifier' : 'Ajouter' }} un utilisateur
             </h2>
             <hr class="my-4 dark:text-white">
@@ -50,7 +50,7 @@
                 <div class="relative">
                     <checkbox v-model="item.hasAccessAdmin" :checked="item.hasAccessAdmin"></checkbox>
                     <label for="access" class="ml-4 text-sm text-blue-500 duration-300 transform z-10 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Accès administrateur</label>
-                    <p class="text-xs" :class="[this.$store.state.isDarkMode ? 'text-white' : 'text-black']">Permet de donner des autorisations (Administrateur) sans avoir le rôle.</p>
+                    <p class="text-xs" :class="[$store.state.isDarkMode ? 'text-white' : 'text-black']">Permet de donner des autorisations (Administrateur) sans avoir le rôle.</p>
                 </div>
             </div>
 

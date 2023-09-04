@@ -1,12 +1,12 @@
 <template>
     <Modal :show="showEvent" @close="this.$emit('close')">
         <div class="py-6 px-9">
-            <h2 :class="{'text-white' : this.$store.state.isDarkMode }" class="flex justify-center mb-5 text-2xl w-full">
+            <h2 :class="{'text-white' : $store.state.isDarkMode }" class="flex justify-center mb-5 text-2xl w-full">
                 Création d'un événement
             </h2>
             <hr class="my-4 dark:text-white">
 
-            <p :class="{'text-white' : this.$store.state.isDarkMode}" class="text-sm">Vous pouvez créer des évènements sur les journées.</p><br>
+            <p :class="{'text-white' : $store.state.isDarkMode}" class="text-sm">Vous pouvez créer des évènements sur les journées.</p><br>
 
             <div class="mb-5">
                 <div class="relative">
@@ -26,10 +26,10 @@
                 <label class="relative inline-flex items-center cursor-pointer">
                     <input v-model="check" type="checkbox" class="sr-only peer">
                     <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                    <span class="ml-3 text-sm font-medium text-gray-900" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'" >Créer l'event pour toute la team</span>
+                    <span class="ml-3 text-sm font-medium text-gray-900" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'" >Créer l'event pour toute la team</span>
                 </label>
             </div>
-            <p class="mb-5 text-xs mt-1" :class="this.$store.state.isDarkMode ? 'text-white' : 'text-black'">Obligatoire (*)</p>
+            <p class="mb-5 text-xs mt-1" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Obligatoire (*)</p>
 
             <InputError :message="errors" :can-close="true" @close="this.errors = null"></InputError>
 
