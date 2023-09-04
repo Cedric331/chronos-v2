@@ -145,7 +145,7 @@ class CalendarController extends Controller
         $url = 'https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
 
         $response = Http::get($url);
-dd($response);
+
         // Vérifier si la requête a réussi
         if ($response->failed()) {
             // Gérer l'erreur, peut-être lever une exception ou retourner une valeur par défaut
