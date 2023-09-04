@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Yasumi\Yasumi;
-use Illuminate\Support\Facades\Http;
 
 class CalendarController extends Controller
 {
@@ -139,22 +138,11 @@ class CalendarController extends Controller
         return [! empty($zonesInHolidays), $zonesInHolidays];
     }
 
-
     private static function getSchoolHolidays($year)
     {
-        $url = 'http://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
+        $url = 'https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
 
-        $response = Http::get($url);
-        dd($response->collect());
-        // Vérifier si la requête a réussi
-        if ($response->failed()) {
-            // Gérer l'erreur, peut-être lever une exception ou retourner une valeur par défaut
-            throw new \Exception('Failed to fetch the calendar.');
-        }
-
-        $icsContent = $response->body();
-
-        $ical = new ICal($icsContent, [
+        $ical = new ICal($url, [
             'defaultTimeZone' => 'Europe/Paris',
         ]);
 
@@ -162,12 +150,39 @@ class CalendarController extends Controller
             'A' => [],
             'B' => [],
             'C' => [],
-            // 'Corse' => [],
+            //            'Corse' => [],
         ];
 
-        // (Le reste de votre code reste inchangé ...)
+        foreach ($ical->events() as $event) {
+            $startDate = $event->dtstart_array[2];
+            $endDate = $event->dtend_array[2];
+
+            $zones = [];
+
+            if (strpos($event->summary, 'A') !== false) {
+                $zones[] = 'A';
+            }
+            if (strpos($event->summary, 'B') !== false) {
+                $zones[] = 'B';
+            }
+            if (strpos($event->summary, 'C') !== false) {
+                $zones[] = 'C';
+            }
+            //            if (strpos($event->summary, 'Corse') !== false) {
+            //                $zones[] = 'Corse';
+            //            }
+
+            if (! empty($zones)) {
+                foreach ($zones as $zone) {
+                    $holidaysByZone[$zone][] = [
+                        'name' => $event->summary,
+                        'start' => date('Y-m-d', $startDate),
+                        'end' => date('Y-m-d', strtotime('-1 day', $endDate)),
+                    ];
+                }
+            }
+        }
 
         return $holidaysByZone;
     }
-
 }
