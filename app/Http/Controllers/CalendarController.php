@@ -16,7 +16,6 @@ class CalendarController extends Controller
 {
     public function getPlanning(): \Inertia\Response
     {
-        dd($this->getSchoolHolidays());
         $user = User::find(Auth::id());
         $users = User::where('team_id', $user->team_id)->get();
 
