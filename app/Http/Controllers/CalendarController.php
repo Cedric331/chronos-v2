@@ -142,7 +142,7 @@ class CalendarController extends Controller
 
     private static function getSchoolHolidays($year)
     {
-        $url = 'https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
+        $url = 'http://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
 
         $response = Http::get($url);
 
