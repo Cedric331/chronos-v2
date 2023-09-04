@@ -143,7 +143,8 @@ class CalendarController extends Controller
     private static function getSchoolHolidays($year)
     {
         $url = 'http://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
-
+        $res = Http::get('https://calendrier.api.gouv.fr/jours-feries/metropole/2023.json');
+dd($res->collect());
         $response = Http::get($url);
 
         // Vérifier si la requête a réussi
