@@ -58,7 +58,9 @@ class TeamController extends Controller
             $teamSchedules = $team->teamSchedules;
         }
 
-        $teamWithUsers = $team->load('users');
+        $teamWithUsers = $team->load('users', function ($q) {
+            $q->where('role', '!=', 'Administrateur');
+        });
 
         return Inertia::render('Team/Team', [
             'team' => $teamWithUsers,
@@ -128,7 +130,7 @@ class TeamController extends Controller
             }
 
             $logoPath = $logo->storeAs($teamFolder, $logo->getClientOriginalName(), 'public');
-            $data['logo'] = $logoPath;
+            $data['logo'] = asset($logoPath);
         }
 
         $activities = Activity::where('log_name', $team->name)->get();

@@ -69,7 +69,7 @@ class HandleInertiaRequests extends Middleware
         ]);
     }
 
-    private function getMaxSizeFile(): string
+    private function getMaxSizeFile(): string|null
     {
         // Get upload_max_filesize from php.ini
         $maxUploadSize = ini_get('upload_max_filesize');
@@ -85,6 +85,9 @@ class HandleInertiaRequests extends Middleware
             $maxUploadSize = (int) $maxUploadSize / (1024 * 1024);
         }
 
-        return 'Taille max du fichier : '.$maxUploadSize.' MB';
+        if ($maxUploadSize < 12) {
+            return 'Taille max du fichier : '.$maxUploadSize.' MB';
+        }
+        return null;
     }
 }
