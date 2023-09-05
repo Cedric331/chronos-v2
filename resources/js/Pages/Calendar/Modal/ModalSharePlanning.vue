@@ -14,7 +14,6 @@
                 <p :class="{'text-white' : $store.state.isDarkMode}" class="text-sm">Voici votre lien : </p>
                 <div class="flex justify-between">
                     <p :class="{'text-white' : $store.state.isDarkMode}" class="text-sm mt-2">{{ url }}</p>
-                    <SecondaryButton @click.prevent="copyUrlToClipboard">Copier URL</SecondaryButton>
                 </div>
             </div>
             <div v-else class="mb-5">
@@ -28,6 +27,9 @@
 
             <InputError :message="errors" :can-close="true" @close="this.errors = null"></InputError>
 
+            <div class="flex justify-center mb-2">
+                <SecondaryButton @click.prevent="copyUrlToClipboard">Copier URL</SecondaryButton>
+            </div>
             <div class="flex justify-center">
                 <PrimaryButton v-if="url" @close="this.$emit('close')" class="w-2/4 flex justify-center">
                     Fermer

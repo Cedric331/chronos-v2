@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Calendar;
+use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
@@ -17,7 +18,15 @@ class CalendarController extends Controller
     public function getPlanning(): \Inertia\Response
     {
         $user = User::find(Auth::id());
-        $users = User::where('team_id', $user->team_id)->get();
+        $team = Team::find($user->team_id);
+
+        $roleNames = ['Conseiller', 'Coordinateur'];
+
+        $users = $team->load(['users' => function ($query) use ($roleNames) {
+            $query->whereHas('roles', function ($roleQuery) use ($roleNames) {
+                $roleQuery->whereIn('name', $roleNames);
+            });
+        }]);
 
         $monday = Carbon::now()->startOfWeek();
 
