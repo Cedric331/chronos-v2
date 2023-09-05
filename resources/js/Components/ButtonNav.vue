@@ -137,7 +137,7 @@ export default {
             this.$emit('deleteEvent')
         },
         openAuthWindow() {
-            if (!this.$page.props.auth.user.has_planning) {
+            if (!this.$page.props.auth.user.hasPlanning) {
                 this.$notify({
                     type: 'warn',
                     title: 'Action impossible',
