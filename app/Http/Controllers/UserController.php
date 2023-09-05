@@ -52,6 +52,7 @@ class UserController extends Controller
             'phone' => $request->input('phone'),
             'team_id' => $request->input('team_id'),
             'password' => bcrypt(Str::random(30)),
+            'company_id' => Auth::user()->company_id,
         ]);
 
         $user->assignRole($request->role);
