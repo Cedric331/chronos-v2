@@ -58,9 +58,14 @@ class TeamController extends Controller
             $teamSchedules = $team->teamSchedules;
         }
 
-        $teamWithUsers = $team->load('users', function ($q) {
-            $q->where('role', '!=', 'Administrateur');
-        });
+        $roleNames = ['Conseiller', 'Coordinateur'];
+
+        $teamWithUsers = $team->load(['users' => function ($query) use ($roleNames) {
+            $query->whereHas('roles', function ($roleQuery) use ($roleNames) {
+                $roleQuery->whereIn('name', $roleNames);
+            });
+        }]);
+
 
         return Inertia::render('Team/Team', [
             'team' => $teamWithUsers,
