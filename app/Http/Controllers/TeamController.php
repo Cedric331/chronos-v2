@@ -135,7 +135,7 @@ class TeamController extends Controller
             }
 
             $logoPath = $logo->storeAs($teamFolder, $logo->getClientOriginalName(), 'public');
-            $data['logo'] = asset($logoPath);
+            $data['logo'] = $logoPath;
         }
 
         $activities = Activity::where('log_name', $team->name)->get();
