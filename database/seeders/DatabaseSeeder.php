@@ -24,19 +24,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TeamSeeder::class,
         ]);
-        $user = User::factory(1)->create([
+         User::factory(1)->create([
             'email' => 'limacedric@hotmail.fr',
             'company_id' => 1,
         ]);
-        User::first()->assignRole('Coordinateur');
+        User::first()->assignRole('Administrateur');
 
         Permission::create(['name' => 'access-admin']);
-
-        User::first()->givePermissionTo('access-admin');
-
-        User::factory(5)->create([
-            'company_id' => 1,
-        ]);
 
         Artisan::call('planning:generate');
 
