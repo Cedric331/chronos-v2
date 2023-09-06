@@ -69,6 +69,7 @@
                     </div>
                 <div class="rounded-full py-2 space-y-2">
                     <button @click.prevent="openAuthWindow()"
+                            disabled
                         id="google"
                         class="bg-[#eccc68] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

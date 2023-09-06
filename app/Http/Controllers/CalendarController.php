@@ -18,15 +18,15 @@ class CalendarController extends Controller
     public function getPlanning(): \Inertia\Response
     {
         $user = User::find(Auth::id());
-        $team = Team::find($user->team_id);
 
         $roleNames = ['Conseiller', 'Coordinateur'];
-
-        $users = $team->load(['users' => function ($query) use ($roleNames) {
+        $users = User::where(function ($query) use ($roleNames) {
             $query->whereHas('roles', function ($roleQuery) use ($roleNames) {
                 $roleQuery->whereIn('name', $roleNames);
             });
-        }]);
+        })
+        ->where('team_id', $user->team_id)
+        ->get();
 
         $monday = Carbon::now()->startOfWeek();
 
