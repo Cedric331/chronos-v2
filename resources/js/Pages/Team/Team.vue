@@ -34,10 +34,12 @@ import TeamGestion from "@/Pages/Team/Components/TeamGestion.vue";
 import TeamRotation from "@/Pages/Team/Components/TeamRotation.vue";
 import TeamHoraire from "@/Pages/Team/Components/TeamHoraire.vue";
 import Log from "@/Pages/Team/Components/Log.vue";
+import Statistique from "@/Pages/Team/Components/Statistique.vue";
 
 export default {
     name: 'Team',
     components: {
+        Statistique,
         Log,
         TeamHoraire,
         TeamRotation,

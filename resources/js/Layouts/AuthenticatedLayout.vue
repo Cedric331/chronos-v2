@@ -127,7 +127,6 @@
                                 </div>
                             </div>
 
-
                             <div class="hidden sm:flex sm:items-center sm:ml-6">
                                 <!-- Settings Dropdown -->
                                 <div class="ml-3 relative">
@@ -211,6 +210,12 @@
                     class="sm:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
+                        <ResponsiveNavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
+                            {{ $t('nav.management') }}
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink :href="route('information.index')" :active="route().current('information.index')">
+                            Information de la team
+                        </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('planning')" :active="route().current('planning')">
                             {{ $t('nav.dashboard') }}
                         </ResponsiveNavLink>
