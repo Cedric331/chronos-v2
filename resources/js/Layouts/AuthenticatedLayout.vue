@@ -51,12 +51,12 @@
                                             </template>
 
                                             <template #content>
-                                                <div v-if="$page.props.auth.alerts.find(item => !item.is_read)">
+                                                <div v-if="unreadAlertsItems.lenght > 0">
                                                     <div class="flex justify-center text-blue-400 p-1 text-xs cursor-pointer" @click="markAllRead()">
                                                         Marquer comme lu
                                                     </div>
                                                 </div>
-                                                <div v-for="alert in $page.props.auth.alerts" :key="alert.id">
+                                                <div v-for="alert in unreadAlertsItems" :key="alert.id">
                                                     <div v-if="!alert.is_read" @click="markAllReadOne(alert.id)" class="dark:text-white w-full hover:bg-gray-200 p-1 text-xs dark:hover:bg-gray-50 dark:hover:text-black cursor-pointer"> {{ alert.message }} </div>
                                                 </div>
                                             </template>
