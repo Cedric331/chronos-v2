@@ -47,7 +47,7 @@ class GoogleController extends Controller
     public function createGoogleCalendarEvent($accessToken)
     {
         $client = new \Google_Client();
-        $client->setApplicationName('Google Calendar API PHP Quickstart');
+        $client->setApplicationName('Chronos');
         $client->setScopes([
             'https://www.googleapis.com/auth/calendar',
             'https://www.googleapis.com/auth/calendar.events',
