@@ -43,7 +43,7 @@
                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                       <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                                                     </svg>
-                                                    <span class="absolute top-3 right-4 bg-[#ff4757] text-white rounded-full w-2 h-2 p-2 text-xs flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
+                                                    <span v-if="unreadAlertsItems.length > 0" class="absolute top-3 right-4 bg-[#ff4757] text-white rounded-full w-2 h-2 p-2 text-xs flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
                                                         {{ unreadAlertsItems.length }}
                                                     </span>
                                                 </button>
@@ -51,12 +51,12 @@
                                             </template>
 
                                             <template #content>
-                                                <div v-if="$page.props.auth.alerts.find(item => !item.is_read)">
+                                                <div v-if="unreadAlertsItems.length > 0">
                                                     <div class="flex justify-center text-blue-400 p-1 text-xs cursor-pointer" @click="markAllRead()">
                                                         Marquer comme lu
                                                     </div>
                                                 </div>
-                                                <div v-for="alert in $page.props.auth.alerts" :key="alert.id">
+                                                <div v-for="alert in unreadAlertsItems" :key="alert.id">
                                                     <div v-if="!alert.is_read" @click="markAllReadOne(alert.id)" class="dark:text-white w-full hover:bg-gray-200 p-1 text-xs dark:hover:bg-gray-50 dark:hover:text-black cursor-pointer"> {{ alert.message }} </div>
                                                 </div>
                                             </template>
@@ -322,8 +322,7 @@ export default {
                         text: "La notification a été marquée comme lue",
                         type: 'success',
                     });
-                    this.$page.props.auth.alerts = this.$page.props.auth.alerts.filter(item => item.id !== id);
-                    this.unreadAlerts()
+                    this.unreadAlertsItems = this.unreadAlertsItems.filter(item => item.id !== id);
                 })
                 .catch(error => {
                     console.log(error)
@@ -342,8 +341,7 @@ export default {
                       text: "Toutes les notifications ont été marquées comme lues",
                       type: 'success',
                   });
-                  this.$page.props.auth.alerts = [];
-                    this.unreadAlerts()
+                  this.unreadAlertsItems = [];
               })
               .catch(error => {
                   console.log(error)
