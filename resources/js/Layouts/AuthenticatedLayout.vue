@@ -51,7 +51,7 @@
                                             </template>
 
                                             <template #content>
-                                                <div v-if="unreadAlertsItems.lenght > 0">
+                                                <div v-if="unreadAlertsItems.length > 0">
                                                     <div class="flex justify-center text-blue-400 p-1 text-xs cursor-pointer" @click="markAllRead()">
                                                         Marquer comme lu
                                                     </div>
@@ -322,8 +322,7 @@ export default {
                         text: "La notification a été marquée comme lue",
                         type: 'success',
                     });
-                    this.$page.props.auth.alerts = this.$page.props.auth.alerts.filter(item => item.id !== id);
-                    this.unreadAlerts()
+                    this.unreadAlertsItems = this.unreadAlertsItems.filter(item => item.id !== id);
                 })
                 .catch(error => {
                     console.log(error)
@@ -342,8 +341,7 @@ export default {
                       text: "Toutes les notifications ont été marquées comme lues",
                       type: 'success',
                   });
-                  this.$page.props.auth.alerts = [];
-                    this.unreadAlerts()
+                  this.unreadAlertsItems = [];
               })
               .catch(error => {
                   console.log(error)
