@@ -162,6 +162,9 @@
                                             <DropdownLink :href="route('profile.edit')">
                                                 {{ $t('nav.profil') }}
                                             </DropdownLink>
+                                            <button @click="this.showContact = true" class="block w-full px-4 py-2 text-left text-sm leading-5 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-800 transition duration-150 ease-in-out">
+                                                Contacter l'administrateur
+                                            </button>
                                             <DropdownLink :href="route('logout')" method="post" as="button">
                                                 {{ $t('nav.logout') }}
                                             </DropdownLink>
@@ -255,6 +258,7 @@
             </main>
         </div>
     </div>
+    <ModalContact :showContact="showContact" @close="(data) => closeModalContact(data)"></ModalContact>
 </template>
 
 <script>
@@ -265,10 +269,14 @@ import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import {Head, Link} from '@inertiajs/vue3';
 import Loading from "@/Components/Loading.vue";
+import ModalContact from "@/Components/Modal/ModalContact.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 export default {
     name: 'AuthenticatedLayout',
     components: {
+        PrimaryButton,
+        ModalContact,
         Head,
         ApplicationLogo,
         Dropdown,
@@ -282,6 +290,7 @@ export default {
         return {
             unreadAlertsItems: [],
             team: {'name': null},
+            showContact: false,
             isLoading: false,
             messageLoading: '',
             showingNavigationDropdown: false,
@@ -291,6 +300,16 @@ export default {
         }
     },
     methods: {
+        closeModalContact (data) {
+            this.showContact = false
+            if (data) {
+                this.$notify({
+                    title: "Succès",
+                    text: "Votre message a bien été envoyé",
+                    type: 'success',
+                });
+            }
+        },
         switchTeam (team) {
             axios.patch('/switch/team/' + team.id)
                 .then(() => {
