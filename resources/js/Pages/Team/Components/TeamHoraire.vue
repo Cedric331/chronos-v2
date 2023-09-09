@@ -1,28 +1,35 @@
 <template>
-    <div class="h-auto bg-gray-300 dark:bg-gray-800 p-5" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div class="bg-gray-300 dark:bg-gray-800  2xl:col-span-2 shadow p-4" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
         <h3 class="text-xl font-bold leading-none text-gray-900 my-2 dark:text-white">Gestion des alertes horaires</h3>
-        <p class="dark:text-white my-2">Vous pouvez indiquer pour chaque jour de la semaine et plage horaire le nombre de conseillers souhaité, auquel cas il vous en informera.</p>
-        <table class="table-auto w-full">
-            <thead class="bg-gray-300 dark:bg-gray-700">
-            <tr>
-                <th class="px-4 py-2 dark:text-white">Heures</th>
-                <th v-for="day in days" :key="day" class="px-4 py-2 dark:text-white">{{ day }}</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr v-for="(time, index) in times" :key="index">
-                <td class="border px-4 dark:text-white py-2">{{ time }}</td>
-                <td v-for="(day, indexDay) in days" :key="indexDay" class="border px-4 py-2">
-                    <input v-model="inputs[index][indexDay]"
-                           type="number"
-                           :class="[inputs[index][indexDay] > 0 ? 'bg-green-200' : 'bg-red-200']"
-                           class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded outline-none"
-                           @input="debounceStore"
-                    />
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        <p class="dark:text-white my-2">Vous pouvez préciser pour chaque jour de la semaine et créneau horaire le nombre de conseillers que vous voulez, auquel cas il vous en informera en début de semaine.</p>
+
+        <div class="flex flex-col">
+            <div class="overflow-x-auto rounded-lg">
+                <div class="align-middle inline-block min-w-full">
+                    <table class="table-auto w-full">
+                        <thead class="bg-gray-300 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-8 py-2 dark:text-white">Heures</th>
+                            <th v-for="day in days" :key="day" class="px-4 py-2 dark:text-white">{{ day }}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(time, index) in times" :key="index">
+                            <td class="border px-4 dark:text-white py-2">{{ time }}</td>
+                            <td v-for="(day, indexDay) in days" :key="indexDay" class="border px-4 py-2">
+                                <input v-model="inputs[index][indexDay]"
+                                       type="number"
+                                       :class="[inputs[index][indexDay] > 0 ? 'bg-green-200' : '']"
+                                       class="w-full px-3 py-2 text-gray-700 bg-gray-200 rounded outline-none"
+                                       @input="debounceStore"
+                                />
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -92,10 +99,8 @@ export default {
                 });
             });
 
-            // Envoyer toutes les données en une seule requête
             axios.post('/team/schedule', data)
-                .then(response => {
-                    console.log(response.data);
+                .then(() => {
                     this.$notify({
                         type: 'success',
                         title: 'Succès',
@@ -113,7 +118,7 @@ export default {
         },
         debounceStore: debounce(function() {
             this.store();
-        }, 3000)
+        }, 1000)
     },
     created() {
         this.initializeInputs();

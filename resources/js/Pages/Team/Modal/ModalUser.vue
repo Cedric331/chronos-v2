@@ -50,7 +50,7 @@
                 <div class="relative">
                     <checkbox v-model="item.hasAccessAdmin" :checked="item.hasAccessAdmin"></checkbox>
                     <label for="access" class="ml-4 text-sm text-blue-500 duration-300 transform z-10 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4">Accès administrateur</label>
-                    <p class="text-xs" :class="[$store.state.isDarkMode ? 'text-white' : 'text-black']">Permet de donner des autorisations (Administrateur) sans avoir le rôle.</p>
+                    <p class="text-xs" :class="[$store.state.isDarkMode ? 'text-white' : 'text-black']">Permets de donner des autorisations d'administrateur sans avoir le rôle.</p>
                 </div>
             </div>
 

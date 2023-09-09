@@ -1,7 +1,7 @@
 <template>
     <div class="bg-gray-300 dark:bg-gray-800 shadow p-4 2xl:col-span-2" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
-        <div class="mb-4 flex items-center justify-between">
-            <div>
+        <div class="mb-4  flex items-center justify-between">
+            <div class="mb-4">
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
                     {{ $t('team_user.titre') }}
                 </h3>

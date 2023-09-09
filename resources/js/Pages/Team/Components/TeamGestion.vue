@@ -254,7 +254,7 @@ export default {
         });
         tippy('#shareLinkPlanning', {
             placement: 'top',
-            content: 'Permets d\'autoriser la partage du planning de l\'équipe via un lien unique. Ce lien permet de partage son planning à des personnes externes à l\'équipe.',
+            content: 'Permets le partage du planning via un lien unique. Ce lien vous permet de faire part de votre emploi du temps à des personnes de l\'extérieur.',
         });
     }
 }
