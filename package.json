@@ -23,6 +23,7 @@
         "@headlessui/vue": "^1.7.13",
         "@kyvg/vue3-notification": "^2.9.0",
         "@quasar/vite-plugin": "^1.4.1",
+        "chart.js": "^3.1.0",
         "flowbite": "^1.6.4",
         "flowbite-vue": "^0.0.10",
         "lodash": "^4.17.21",
