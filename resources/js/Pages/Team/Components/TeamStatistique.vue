@@ -31,7 +31,29 @@
                     </div>
 
                     <div v-if="this.chartData.datasets[0].data.length > 0" class="w-1/2 flex flex-col p-2">
-                        <DoughnutChart :chartData="chartData" :options="options" />
+
+                        <div v-if="typeGraph">
+                            <DoughnutChart :chartData="chartData" :options="options" />
+                        </div>
+                        <div v-else>
+                            <BarChart :chartData="chartData" :options="options" @chart:render="handleChartRender" @chart:update="handleChartUpdate" />
+                        </div>
+<!--                        <div class="inline-flex items-center">-->
+<!--                            <div class="relative inline-block h-5 w-8 cursor-pointer rounded-full">-->
+<!--                                <input-->
+<!--                                    v-model="typeGraph"-->
+<!--                                    id="auto-update"-->
+<!--                                    type="checkbox"-->
+<!--                                    class="peer absolute h-5 w-8 cursor-pointer appearance-none rounded-full bg-blue-gray-100 transition-colors duration-300 checked:bg-pink-500 peer-checked:border-pink-500 peer-checked:before:bg-pink-500"-->
+<!--                                />-->
+<!--                            </div>-->
+<!--                            <label-->
+<!--                                for="auto-update"-->
+<!--                                class="mt-px ml-3 mb-0 cursor-pointer select-none font-light text-gray-700"-->
+<!--                            >-->
+<!--                                Switcher de graphique-->
+<!--                            </label>-->
+<!--                        </div>-->
                     </div>
                     <div v-else class="flex items-center justify-center mx-auto">
                         <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">-- Aucune donnée --</h3>
@@ -45,18 +67,20 @@
 
 <script>
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import {DoughnutChart} from 'vue-chart-3';
+import {DoughnutChart, BarChart} from 'vue-chart-3';
 import { Chart, registerables } from "chart.js";
+import {Switch, SwitchLabel} from "@headlessui/vue";
 
 Chart.register(...registerables);
 export default {
     name: "Statistique",
-    components: {SecondaryButton, DoughnutChart},
+    components: {SwitchLabel, Switch, SecondaryButton, DoughnutChart, BarChart},
     props: {
         users: Array
     },
     data() {
         return {
+            typeGraph: true,
             chartData: {
                 labels: [
                     'Planifié',
@@ -65,7 +89,7 @@ export default {
                     'Jour Férié',
                     'Maladie',
                     'Repos',
-                    'Formation',
+                    'Formation'
                 ],
                 datasets: [
                     {
@@ -78,7 +102,6 @@ export default {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'top',
                         labels: {
                             color: this.$store.state.isDarkMode  ? '#ffffff' : '#000000',
                             boxWidth: 20,
@@ -90,8 +113,7 @@ export default {
                     },
                 },
                 title: {
-                    display: true,
-                    text: 'Statistique',
+                    display: false
                 },
             },
             errors: null,
@@ -101,6 +123,12 @@ export default {
         };
     },
     methods: {
+        handleChartRender(chartInstance) {
+            console.log("Chart rendered:", chartInstance);
+        },
+        handleChartUpdate(chartInstance) {
+            console.log("Chart updated:", chartInstance);
+        },
         submitForm() {
             this.errors = null;
             if (!this.selectedUser || !this.startDate || !this.endDate) {

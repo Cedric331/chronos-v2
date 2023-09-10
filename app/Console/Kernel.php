@@ -13,11 +13,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->command('inspire')->hourly();
-        $schedule->command(GeneratePlanning::class)->weeklyOn(0, '23:00');
-        $schedule->call('App\Http\Controllers\TeamScheduleController@checkHoraire')->weeklyOn(1, '1:00');
-
+//        $schedule->command(GeneratePlanning::class)->weeklyOn(1, '2:00');
+//        $schedule->call('App\Http\Controllers\TeamScheduleController@checkHoraire')->weeklyOn(1, '3:00');
+        $schedule->command(GeneratePlanning::class)->everyMinute();
+        $schedule->call('App\Http\Controllers\TeamScheduleController@checkHoraire')->everyMinute();
     }
+
 
     /**
      * Register the commands for the application.
