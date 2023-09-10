@@ -24,15 +24,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             TeamSeeder::class,
         ]);
-         User::factory(1)->create([
-            'email' => 'limacedric@hotmail.fr',
-            'company_id' => 1,
-        ]);
-        User::first()->assignRole('Administrateur');
 
         Permission::create(['name' => 'access-admin']);
-
-        Artisan::call('planning:generate');
 
         // \App\Models\User::factory()->create([
         //     'name' => 'Test User',
