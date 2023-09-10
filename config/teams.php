@@ -11,7 +11,7 @@ return [
         'Planifié',
         'Récup JF',
         'Congés Payés',
-        'JF',
+        'Jour Férié',
         'Maladie',
         'Repos',
         'Formation',
@@ -21,7 +21,7 @@ return [
     'type_days_fix' => [
         'Récup JF',
         'Congés Payés',
-        'JF',
+        'Jour Férié',
         'Maladie',
         'Formation',
     ],

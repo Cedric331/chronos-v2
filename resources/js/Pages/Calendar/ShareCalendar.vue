@@ -96,7 +96,7 @@ export default {
                 color = 'bg-[#7bed9f]';
             } else if (type_day === 'Congé Payé' || type_day === 'Récup JF') {
                 color = 'bg-[#60a3bc]';
-            } else if (type_day === 'Repos' || type_day === 'JF') {
+            } else if (type_day === 'Repos' || type_day === 'Jour Férié') {
                 color = 'bg-[#82ccdd]';
             } else if (type_day === 'Maladie') {
                 color = 'bg-[#f8c291]';
