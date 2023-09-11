@@ -45,7 +45,7 @@ class TeamController extends Controller
      */
     public function show($name): \Inertia\Response|\Symfony\Component\HttpFoundation\Response
     {
-        $team = Team::with(['rotations.details', 'params'])
+        $team = Team::with(['rotations.details', 'params', 'coordinateur'])
             ->where('name', $name)
             ->firstOrFail();
 
@@ -58,18 +58,31 @@ class TeamController extends Controller
             $teamSchedules = $team->teamSchedules;
         }
 
-        $roleNames = ['Conseiller', 'Coordinateur'];
-
-        $teamWithUsers = $team->load(['users' => function ($query) use ($roleNames) {
+        $roleNames = ['Conseiller'];
+        if ($team->params->send_coordinateur) {
+            $roleNames[] = 'Coordinateur';
+        }
+        $teamWithUsers = $team->load(['users' => function ($query) use ($roleNames, $team) {
             $query->whereHas('roles', function ($roleQuery) use ($roleNames) {
                 $roleQuery->whereIn('name', $roleNames);
             });
         }]);
 
+        $filteredUsers = $teamWithUsers->users->reject(function ($item) use ($team) {
+            return $item->isCoordinateur() && $team->user_id !== $item->id;
+        });
+
+        $teamWithUsers->setRelation('users', $filteredUsers);
+
+
+        $coordinateursProps = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Coordinateur');
+        })->get();
 
         return Inertia::render('Team/Team', [
             'team' => $teamWithUsers,
             'schedules' => $teamSchedules,
+            'coordinateursProps' => $coordinateursProps,
         ]);
     }
 
@@ -223,14 +236,22 @@ class TeamController extends Controller
 
     public function getInformation(): \Inertia\Response
     {
-
         $team = Auth::user()->team;
 
         if (! config('teams.active') || ! $team) {
             return Inertia::render('Errors/404');
         }
 
-        $users = User::where('team_id', $team->id)->select('id', 'name', 'phone', 'email', 'birthday', 'team_id', 'account_active')->get();
+        $roleNames = ['Conseiller', 'Coordinateur'];
+        $users = User::whereHas('roles', function ($roleQuery) use ($roleNames) {
+                $roleQuery->whereIn('name', $roleNames);
+            })
+            ->where('team_id', $team->id)
+            ->get();
+        $users = $users->reject(function ($item) use ($team) {
+            return $item->isCoordinateur() && $team->user_id !== $item->id;
+        });
+
         $links = null;
 
         if ($team->params->share_link) {

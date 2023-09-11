@@ -24,6 +24,15 @@
                 </div>
             </div>
 
+            <div class="mb-5">
+                <label for="subject" class="text-sm font-bold leading-tight tracking-normal" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Coordinateur de la team</label>
+                <div class="relative mb-5 mt-2">
+                    <select v-model="item.user_id" id="subject" class="text-gray-600 focus:outline-none focus:border focus:border-indigo-700 font-normal w-full h-12 flex items-center text-lg border-gray-300 rounded border">
+                        <option v-for="user in coordinateursProps" :value="user.id">{{ user.name }}</option>
+                    </select>
+                </div>
+            </div>
+
             <InputError :message="message" :canClose="true" @close="this.message = null"></InputError>
 
             <div class="flex justify-center">
@@ -42,11 +51,13 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
 import { Inertia } from '@inertiajs/inertia';
 import Checkbox from "@/Components/Checkbox.vue";
+import Dropdown from "@/Components/Dropdown.vue";
 
 export default {
     name: "ModalTeam",
     emits: ['store-team', 'close'],
     components: {
+        Dropdown,
         Checkbox,
         InputError,
         SecondaryButton,
@@ -54,7 +65,11 @@ export default {
         Modal
     },
     props: {
-        show: Boolean
+        show: Boolean,
+        coordinateursProps: {
+            type: Array,
+            required: true
+        }
     },
     data() {
         return {
@@ -69,8 +84,9 @@ export default {
     methods: {
         async storeTeam() {
             this.message = null
-            axios.post('/admin/team/store', {
+            axios.post('/chronos-admin/team/store', {
                 name: this.item.name,
+                user_id: this.item.user_id,
                 code_departement: this.item.code_departement,
                 checked: this.checked
             }).then((response) => {

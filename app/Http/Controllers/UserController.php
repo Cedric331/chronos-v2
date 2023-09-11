@@ -45,6 +45,15 @@ class UserController extends Controller
             return Inertia::render('Errors/401');
         }
 
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'birthday' => 'required|date',
+            'phone' => 'required|string|max:255',
+            'team_id' => 'required|integer',
+            'role' => 'required|string|max:255',
+        ]);
+
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -55,9 +64,7 @@ class UserController extends Controller
             'company_id' => Auth::user()->company_id,
         ]);
 
-        $user->assignRole($request->role);
-
-        $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
+        $activationLink = URL::temporarySignedRoute('activation', now()->addHour(48), ['email' => $user->email, 'name' => $user->name]);
 
         $mailData = [
             'link' => $activationLink,

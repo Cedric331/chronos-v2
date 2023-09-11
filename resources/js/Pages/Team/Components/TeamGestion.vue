@@ -20,6 +20,9 @@
                             <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
                                 {{ $t('department') }}
                             </th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
+                                Coordinateur
+                            </th>
                             <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider"></th>
                         </tr>
                         </thead>
@@ -44,10 +47,14 @@
                             <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                 {{ team.name }}
                             </td>
+
                             <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                 {{ team.departement ? team.departement : '' }}
                                 {{ team.departement && team.code_departement ? ' - ' : '' }}
                                 {{ team.code_departement ? team.code_departement : '' }}
+                            </td>
+                            <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
+                                {{ team.coordinateur ? team.coordinateur.name : '' }}
                             </td>
                             <td class="p-4 whitespace-nowrap items-end text-sm font-semibold">
                                 <SecondaryButton @click="editTeam()">
@@ -89,6 +96,19 @@
 <!--                                </SecondaryButton>-->
 <!--                            </td>-->
 <!--                        </tr>-->
+                        <tr>
+                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <svg id="updatePlanning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
+                                </svg>
+                                Afficher le Coordinateur dans le planning
+                            </th>
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <checkbox @update:checked="val => updateTeamParamsCheck('send_coordinateur', val)" :checked="team.params.send_coordinateur"></checkbox>
+                            </th>
+                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            </td>
+                        </tr>
                         <tr>
                             <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <svg id="updatePlanning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
@@ -146,7 +166,7 @@
                 </div>
             </div>
         </div>
-        <modal-team-update :show="show" :team="team" @close="close()"></modal-team-update>
+        <modal-team-update :show="show" :team="team" :coordinateursProps="coordinateursProps" @close="close()"></modal-team-update>
 <!--        <modal-update-type-day :show="showTypeDay" :team="team" @update:type_day="data => {updateTeamParamsTypeDay(data)}" @close="close()"></modal-update-type-day>-->
     </div>
 </template>
@@ -172,7 +192,11 @@ export default {
         SecondaryButton
     },
     props: {
-        team: Object
+        team: Object,
+        coordinateursProps: {
+            type: Array,
+            required: true
+        }
     },
     data () {
         return {
@@ -204,6 +228,7 @@ export default {
         updateTeamParamsCheck (paramName, newVal) {
             this.team.params[paramName] = newVal;
             axios.patch('/team/params/update/' + this.team.team_params_id, {
+                send_coordinateur: this.team.params.send_coordinateur,
                 update_planning: this.team.params.update_planning,
                 module_alert: this.team.params.module_alert,
                 share_link: this.team.params.share_link,
@@ -239,6 +264,10 @@ export default {
         tippy('#deleteImage', {
             placement: 'top',
             content: 'Supprimer le logo',
+        });
+        tippy('#sendCoordinateur', {
+            placement: 'top',
+            content: 'Permets d\'afficher le Coordinateur de la Team dans le planning.',
         });
         tippy('#updatePlanning', {
             placement: 'top',

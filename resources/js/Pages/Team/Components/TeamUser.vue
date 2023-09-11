@@ -126,14 +126,20 @@ export default {
         },
         handleUpdateUsers(updatedUser) {
             if (!updatedUser.id) {
-                const index = this.users.findIndex((user) => user.id === this.user.id)
-                this.users.splice(index, 1)
-                this.$emit('update:users', this.users)
+                const index = Object.keys(this.users).find(key => this.users[key].id === this.user.id);
+
+                if (index) {
+                    delete this.users[index];
+                    this.$emit('update:users', this.users);
+                }
+
             } else {
-                const index = this.users.findIndex((user) => user.id === updatedUser.id)
-                if (index !== -1) {
-                    this.users.splice(index, 1, updatedUser)
-                    this.$emit('update:users', this.users)
+                console.log(this.users)
+                const index = Object.keys(this.users).find(key => this.users[key].id === this.user.id);
+
+                if (index) {
+                    this.users[index] = updatedUser;
+                    this.$emit('update:users', this.users);
                 }
             }
             this.closeUser()

@@ -15,6 +15,7 @@ class TeamParams extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'send_coordinateur',
         'module_alert',
         'update_planning',
         'share_link_planning',

@@ -5,10 +5,10 @@
                 <main>
                     <div class="p-6">
                         <div class="w-full p-4 grid grid-cols-1">
-                            <Teams :teams-props="teamsProps"  />
+                            <Teams :teams-props="teamsProps" :coordinateursProps="coordinateursProps" />
                         </div>
                         <div class="w-full p-4 grid grid-cols-1">
-                            <Log :team="this.team"></Log>
+                            <Log></Log>
                         </div>
                     </div>
                 </main>
@@ -36,6 +36,10 @@ export default defineComponent({
     },
     props: {
         teamsProps: {
+            type: Array,
+            required: true
+        },
+        coordinateursProps: {
             type: Array,
             required: true
         }

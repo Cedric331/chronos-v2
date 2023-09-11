@@ -42,6 +42,11 @@ class Team extends Model
         return $this->hasMany(User::class);
     }
 
+    public function coordinateur ()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public function getLogoUrlAttribute(): ?string
     {
         if ($this->logo) {

@@ -163,6 +163,7 @@ export default {
                 this.$emit('update-users', response.data)
             })
             .catch(error => {
+                console.log(error)
                 this.message = error.response.data.message
             })
         }

@@ -20,7 +20,7 @@
                     <div v-if="activeTab === 'team'" class="p-4 rounded-lg">
                         <div class="pt-6 px-4">
                             <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 gap-4 mb-10">
-                                <TeamGestion :team="team"></TeamGestion>
+                                <TeamGestion :team="team" :coordinateursProps="coordinateursProps"></TeamGestion>
                                 <TeamUser :users="team.users"></TeamUser>
                             </div>
                         </div>
@@ -87,7 +87,11 @@ export default {
     },
     props: {
         team: Object,
-        schedules: Object
+        schedules: Object,
+        coordinateursProps: {
+            type: Array,
+            required: true
+        }
     },
     data() {
         return {

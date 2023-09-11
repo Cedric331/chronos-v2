@@ -18,21 +18,34 @@ class CalendarController extends Controller
     public function getPlanning(): \Inertia\Response
     {
         $user = User::find(Auth::id());
+        $team = Team::find($user->team_id);
 
-        $roleNames = ['Conseiller', 'Coordinateur'];
+        $roleNames = ['Conseiller'];
+        if ($team->params->send_coordinateur) {
+            $roleNames[] = 'Coordinateur';
+        }
+
         $users = User::where(function ($query) use ($roleNames) {
             $query->whereHas('roles', function ($roleQuery) use ($roleNames) {
                 $roleQuery->whereIn('name', $roleNames);
             });
         })
-        ->where('team_id', $user->team_id)
+        ->where('team_id', $team->id)
         ->get();
+
+        $users = $users->reject(function ($item) use ($team) {
+            return $item->isCoordinateur() && $team->user_id !== $item->id;
+        });
+
+        if (!$users->contains('id', $user->id)) {
+            $user = $users->first();
+        }
 
         $monday = Carbon::now()->startOfWeek();
 
-        $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
+        $calendar = Calendar::whereHas('plannings', function ($query) use ($user, $team) {
             $query->where('user_id', $user->id)
-                ->where('team_id', $user->team_id);
+                ->where('team_id', $team->id);
         })
             ->with(['plannings' => function ($query) use ($user) {
                 $query->with('eventPlannings')->where('user_id', $user->id);
