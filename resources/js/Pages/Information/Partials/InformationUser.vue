@@ -14,7 +14,7 @@
         </div>
         <div class="align-middle inline-block w-full overflow-x-auto">
         <div>
-            <table class="divide-y divide-gray-200">
+            <table class="divide-y divide-gray-200 w-full">
                 <thead class="bg-white dark:bg-gray-800">
                 <tr>
                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
