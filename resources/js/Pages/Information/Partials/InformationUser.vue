@@ -86,7 +86,7 @@ export default {
     components: {ModalUser},
     props: {
         users: {
-            type: Array,
+            type: Object,
             required: true
         }
     },
