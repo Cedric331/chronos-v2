@@ -91,7 +91,7 @@ class RotationController extends Controller
 
             DB::commit();
 
-            return response()->json(Rotation::where('team_id', $team->id)->with('details')->get());
+            return response()->json(Rotation::where('team_id', Auth::user()->team_id)->with('details')->get());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -183,7 +183,7 @@ class RotationController extends Controller
 
             DB::commit();
 
-            return response()->json(Rotation::where('team_id', $team->id)->with('details')->get());
+            return response()->json(Rotation::where('team_id', Auth::user()->team_id)->with('details')->get());
         } catch (\Exception $e) {
             DB::rollback();
             throw $e;
