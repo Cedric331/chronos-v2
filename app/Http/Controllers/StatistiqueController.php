@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Planning;
+use App\Models\Calendar;
 use Illuminate\Http\Request;
 
 class StatistiqueController extends Controller
@@ -13,9 +14,13 @@ class StatistiqueController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
 
+        $calendars = Calendar::whereBetween('date', [$startDate, $endDate])->get();
+        
+        $calendarIds = $calendars->pluck('id')->toArray();
+
         $plannings = Planning::where('user_id', $userId)
-            ->whereBetween('created_at', [$startDate, $endDate])
-            ->get();
+        ->whereIn('calendar_id', $calendarIds)
+        ->get();
 
         $types = [
             'Planifié',
