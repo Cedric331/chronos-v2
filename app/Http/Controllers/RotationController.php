@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\RotationRequest;
 use App\Models\Rotation;
-use App\Http\Controllers\Auth;
+use Illuminate\Support\Facades\Auth;
 use App\Models\RotationDetail;
 use App\Models\Team;
 use Illuminate\Support\Facades\DB;
