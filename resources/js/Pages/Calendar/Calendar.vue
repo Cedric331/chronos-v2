@@ -303,3 +303,4 @@ export default {
 /*    transition: box-shadow 0.3s, transform 0.3s;*/
 /*}*/
 </style>
+	
