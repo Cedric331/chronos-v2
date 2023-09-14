@@ -9,7 +9,7 @@
                         :class="[
                                 {'selected': isDaySelected(day)},
                                 {'isToday' : isToday === day.date_fr},
-                                checkBgColor(day.plannings[0].type_day)
+                                checkBgColor(day.plannings[0].type_day, day.plannings[0].is_technician)
                             ]">
 
                             <div class="flex justify-center">
@@ -160,10 +160,14 @@ export default {
             this.showDay = day;
             this.showPlanningTeam = true;
         },
-        checkBgColor (type_day) {
+        checkBgColor (type_day, isTech) {
             let color = '';
             if (type_day === 'Planifié') {
-                color = 'bg-[#7bed9f]';
+                if (isTech) {
+                    color = 'bg-[#ff6b6b]';
+                } else {
+                    color = 'bg-[#7bed9f]';
+                }
             } else if (type_day === 'Congés Payés' || type_day === 'Récup JF') {
                 color = 'bg-[#7ed6df]';
             } else if (type_day === 'Repos' || type_day === 'Jour Férié') {
