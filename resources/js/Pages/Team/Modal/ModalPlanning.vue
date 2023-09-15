@@ -1,5 +1,5 @@
 <template>
-    <Modal :show="showPlanning" maxWidth="3xl">
+    <Modal :show="showPlanning" maxWidth="4xl">
         <Loading :show="isLoading"></Loading>
         <h2 class="flex justify-center my-5 text-xl w-full" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
             {{ $t('team_rotation.title_planning') }}
@@ -7,7 +7,7 @@
 
         <!-- component -->
         <section class="body-font bg-gray-100 text-gray-600">
-            <div class="container flex w-full flex-wrap justify-between rounded-lg bg-white px-2">
+            <div class="container flex w-full flex-wrap justify-between rounded-lg bg-white px-2 h-full">
 
                 <div class="w-full md:flex mt-8">
 
@@ -64,8 +64,8 @@
                                                 </select>
                                             </div>
                                             <div v-if="user && user.hasPlanning" class="mt-4 text-black text-sm">
-                                                <p>Ce collaborateur dispose déjà d'un planning.</p><p>Vous pouvez indiquer ne pas vouloir écraser les jours suivants <br> <strong>(Congés Payés, RJF, Maladie, Formation)</strong></p>
-                                            <Checkbox v-model="type_fix"></Checkbox>
+                                                <p class="text-red-400">Ce collaborateur dispose déjà d'un planning.</p><p>Souhaitez-vous écraser les jours suivants ? <strong>(Congés Payés, RJF, Maladie, Formation)</strong></p>
+                                                <Switch v-model="type_fix"></Switch>
                                             </div>
                                         </div>
                                     </div>
@@ -79,14 +79,14 @@
                         <div class="header col-span-12 mx-auto">
                             <h1 class="font-semibold text-lg tracking-wide mb-2" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Choix des rotations</h1>
                         </div>
-                        <div class="col-span-12 rounded-lg sm:col-span-6 overflow-y-auto h-72">
+                        <div class="col-span-12 rounded-lg sm:col-span-6 overflow-y-auto h-36 2xl:h-[550px]">
                             <table class="w-full divide-y divide-gray-200">
                                 <thead class="bg-black">
                                 <tr>
                                     <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
                                         Ordre des rotations
                                     </th>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider">
+                                    <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider w-10">
                                     </th>
                                 </tr>
                                 </thead>
@@ -96,7 +96,7 @@
                                             {{ rotation.name }}
                                         </td>
                                         <td @click="this.rotations.splice(index, 1)" class="p-4 cursor-pointer bg-black whitespace-nowrap text-sm font-bold" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ecf0f1" class="w-6 h-6">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                             </svg>
                                         </td>
@@ -104,7 +104,7 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-span-12 rounded-lg sm:col-span-6 overflow-y-auto h-72">
+                        <div class="col-span-12 rounded-lg sm:col-span-6 overflow-y-auto h-96 2xl:h-[550px]">
                             <table class="w-full divide-y divide-gray-200">
                                 <thead class="bg-black">
                                 <tr>
@@ -165,10 +165,12 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Loading from "@/Components/Loading.vue";
 import Checkbox from "@/Components/Checkbox.vue";
+import Switch from "@/Components/Switch.vue";
 
 export default {
     name: "ModalPlanning",
     components: {
+        Switch,
         Checkbox,
         Loading,
         Modal,

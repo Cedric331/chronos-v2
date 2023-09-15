@@ -62,7 +62,7 @@ class PlanningController extends Controller
             return response()->json('Erreur dans la sélection des dates', 422);
         }
 
-        if ($request->type_fix) {
+        if (!$request->type_fix) {
             Planning::where('user_id', $request->user)
                 ->whereNotIn('type_day', config('teams.type_days_fix'))
                 ->delete();
@@ -159,11 +159,12 @@ class PlanningController extends Controller
                 ]);
             }
 
+            $user = User::find($planning->user_id);
             activity(Auth::user()->team->name)
                 ->event('Mise à jour')
-                ->performedOn($planning)
+                ->performedOn($user)
                 ->withProperties($planning->getOriginal())
-                ->log('Les informations du planning ont été modifiées');
+                ->log('Le planning de '.$user->name.' a été modifié');
         }
 
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {

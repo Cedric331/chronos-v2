@@ -8,6 +8,7 @@ use App\Models\Team;
 use App\Models\User;
 use ColorThief\ColorThief;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -89,22 +90,30 @@ class TeamController extends Controller
     public function paginateActivities(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         $page = $request->input('page', 1);
-
         if (!$request->team_id && Auth::user()->isAdmin()) {
             $activities = Activity::with(['subject', 'causer'])
                 ->orderBy('created_at', 'DESC')
-                ->paginate(10, ['*'], 'page', $page);
+                ->limit(100)
+                ->get();
         } else {
             if ($request->team_id == Auth::user()->team_id) {
                 $team = Team::findOrFail($request->team_id);
                 $activities = Activity::where('log_name', $team->name)
                     ->with(['subject', 'causer'])
                     ->orderBy('created_at', 'DESC')
-                    ->paginate(10, ['*'], 'page', $page);
+                    ->limit(100)
+                    ->get();
             } else {
                 return Inertia::render('Errors/404');
             }
         }
+
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $itemsPerPage = 10;
+        $currentItems = $activities->slice(($currentPage - 1) * $itemsPerPage, $itemsPerPage)->values();
+        $activities = new LengthAwarePaginator($currentItems, $activities->count(), $itemsPerPage, $currentPage, [
+            'path' => LengthAwarePaginator::resolveCurrentPath()
+        ]);
 
         $activities->getCollection()->transform(function ($activity) {
             $activity->subject_type = class_basename($activity->subject_type) === 'User' ? 'Utilisateur' : class_basename($activity->subject_type);

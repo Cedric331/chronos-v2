@@ -13,6 +13,9 @@ module.exports = {
 
     theme: {
             extend: {
+            screens: {
+                '2xl': '1645px',
+            },
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },

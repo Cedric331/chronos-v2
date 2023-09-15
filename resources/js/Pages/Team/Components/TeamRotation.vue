@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 p-4 sm:p-6 h-full" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div class="bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 p-4 sm:p-6 h-full shadow-md" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
         <div class="flex items-center justify-between mb-4">
             <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Gestion des rotations</h3>
             <div>
@@ -22,13 +22,13 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
                                 </svg>
                             </button>
-                            <p class="text-xs font-bold font-medium text-gray-900 truncate dark:text-white">
-                                {{ rotation.name }} - ({{ rotation.total_hours }})
+                            <p class="text-md font-bold font-medium text-gray-900 truncate dark:text-white ">
+                                {{ rotation.name }} - <span :class="[rotation.total_hours !== '35h00' ? 'text-red-600' : '']">({{ rotation.total_hours }})</span>
                             </p>
                         </div>
                         <div v-for="detail in rotation.details" class="hidden sm:block w-full">
                             <div class="text-center w-full ">
-                                <div class="text-xs font-bold font-medium text-gray-900 truncate dark:text-white flex items-center justify-center">
+                                <div class="text-md font-bold font-medium text-gray-900 truncate dark:text-white flex items-center justify-center">
                                     {{ detail.day }}
                                     <div v-if="detail.technicien" title="Technicien">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
@@ -41,10 +41,10 @@
                                         </svg>
                                     </div>
                                 </div>
-                                <p v-if="detail.is_off" class="text-xs font-bold font-medium text-gray-900 mx-auto truncate dark:text-white">
+                                <p v-if="detail.is_off" class="text-md font-bold font-medium text-gray-900 mx-auto truncate dark:text-white">
                                     {{ detail.is_off ? 'OFF' : '' }}
                                 </p>
-                                <p v-else  class="text-xs font-bold font-medium text-gray-900 truncate dark:text-white">
+                                <p v-else  class="text-md font-bold font-medium text-gray-900 truncate dark:text-white">
                                     {{ detail.debut_journee }} - {{ detail.fin_journee }}
                                 </p>
                             </div>

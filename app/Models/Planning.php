@@ -30,6 +30,8 @@ class Planning extends Model
         'user_id',
     ];
 
+    protected $with = ['rotation'];
+
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);

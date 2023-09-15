@@ -17,7 +17,7 @@
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div class="hidden space-x-8 lg:-my-px lg:ml-10 lg:flex">
                                 <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
                                     {{ $t('nav.management') }}
                                 </NavLink>
@@ -32,7 +32,7 @@
 
                         <div class="flex justify-between h-16">
 
-                            <div v-if="$page.props.auth.team.name" class="hidden sm:flex sm:items-center sm:ml-6">
+                            <div v-if="$page.props.auth.team.name" class="hidden lg:flex lg:items-center lg:ml-6">
                                 <div v-if="$page.props.auth.isCoordinateur && $page.props.auth.team.params.module_alert">
                                     <div v-if="$page.props.auth.alerts && $page.props.auth.alerts.length > 0 && $page.props.auth.alerts.find(item => !item.is_read)">
                                         <Dropdown align="right" width="96" contentClasses="bg-white dark:bg-gray-700 mt-1 border-1 overflow-y-auto max-h-72">
@@ -118,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div class="hidden space-x-8 lg:-my-px lg:ml-10 lg:flex">
                                 <div class="checkbox-wrapper-54 relative inline-flex items-center cursor-pointer">
                                     <label class="switch">
                                         <input @click="updateDarkMode($event)" :checked="$store.state.isDarkMode" type="checkbox">
@@ -127,7 +127,7 @@
                                 </div>
                             </div>
 
-                            <div class="hidden sm:flex sm:items-center sm:ml-6">
+                            <div class="hidden lg:flex lg:items-center lg:ml-6">
                                 <!-- Settings Dropdown -->
                                 <div class="ml-3 relative">
                                     <Dropdown align="right" width="48">
@@ -175,7 +175,7 @@
                         </div>
 
                         <!-- Hamburger -->
-                        <div class="-mr-2 flex items-center sm:hidden">
+                        <div class="-mr-2 flex items-center lg:hidden">
                             <button
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
                                 class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
@@ -210,7 +210,7 @@
                 <!-- Responsive Navigation Menu -->
                 <div
                     :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
-                    class="sm:hidden"
+                    class="lg:hidden"
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">
