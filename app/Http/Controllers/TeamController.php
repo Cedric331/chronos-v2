@@ -92,7 +92,7 @@ class TeamController extends Controller
 
         if (!$request->team_id && Auth::user()->isAdmin()) {
             $activities = Activity::with(['subject', 'causer'])
-                ->->orderBy('created_at', 'DESC')
+                ->orderBy('created_at', 'DESC')
                 ->paginate(10, ['*'], 'page', $page);
         } else {
             if ($request->team_id == Auth::user()->team_id) {
