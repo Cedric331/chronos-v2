@@ -91,13 +91,15 @@ class TeamController extends Controller
         $page = $request->input('page', 1);
 
         if (!$request->team_id && Auth::user()->isAdmin()) {
-            $activities = ::with(['subject', 'causer'])
+            $activities = Activity::with(['subject', 'causer'])
+                ->orderBy('created_at', 'DESC')
                 ->paginate(10, ['*'], 'page', $page);
         } else {
             if ($request->team_id == Auth::user()->team_id) {
                 $team = Team::findOrFail($request->team_id);
                 $activities = Activity::where('log_name', $team->name)
                     ->with(['subject', 'causer'])
+                    ->orderBy('created_at', 'DESC')
                     ->paginate(10, ['*'], 'page', $page);
             } else {
                 return Inertia::render('Errors/404');
