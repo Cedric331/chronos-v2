@@ -1,4 +1,11 @@
 {
     "(and :count more error)": "(et 1 erreur supplémentaire)",
-    "(and :count more errors)": "(et :count erreurs supplémentaires)"
+    "(and :count more errors)": "(et :count erreurs supplémentaires)",
+    "Reset Password Notification": "Notification de Réinitialisation de Mot de Passe",
+    "You are receiving this email because we received a password reset request for your account.": "Vous recevez cet e-mail car nous avons reçu une demande de réinitialisation de mot de passe pour votre compte.",
+    "Reset Password": "Réinitialiser le Mot de Passe",
+    "This password reset link will expire in 60 minutes.": "Ce lien de réinitialisation expirera dans 60 minutes.",
+    "If you did not request a password reset, no further action is required.": "Si vous n'avez pas demandé de réinitialisation de mot de passe, aucune action supplémentaire n'est requise.",
+    "Regards,": "Cordialement,",
+    "If you're having trouble clicking the \":actionText\" button, copy and paste the URL below\ninto your web browser:": "Si vous avez des difficultés à cliquer sur le bouton \":actionText\", copiez et collez l'URL ci-dessous\ndans votre navigateur web :"
 }
