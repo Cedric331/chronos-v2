@@ -224,6 +224,49 @@
                         </ResponsiveNavLink>
                     </div>
 
+                    <div v-if="$page.props.config.active">
+                        <div class="ml-3 relative">
+                            <div v-if="!$page.props.auth.isCoordinateur">
+                                        <span class="inline-flex rounded-md">
+                                            <strong
+                                                class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-800 dark:text-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                                {{ $page.props.auth.team.name }}
+                                            </strong>
+                                        </span>
+                            </div>
+                            <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" content-classes="overflow-y-auto max-h-96">
+                                <template #trigger>
+                                            <span class="inline-flex rounded-md">
+                                                <button
+                                                    type="button"
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-800 dark:text-white hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                                    {{ $page.props.auth.team.name }}
+
+                                                    <svg
+                                                        class="ml-2 -mr-0.5 h-4 w-4"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 20 20"
+                                                        fill="currentColor"
+                                                    >
+                                                        <path
+                                                            fill-rule="evenodd"
+                                                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                            clip-rule="evenodd"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </span>
+                                </template>
+
+                                <template #content>
+                                    <div v-if="$page.props.auth.isCoordinateur" v-for="team in $page.props.teams" :key="team.id">
+                                        <div @click="switchTeam(team)" class="text-gray-600 hover:bg-gray-200 p-1 text-md dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </div>
+                                    </div>
+                                </template>
+                            </Dropdown>
+                        </div>
+                    </div>
+
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
                         <div class="px-4">
@@ -234,6 +277,9 @@
                         </div>
 
                         <div class="mt-3 space-y-1">
+                            <ResponsiveNavLink :href="route('admin.index')">
+                                Administration
+                            </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('profile.edit')">
                                 {{ $t('nav.profil') }}
                             </ResponsiveNavLink>

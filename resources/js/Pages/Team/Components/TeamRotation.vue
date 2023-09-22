@@ -14,7 +14,7 @@
         <hr>
 
         <div class="flow-root">
-            <div class="divide-y divide-gray-200" style="max-height: 430px; overflow-y: auto;">
+            <div class="divide-y divide-gray-200" style="max-height: 600px; overflow-y: auto;">
                 <div v-for="rotation in this.team.rotations" :key="rotation.id" class="py-3 sm:py-4">
                     <div class="flex items-center space-x-4">
                         <div class="flex justify-between">
