@@ -53,6 +53,7 @@
                     <Calendar
                         ref="calendar"
                         :daysProps="daysProps"
+                        :weeklyHours="weeklyHours"
                         :isToday="isToday"
                         @shareSchedule="this.showShare = true"
                         @planningFull="this.getAllPlanning = !this.getAllPlanning">
@@ -94,7 +95,11 @@ export default {
         isToday: String,
         user: Object,
         users: Object,
-        calendar: Object
+        calendar: Object,
+        weeklyHours: {
+            type: Object,
+            default: () => []
+        }
     },
     data() {
         return {

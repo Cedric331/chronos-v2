@@ -53,8 +53,25 @@ class CalendarController extends Controller
             ->where('date', '>=', $monday)
             ->get();
 
+        $weeklyHours = [];
         foreach ($calendar as $day) {
             $day->number_week = Carbon::parse($day->date)->isoFormat('W');
+            $weekNumber = $day->number_week;
+
+            if (isset($day->plannings[0]->hours) && $day->plannings[0]->hours !== null) {
+                $hoursArray = explode('h', $day->plannings[0]->hours);
+                $decimalHours = intval($hoursArray[0]) + intval($hoursArray[1]) / 60;
+
+                if (array_key_exists($weekNumber, $weeklyHours)) {
+                    $weeklyHours[$weekNumber] += $decimalHours;
+                } else {
+                    $weeklyHours[$weekNumber] = $decimalHours;
+                }
+            }
+        }
+
+        foreach ($weeklyHours as $weekNumber => $decimalHours) {
+            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
         }
 
         return Inertia::render('Planning', [
@@ -62,6 +79,7 @@ class CalendarController extends Controller
             'users' => $users,
             'isToday' => ucwords(Carbon::now()->isoFormat('dddd D MMMM')),
             'calendar' => $calendar,
+            'weeklyHours' => $weeklyHours,
         ]);
     }
 
@@ -87,6 +105,7 @@ class CalendarController extends Controller
 
         return response()->json($calendar);
     }
+
 
     public static function generateDaysWithHolidays($dateDebut = null, $dateFin = null): array
     {

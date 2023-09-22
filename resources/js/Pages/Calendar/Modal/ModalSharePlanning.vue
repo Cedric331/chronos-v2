@@ -31,7 +31,7 @@
                 <SecondaryButton @click.prevent="copyUrlToClipboard">Copier URL</SecondaryButton>
             </div>
             <div class="flex justify-center">
-                <PrimaryButton v-if="url" @close="this.$emit('close')" class="w-2/4 flex justify-center">
+                <PrimaryButton v-if="url" @click="this.$emit('close')" class="w-2/4 flex justify-center">
                     Fermer
                 </PrimaryButton>
                 <PrimaryButton v-else @click.prevent="this.generateShare" class="w-2/4 flex justify-center">

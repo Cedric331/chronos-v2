@@ -34,7 +34,7 @@
             <InputError :message="errors" :can-close="true" @close="this.errors = null"></InputError>
 
             <div class="flex justify-between">
-                <SecondaryButton @close="this.$emit('close')" class="flex justify-center">
+                <SecondaryButton @click="this.$emit('close')" class="flex justify-center">
                     Fermer
                 </SecondaryButton>
                 <PrimaryButton @click.prevent="store()" class="flex justify-center">
@@ -83,7 +83,7 @@ export default {
             }).then(response => {
                 this.$emit('store', response.data)
             }).catch((error) => {
-                this.errors = error.response.data.errors
+                this.errors = 'Vous devez renseigner un titre valable'
             })
         }
     }
