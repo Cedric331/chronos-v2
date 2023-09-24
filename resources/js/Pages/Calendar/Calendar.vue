@@ -3,7 +3,7 @@
         <div class="mx-2 py-10">
             <div v-if="days && days.length > 0" class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 w-full p-2">
                 <template v-for="(day, index) in days" :key="index">
-                    <div v-if="isStartOfWeek(day)" class="hidden 2xl:flex flex-col p-2 min-h-[9.5rem] bg-gray-200 rounded-lg items-center justify-center text-xl font-bold" :style="{ margin: '8px' }">
+                    <div v-if="isStartOfWeek(day)" :class="weeklyHours[day.number_week] !== '35h00' ? 'text-red-600' : ''" class="hidden 2xl:flex flex-col p-2 min-h-[9.5rem] bg-gray-200 rounded-lg items-center justify-center text-xl font-bold" :style="{ margin: '8px' }">
                        {{ weeklyHours[day.number_week] || '00h00' }}
                     </div>
                     <div class="rounded-lg flex flex-col justify-between">
@@ -56,7 +56,7 @@
                                             <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }}</p>
                                         </div>
                                         <div class="mr-1">
-                                            <p class="text-lg font-bold">{{ day.is_holiday ? ' - (Férié)' : null }}</p>
+                                            <p class="text-lg font-bold">{{ day.is_holiday && planning.type_day !== 'Jour Férié' ? ' (Férié)' : null }}</p>
                                         </div>
                                     </div>
                                 </div>

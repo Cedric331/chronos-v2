@@ -53,7 +53,7 @@
                     <Calendar
                         ref="calendar"
                         :daysProps="daysProps"
-                        :weeklyHours="weeklyHours"
+                        :weeklyHours="weeklyProps"
                         :isToday="isToday"
                         @shareSchedule="this.showShare = true"
                         @planningFull="this.getAllPlanning = !this.getAllPlanning">
@@ -107,7 +107,8 @@ export default {
             getAllPlanning: false,
             showShare: false,
             selectedUser: this.user,
-            daysProps: null
+            daysProps: null,
+            weeklyProps: null
         }
     },
     watch: {
@@ -127,7 +128,8 @@ export default {
                 getAllPlanning: this.getAllPlanning
             })
             .then(response => {
-                this.daysProps = response.data
+                this.daysProps = response.data.calendar
+                this.weeklyProps = response.data.weeklyHours
             })
             .catch(error => {
                 console.log(error)
@@ -142,6 +144,7 @@ export default {
     },
     beforeMount () {
         this.daysProps = this.calendar
+        this.weeklyProps = this.weeklyHours
     }
 }
 </script>
