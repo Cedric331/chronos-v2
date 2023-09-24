@@ -42,6 +42,9 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        // Revoke all tokens pour le mobile
+//        $request->user()->tokens()->delete();
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
@@ -50,4 +53,21 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
+
+    // Mobile
+
+    public function apiLogin(Request $request)
+    {
+        $credentials = $request->only('email', 'password');
+
+        if (!Auth::attempt($credentials)) {
+            return response()->json(['error' => 'Invalid credentials'], 401);
+        }
+
+        $user = Auth::user();
+        $token = $user->createToken('chronos-token')->accessToken;
+
+        return response()->json(['token' => $token]);
+    }
+
 }

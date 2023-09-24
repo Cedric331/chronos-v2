@@ -226,14 +226,6 @@
 
                     <div v-if="$page.props.config.active">
                         <div class="ml-3 relative">
-                            <div v-if="!$page.props.auth.isCoordinateur">
-                                        <span class="inline-flex rounded-md">
-                                            <strong
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-800 dark:text-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
-                                                {{ $page.props.auth.team.name }}
-                                            </strong>
-                                        </span>
-                            </div>
                             <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" content-classes="overflow-y-auto max-h-96">
                                 <template #trigger>
                                             <span class="inline-flex rounded-md">
@@ -260,7 +252,7 @@
 
                                 <template #content>
                                     <div v-if="$page.props.auth.isCoordinateur" v-for="team in $page.props.teams" :key="team.id">
-                                        <div @click="switchTeam(team)" class="text-gray-600 hover:bg-gray-200 p-1 text-md dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </div>
+                                        <DropdownLink @click="switchTeam(team)" class="text-gray-600 hover:bg-gray-200 p-1 text-md dark:text-gray-400 dark:hover:bg-gray-50 cursor-pointer flex justify-center"> {{ team.name }} </DropdownLink>
                                     </div>
                                 </template>
                             </Dropdown>
