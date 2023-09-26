@@ -19,9 +19,11 @@ Route::group([
     'middleware' => ['auth:sanctum'],
     'prefix' => 'api'
 ], function ($router) {
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
     Route::post('login', [AuthenticatedSessionController::class, 'apiLogin']);
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
 });
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
