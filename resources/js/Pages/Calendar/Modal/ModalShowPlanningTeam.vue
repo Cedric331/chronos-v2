@@ -7,7 +7,7 @@
             </div>
 
             <div v-else>
-                <ViewWeekTeam :showDates="showDates"></ViewWeekTeam>
+                <ViewWeekTeam :showDates="showDates" :weeklyHours="weeklyHours"></ViewWeekTeam>
             </div>
         </div>
         <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-center">
@@ -33,6 +33,7 @@ export default {
     data () {
         return {
             showDates: [],
+            weeklyHours: [],
             widthCustom: '5xl',
             mobile: false
         }
@@ -64,7 +65,8 @@ export default {
                 mobile: this.mobile
             })
             .then((response) => {
-                this.showDates = response.data;
+                this.showDates = response.data.calendar
+                this.weeklyHours = response.data.weeklyHours
             })
             .catch((error) => {
                 console.log(error);

@@ -369,7 +369,32 @@ class PlanningController extends Controller
                 ->get();
         }
 
-        return response()->json($calendar);
+        $weeklyHours = [];
+        $coutner = 0;
+        foreach ($calendar as $day) {
+            foreach ($day->plannings as $planning) {
+                $planning->number_week = Carbon::parse($day->date)->isoFormat('W').$coutner;
+                $weekNumber = $planning->number_week;
+
+                if (isset($planning->hours) && $planning->hours !== null) {
+                    $hoursArray = explode('h', $planning->hours);
+                    $decimalHours = intval($hoursArray[0]) + intval($hoursArray[1]) / 60;
+
+                    if (array_key_exists($weekNumber, $weeklyHours)) {
+                        $weeklyHours[$weekNumber] += $decimalHours;
+                    } else {
+                        $weeklyHours[$weekNumber] = $decimalHours;
+                    }
+                }
+            }
+            $coutner++;
+        }
+
+        foreach ($weeklyHours as $weekNumber => $decimalHours) {
+            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
+        }
+
+        return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
     }
 
     private function checkTypeDay($typeDay): bool

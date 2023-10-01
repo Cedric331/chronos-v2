@@ -38,6 +38,19 @@ class AuthenticatedSessionController extends Controller
     }
 
     /**
+     * Handle an incoming authentication request.
+     */
+    public function loginApi(LoginRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $request->authenticate();
+
+        $request->session()->regenerate();
+        $token = $request->user()->createToken('chronos-app');
+
+        return response()->json(['message' => 'success', 'token' => $token->plainTextToken]);
+    }
+
+    /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse

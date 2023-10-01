@@ -118,7 +118,7 @@
                                 </div>
                             </div>
 
-                            <div class="hidden space-x-8 lg:-my-px lg:ml-10 lg:flex">
+                            <div class="space-x-8 lg:-my-px lg:ml-10 flex items-center justify-center">
                                 <div class="checkbox-wrapper-54 relative inline-flex items-center cursor-pointer">
                                     <label class="switch">
                                         <input @click="updateDarkMode($event)" :checked="$store.state.isDarkMode" type="checkbox">

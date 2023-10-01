@@ -15,15 +15,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::group([
-    'middleware' => ['auth:sanctum'],
-    'prefix' => 'api'
-], function ($router) {
+    Route::post('/login', [AuthenticatedSessionController::class, 'loginApi']);
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-    Route::post('login', [AuthenticatedSessionController::class, 'apiLogin']);
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy']);
-});
+//Route::group([
+//    'middleware' => ['auth:sanctum'],
+//    'prefix' => 'api'
+//], function ($router) {
+//
+//    Route::get('/user', function (Request $request) {
+//        return $request->user();
+//    });
+//    Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+//    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+//
+//});
 

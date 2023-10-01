@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
-        <div id="main-content" class="h-full relative overflow-y-auto"
-             :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+        <div id="main-content" class="min-h-screen relative overflow-y-auto"
+             :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
             <div class="pt-6 px-4">
                 <div class="inline-block border-b border-black dark:border-gray-700">
                     <ul class="flex flex-wrap -mb-px text-sm font-medium text-center">
