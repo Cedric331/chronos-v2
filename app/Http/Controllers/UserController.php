@@ -48,8 +48,8 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'birthday' => 'required|date',
-            'phone' => 'required|string|max:255',
+            'birthday' => 'date',
+            'phone' => 'string|max:255',
             'team_id' => 'required|integer',
             'role' => 'required|string|max:255',
         ]);
