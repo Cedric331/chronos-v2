@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +19,10 @@ use Illuminate\Support\Facades\Route;
 
     Route::post('/login', [AuthenticatedSessionController::class, 'loginApi']);
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+    Route::get('/planning', [CalendarController::class, 'getPlanning']);
+    Route::get('/auth/check', function () {
+        return response()->json(['authenticated' => Auth::check()]);
+    });
 
 //Route::group([
 //    'middleware' => ['auth:sanctum'],

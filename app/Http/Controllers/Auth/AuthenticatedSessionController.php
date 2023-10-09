@@ -45,9 +45,12 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
-        $token = $request->user()->createToken('chronos-app');
 
-        return response()->json(['message' => 'success', 'token' => $token->plainTextToken]);
+        if (!Auth::user()) {
+            return response()->json(['message' => 'Erreur lors de l\'authentification'], 401);
+        }
+
+        return response()->json(['message' => 'success', 'user' => Auth::user()]);
     }
 
     /**
@@ -55,9 +58,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
-        // Revoke all tokens pour le mobile
-//        $request->user()->tokens()->delete();
-
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
@@ -65,22 +65,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
-    }
-
-    // Mobile
-
-    public function apiLogin(Request $request)
-    {
-        $credentials = $request->only('email', 'password');
-
-        if (!Auth::attempt($credentials)) {
-            return response()->json(['error' => 'Invalid credentials'], 401);
-        }
-
-        $user = Auth::user();
-        $token = $user->createToken('chronos-token')->accessToken;
-
-        return response()->json(['token' => $token]);
     }
 
 }

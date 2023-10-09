@@ -15,7 +15,7 @@ use Yasumi\Yasumi;
 
 class CalendarController extends Controller
 {
-    public function getPlanning(): \Inertia\Response
+    public function getPlanning(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         $user = User::find(Auth::id());
         $team = Team::find($user->team_id);
@@ -72,6 +72,10 @@ class CalendarController extends Controller
 
         foreach ($weeklyHours as $weekNumber => $decimalHours) {
             $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
+        }
+
+        if ($request->header('User-Agent') === 'chronos-mobile') {
+            return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
         }
 
         return Inertia::render('Planning', [
