@@ -3,11 +3,17 @@
         Options -MultiViews -Indexes
     </IfModule>
 
-    RewriteEngine On
 
-    # Handle Authorization Header
-    RewriteCond %{HTTP:Authorization} .
-    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+RewriteEngine On
+
+# Rediriger tout ce qui n'est pas "www.chronos-hub.fr" vers "https://www.chronos-hub.fr"
+RewriteCond %{HTTP_HOST} !^www\.chronos-hub\.fr$ [NC]
+RewriteRule ^ https://www.chronos-hub.fr%{REQUEST_URI} [L,R=301]
+
+# Rediriger tout ce qui est HTTP vers HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
 
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
@@ -19,3 +25,4 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+		
