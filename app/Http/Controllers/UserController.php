@@ -48,8 +48,8 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'birthday' => 'date',
-            'phone' => 'string|max:255',
+            'birthday' => 'nullable|date',
+            'phone' => 'nullable|string|max:255',
             'team_id' => 'required|integer',
             'role' => 'required|string|max:255',
         ]);
@@ -109,6 +109,13 @@ class UserController extends Controller
         if (! Gate::check('has-role-coordinateur') && Auth::id() !== $user->id) {
             return Inertia::render('Errors/401');
         }
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'birthday' => 'nullable|date',
+            'phone' => 'nullable|string|max:255'
+        ]);
 
         $update = $user->update([
             'name' => $request->input('name'),
