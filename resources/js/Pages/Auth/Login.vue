@@ -37,7 +37,7 @@ const submit = () => {
 
         <div class="min-h-screen w-full max-w-screen flex justify-center items-center">
 
-            <div class="py-12 px-12 bg-white rounded-2xl shadow-xl z-20 md:w-auto xl:w-4/12 bg-opacity-50">
+            <div class="py-12 px-12 bg-white rounded-2xl shadow-xl z-20 md:w-auto xl:w-4/12 bg-opacity-90">
                 <div class="flex justify-center">
                     <Link href="/">
                         <ApplicationLogo class="w-20 h-20 fill-current text-gray-500" />
