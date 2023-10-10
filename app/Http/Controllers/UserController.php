@@ -64,6 +64,8 @@ class UserController extends Controller
             'company_id' => Auth::user()->company_id,
         ]);
 
+        $user->syncRoles($request->role);
+
         $activationLink = URL::temporarySignedRoute('activation', now()->addHour(48), ['email' => $user->email, 'name' => $user->name]);
 
         $mailData = [
