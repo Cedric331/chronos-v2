@@ -24,7 +24,7 @@ const submit = () => {
     <GuestLayout>
         <Head><title>Mot de passe oublié</title></Head>
         <div class="min-h-screen w-full max-w-screen flex justify-center items-center">
-            <div class="py-12 px-12 bg-white rounded-2xl shadow-xl z-20 md:w-auto xl:w-5/12 bg-opacity-80">
+            <div class="py-12 px-12 bg-white rounded-2xl shadow-xl z-20 md:w-auto xl:w-5/12 bg-opacity-90">
                 <div class="flex justify-center">
                     <ApplicationLogo class="w-20 h-20 fill-current text-gray-500 mb-8" />
                 </div>
