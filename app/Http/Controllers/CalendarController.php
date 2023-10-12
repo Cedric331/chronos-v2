@@ -74,9 +74,9 @@ class CalendarController extends Controller
             $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
         }
 
-        if ($request->header('User-Agent') === 'chronos-mobile') {
-            return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
-        }
+       // if ($request->header('User-Agent') === 'chronos-mobile') {
+       //     return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
+       // }
 
         return Inertia::render('Planning', [
             'user' => $user,
