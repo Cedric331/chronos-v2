@@ -15,7 +15,7 @@ use Yasumi\Yasumi;
 
 class CalendarController extends Controller
 {
-    public function getPlanning(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function getPlanning(Request $request): \Inertia\Response
     {
         $user = User::find(Auth::id());
         $team = Team::find($user->team_id);
