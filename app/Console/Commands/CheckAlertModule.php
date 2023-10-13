@@ -80,7 +80,7 @@ class CheckAlertModule extends Command
                             })
                             ->where('team_id', $team->id)
                             ->count();
-
+                        $realCount = 0;
                         if ($realCount < $requiredSchedule->value) {
 
                                 $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
