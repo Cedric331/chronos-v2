@@ -45,6 +45,7 @@ class CheckAlertModule extends Command
 
         foreach ($teams as $team) {
             $requiredSchedules = TeamSchedule::where('team_id', $team->id)->get();
+            Log::info('Day : '.$requiredSchedules->count());
 
             for ($date = $startOfWeek; $date->lessThanOrEqualTo($endOfWeek); $date->addDay()) {
                 $startOfDay = Carbon::createFromTime(8, 0); // Assuming your day starts at 8 AM
@@ -59,15 +60,12 @@ class CheckAlertModule extends Command
 
                     $day = ucfirst($date->locale('fr_FR')->isoFormat('dddd'));
 
-                    $requiredSchedule = $requiredSchedules->where('day', $day)->first();
-
-                    //                    $requiredSchedule = $requiredSchedules->where('day', $day)
-//                        ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
-//                            $scheduleTime = $schedule['time'];
-//                            return Str::contains($scheduleTime, $timeSlot1) || Str::contains($scheduleTime, $timeSlot2);
-//                        })
-//                        ->first();
-                    Log::info('Day : '.$requiredSchedules->count());
+                    $requiredSchedule = $requiredSchedules->where('day', $day)
+                        ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
+                            $scheduleTime = $schedule['time'];
+                            return Str::contains($scheduleTime, $timeSlot1) || Str::contains($scheduleTime, $timeSlot2);
+                        })
+                        ->first();
 
                     if ($requiredSchedule !== null) {
                         Log::info('$requiredSchedule : '.$timeSlot1 . ' - ' . $timeSlot2 );
