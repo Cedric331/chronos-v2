@@ -82,6 +82,7 @@ class CheckAlertModule extends Command
                                             ->where(DB::raw('TIME(fin_pause)'), '>=', $time->copy()->addMinutes(30)->format('H:i:s'));
                                     });
                             })
+                            ->where('team_id', $team->id)
                             ->count();
 
                         if ($realCount < $requiredSchedule->value) {
