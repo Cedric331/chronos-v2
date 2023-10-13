@@ -32,8 +32,6 @@ class CheckAlertModule extends Command
      */
     public function handle()
     {
-        AlertSchedule::truncate();
-
         $teams = Team::whereHas('params', function ($query) {
             $query->where('module_alert', true);
         })->get();
@@ -65,8 +63,6 @@ class CheckAlertModule extends Command
                             return strpos($scheduleTime, $timeSlot1) !== false || strpos($scheduleTime, $timeSlot2) !== false;
                         })
                         ->first();
-
-
 
                     if ($requiredSchedule !== null && $requiredSchedule->value > 0) {
                         $realCount = Planning::whereHas('calendar', function ($query) use ($date) {
