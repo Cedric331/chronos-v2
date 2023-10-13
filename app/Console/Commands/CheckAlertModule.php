@@ -11,6 +11,7 @@ use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class CheckAlertModule extends Command
 {
@@ -61,7 +62,7 @@ class CheckAlertModule extends Command
                     $requiredSchedule = $requiredSchedules->where('day', $day)
                         ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
                             $scheduleTime = $schedule['time'];
-                            return str_contains($scheduleTime, $timeSlot1) || str_contains($scheduleTime, $timeSlot2);
+                            return Str::contains($scheduleTime, $timeSlot1) || Str::contains($scheduleTime, $timeSlot2);
                         })
                         ->first();
                     Log::info('Day : '.$day);
