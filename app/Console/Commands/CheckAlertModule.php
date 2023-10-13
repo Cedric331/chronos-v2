@@ -59,12 +59,14 @@ class CheckAlertModule extends Command
 
                     $day = ucfirst($date->locale('fr_FR')->isoFormat('dddd'));
 
-                    $requiredSchedule = $requiredSchedules->where('day', $day)
-                        ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
-                            $scheduleTime = $schedule['time'];
-                            return Str::contains($scheduleTime, $timeSlot1) || Str::contains($scheduleTime, $timeSlot2);
-                        })
-                        ->first();
+                    $requiredSchedule = $requiredSchedules->where('day', $day)->first();
+
+                    //                    $requiredSchedule = $requiredSchedules->where('day', $day)
+//                        ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
+//                            $scheduleTime = $schedule['time'];
+//                            return Str::contains($scheduleTime, $timeSlot1) || Str::contains($scheduleTime, $timeSlot2);
+//                        })
+//                        ->first();
                     Log::info('Day : '.$day);
 
                     if ($requiredSchedule !== null) {
