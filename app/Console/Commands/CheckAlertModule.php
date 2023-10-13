@@ -53,8 +53,6 @@ class CheckAlertModule extends Command
 
                     for ($time = $startOfDay; $time->lessThan($endOfDay); $time->addMinutes(30)) {
 
-                        $timeSlot = $time->format('H:i:s').' - '.$time->copy()->addMinutes(30)->format('H:i:s');
-
                         $timeSlot1 = $time->format('H:i:s');
                         $timeSlot2 = $time->copy()->addMinutes(30)->format('H:i:s');
 
@@ -67,40 +65,36 @@ class CheckAlertModule extends Command
                             })
                             ->first();
 
-                        if ($team->id == 6) {
-                            Log::info('Day : '.$requiredSchedule->count());
-                        }
-
-                        if ($requiredSchedule !== null && $requiredSchedule->value > 0) {
-                            $realCount = Planning::whereHas('calendar', function ($query) use ($date) {
-                                $query->where('date', $date->format('Y-m-d'));
-                            })
-                                ->where(function ($query) use ($time) {
-                                    $query->where(function ($query) use ($time) {
-                                        $query->where(DB::raw('TIME(debut_journee)'), '<=', $time->format('H:i:s'))
-                                            ->where(DB::raw('TIME(fin_journee)'), '>=', $time->copy()->addMinutes(30)->format('H:i:s'));
-                                    })
-                                        ->orWhere(function ($query) use ($time) {
-                                            $query->where(DB::raw('TIME(debut_pause)'), '<=', $time->format('H:i:s'))
-                                                ->where(DB::raw('TIME(fin_pause)'), '>=', $time->copy()->addMinutes(30)->format('H:i:s'));
-                                        });
+                        if ($requiredSchedule !== null) {
+                            if ($requiredSchedule->value > 0) {
+                                $realCount = Planning::whereHas('calendar', function ($query) use ($date) {
+                                    $query->where('date', $date->format('Y-m-d'));
                                 })
-                                ->where('team_id', $team->id)
-                                ->count();
+                                    ->where(function ($query) use ($time) {
+                                        $query->where(function ($query) use ($time) {
+                                            $query->where(DB::raw('TIME(debut_journee)'), '<=', $time->format('H:i:s'))
+                                                ->where(DB::raw('TIME(fin_journee)'), '>=', $time->copy()->addMinutes(30)->format('H:i:s'));
+                                        })
+                                            ->orWhere(function ($query) use ($time) {
+                                                $query->where(DB::raw('TIME(debut_pause)'), '<=', $time->format('H:i:s'))
+                                                    ->where(DB::raw('TIME(fin_pause)'), '>=', $time->copy()->addMinutes(30)->format('H:i:s'));
+                                            });
+                                    })
+                                    ->where('team_id', $team->id)
+                                    ->count();
 
-                            Log::info("Found $realCount on ".$date->isoFormat('dddd D MMMM YYYY'));
-                            if ($realCount < $requiredSchedule->value) {
+                                if ($realCount < $requiredSchedule->value) {
+                                        $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
+                                        $message = "Le créneau $requiredSchedule->time du ".$date->isoFormat('dddd D MMMM YYYY')." n'est pas couvert, alors que $required.\n";
 
-                                    $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                    $message = "Le créneau $requiredSchedule->time du ".$date->isoFormat('dddd D MMMM YYYY')." n'est pas couvert, alors que $required.\n";
-
-                                AlertSchedule::firstOrCreate([
-                                    'team_id' => $team->id,
-                                    'time' => $requiredSchedule->time,
-                                    'date' => $date->format('Y-m-d'),
-                                    'message' => $message,
-                                    'is_read' => false,
-                                ]);
+                                    AlertSchedule::firstOrCreate([
+                                        'team_id' => $team->id,
+                                        'time' => $requiredSchedule->time,
+                                        'date' => $date->format('Y-m-d'),
+                                        'message' => $message,
+                                        'is_read' => false,
+                                    ]);
+                                }
                             }
                         }
                     }
