@@ -67,7 +67,7 @@ class CheckAlertModule extends Command
 //                            return Str::contains($scheduleTime, $timeSlot1) || Str::contains($scheduleTime, $timeSlot2);
 //                        })
 //                        ->first();
-                    Log::info('Day : '.$day);
+                    Log::info('Day : '.$requiredSchedules->count());
 
                     if ($requiredSchedule !== null) {
                         Log::info('$requiredSchedule : '.$timeSlot1 . ' - ' . $timeSlot2 );
