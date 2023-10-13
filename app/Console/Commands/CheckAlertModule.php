@@ -49,7 +49,6 @@ class CheckAlertModule extends Command
                 $startOfDay = Carbon::createFromTime(8, 0); // Assuming your day starts at 8 AM
                 $endOfDay = Carbon::createFromTime(21, 0); // And ends at 9 PM
 
-                Log::info('DAY : '. $startOfDay . ' ' . $endOfDay);
                 for ($time = $startOfDay; $time->lessThan($endOfDay); $time->addMinutes(30)) {
 
                     $timeSlot = $time->format('H:i:s').' - '.$time->copy()->addMinutes(30)->format('H:i:s');
@@ -59,8 +58,6 @@ class CheckAlertModule extends Command
 
                     $day = ucfirst($date->locale('fr_FR')->isoFormat('dddd'));
 
-                    Log::info($date->locale('fr_FR')->isoFormat('dddd'));
-
                     $requiredSchedule = $requiredSchedules->where('day', $day)
                         ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
                             $scheduleTime = $schedule['time'];
@@ -69,6 +66,7 @@ class CheckAlertModule extends Command
                         ->first();
 
                     if ($requiredSchedule !== null && $requiredSchedule->value > 0) {
+                        Log::info("Checking $requiredSchedule->value on ".$date->isoFormat('dddd D MMMM YYYY'));
                         $realCount = Planning::whereHas('calendar', function ($query) use ($date) {
                             $query->where('date', $date->format('Y-m-d'));
                         })
@@ -85,6 +83,7 @@ class CheckAlertModule extends Command
                             ->where('team_id', $team->id)
                             ->count();
 
+                        Log::info("Found $realCount on ".$date->isoFormat('dddd D MMMM YYYY'));
                         if ($realCount < $requiredSchedule->value) {
 
                                 $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
