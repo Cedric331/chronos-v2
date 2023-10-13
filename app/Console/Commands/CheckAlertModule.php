@@ -38,12 +38,12 @@ class CheckAlertModule extends Command
             $query->where('module_alert', true);
         })->get();
 
-        $date = Carbon::parse(now());
-
-        $startOfWeek = $date->copy()->startOfWeek(Carbon::MONDAY);
-        $endOfWeek = $date->copy()->endOfWeek(Carbon::SUNDAY)->addWeek();
-
         foreach ($teams as $team) {
+            $date = Carbon::parse(now());
+
+            $startOfWeek = $date->copy()->startOfWeek(Carbon::MONDAY);
+            $endOfWeek = $date->copy()->endOfWeek(Carbon::SUNDAY)->addWeek();
+
             $requiredSchedules = TeamSchedule::where('team_id', $team->id)->get();
 
             if ($requiredSchedules->count() > 0) {
