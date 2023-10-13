@@ -10,6 +10,7 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CheckAlertModule extends Command
 {
@@ -48,6 +49,7 @@ class CheckAlertModule extends Command
                 $startOfDay = Carbon::createFromTime(8, 0); // Assuming your day starts at 8 AM
                 $endOfDay = Carbon::createFromTime(21, 0); // And ends at 9 PM
 
+                Log::info('DAY : '. $startOfDay . ' ' . $endOfDay);
                 for ($time = $startOfDay; $time->lessThan($endOfDay); $time->addMinutes(30)) {
 
                     $timeSlot = $time->format('H:i:s').' - '.$time->copy()->addMinutes(30)->format('H:i:s');
@@ -56,6 +58,8 @@ class CheckAlertModule extends Command
                     $timeSlot2 = $time->copy()->addMinutes(30)->format('H:i:s');
 
                     $day = ucfirst($date->locale('fr_FR')->isoFormat('dddd'));
+
+                    Log::info($date->locale('fr_FR')->isoFormat('dddd'));
 
                     $requiredSchedule = $requiredSchedules->where('day', $day)
                         ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
