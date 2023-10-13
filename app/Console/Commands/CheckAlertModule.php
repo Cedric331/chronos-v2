@@ -64,8 +64,11 @@ class CheckAlertModule extends Command
                             return str_contains($scheduleTime, $timeSlot1) || str_contains($scheduleTime, $timeSlot2);
                         })
                         ->first();
+                    Log::info('Day : '.$day);
 
-                    Log::info('$requiredSchedule : '.$timeSlot1 . ' - ' . $timeSlot2 );
+                    if ($requiredSchedule !== null) {
+                        Log::info('$requiredSchedule : '.$timeSlot1 . ' - ' . $timeSlot2 );
+                    }
 
                     if ($requiredSchedule !== null && $requiredSchedule->value > 0) {
                         Log::info("Checking $requiredSchedule->value on ".$date->isoFormat('dddd D MMMM YYYY'));
