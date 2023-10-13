@@ -45,7 +45,6 @@ class CheckAlertModule extends Command
 
         foreach ($teams as $team) {
             $requiredSchedules = TeamSchedule::where('team_id', $team->id)->get();
-            Log::info('Day : '.$requiredSchedules->count());
 
             for ($date = $startOfWeek; $date->lessThanOrEqualTo($endOfWeek); $date->addDay()) {
                 $startOfDay = Carbon::createFromTime(8, 0); // Assuming your day starts at 8 AM
@@ -67,8 +66,8 @@ class CheckAlertModule extends Command
                         })
                         ->first();
 
-                    if ($requiredSchedule !== null) {
-                        Log::info('$requiredSchedule : '.$timeSlot1 . ' - ' . $timeSlot2 );
+                    if ($team->id == 6) {
+                        Log::info('Day : '.$requiredSchedule->count());
                     }
 
                     if ($requiredSchedule !== null && $requiredSchedule->value > 0) {
