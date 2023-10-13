@@ -65,6 +65,7 @@ class CheckAlertModule extends Command
                         })
                         ->first();
 
+                    Log::info('$requiredSchedule : '.$requiredSchedule->value);
                     if ($requiredSchedule !== null && $requiredSchedule->value > 0) {
                         Log::info("Checking $requiredSchedule->value on ".$date->isoFormat('dddd D MMMM YYYY'));
                         $realCount = Planning::whereHas('calendar', function ($query) use ($date) {
