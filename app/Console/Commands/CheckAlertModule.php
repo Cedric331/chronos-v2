@@ -32,6 +32,7 @@ class CheckAlertModule extends Command
      */
     public function handle()
     {
+        return 'ok';
         AlertSchedule::truncate();
 
         $teams = Team::whereHas('params', function ($query) {
