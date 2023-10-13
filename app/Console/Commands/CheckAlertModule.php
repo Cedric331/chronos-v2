@@ -61,7 +61,7 @@ class CheckAlertModule extends Command
                     $requiredSchedule = $requiredSchedules->where('day', $day)
                         ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
                             $scheduleTime = $schedule['time'];
-                            return strpos($scheduleTime, $timeSlot1) !== false || strpos($scheduleTime, $timeSlot2) !== false;
+                            return str_contains($scheduleTime, $timeSlot1) || str_contains($scheduleTime, $timeSlot2);
                         })
                         ->first();
 
