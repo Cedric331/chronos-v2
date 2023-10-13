@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\GeneratePlanning;
+use App\Console\Commands\CheckAlertModule;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -21,11 +22,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-//        $schedule->command(GeneratePlanning::class)->weeklyOn(1, '2:00');
-//        $schedule->call('App\Http\Controllers\TeamScheduleController@checkHoraire')->weeklyOn(1, '3:00');
         $schedule->command(GeneratePlanning::class)->everyMinute();
         $this->scheduleRunsHourly($schedule);
-        $schedule->call('App\Http\Controllers\TeamScheduleController@checkHoraire')->everyMinute();
+        $schedule->command(CheckAlertModule::class)->everyMinute();
         $this->scheduleRunsHourly($schedule);
     }
 
