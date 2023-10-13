@@ -55,7 +55,7 @@ class CheckAlertModule extends Command
                     $timeSlot1 = $time->format('H:i:s');
                     $timeSlot2 = $time->copy()->addMinutes(30)->format('H:i:s');
 
-                    $day = ucfirst($date->locale('fr')->isoFormat('dddd'));
+                    $day = ucfirst($date->locale('fr_FR')->isoFormat('dddd'));
 
                     $requiredSchedule = $requiredSchedules->where('day', $day)
                         ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
@@ -80,7 +80,7 @@ class CheckAlertModule extends Command
                             })
                             ->where('team_id', $team->id)
                             ->count();
-                        $realCount = 0;
+
                         if ($realCount < $requiredSchedule->value) {
 
                                 $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
