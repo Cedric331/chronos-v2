@@ -18,7 +18,11 @@ class AdminController extends Controller
 
     public function index()
     {
-        $teams = Team::with(['users', 'coordinateur'])->withCount('users')->orderBy('name')->get();
+        $teams = Team::with(['users', 'coordinateur'])
+            ->where('company_id', Auth::user()->company_id)
+            ->withCount('users')
+            ->orderBy('name')
+            ->get();
 
         $coordinateursProps = User::whereHas('roles', function ($query) {
             $query->where('name', 'Coordinateur');
