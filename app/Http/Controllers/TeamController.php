@@ -92,6 +92,9 @@ class TeamController extends Controller
         $page = $request->input('page', 1);
         if (!$request->team_id && Auth::user()->isAdmin()) {
             $activities = Activity::with(['subject', 'causer'])
+                ->whereHas('causer', function ($q) {
+                    $q->where('company_id', Auth::user()->company_id);
+                })
                 ->orderBy('created_at', 'DESC')
                 ->limit(100)
                 ->get();
@@ -100,6 +103,9 @@ class TeamController extends Controller
                 $team = Team::findOrFail($request->team_id);
                 $activities = Activity::where('log_name', $team->name)
                     ->with(['subject', 'causer'])
+                    ->whereHas('causer', function ($q) {
+                        $q->where('company_id', Auth::user()->company_id);
+                    })
                     ->orderBy('created_at', 'DESC')
                     ->limit(100)
                     ->get();
