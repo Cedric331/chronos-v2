@@ -62,19 +62,12 @@ class PlanningController extends Controller
             return response()->json('Erreur dans la sélection des dates', 422);
         }
 
-        if (!$request->type_fix) {
-            Planning::where('user_id', $request->user)
-                ->whereNotIn('type_day', config('teams.type_days_fix'))
-                ->delete();
-        } else {
-            Planning::where('user_id', $request->user)->delete();
-        }
 
         $countDayGenerate = 0;
         while (!$dateStart->eq($dateEnd)) {
             foreach ($request->rotations as $rotation) {
                 foreach ($rotation['details'] as $detail) {
-                    $this->createPlanning($detail, $rotation, $request->user, $dateStart);
+                    $this->createPlanning($detail, $rotation, $request->user, $dateStart, $request->type_fix);
                     $dateStart->addDay();
                     $countDayGenerate++;
 
@@ -93,29 +86,36 @@ class PlanningController extends Controller
         return response()->json('Erreur', 422);
     }
 
-    private function createPlanning($detail, $rotation, $userId, Carbon $date): void
+    private function createPlanning($detail, $rotation, $userId, Carbon $date, $type_fix): void
     {
         $calendar = Calendar::whereDate('date', $date)->first();
 
         if ($calendar) {
+            $process = true;
             $planning = Planning::where('calendar_id', $calendar->id)
                 ->where('user_id', $userId)
                 ->first();
-            if (!$planning) {
-                $planning = Planning::create([
-                    'type_day' => $detail['is_off'] ? 'Repos' : 'Planifié',
-                    'debut_journee' => $detail['debut_journee'],
-                    'debut_pause' => $detail['debut_pause'],
-                    'fin_pause' => $detail['fin_pause'],
-                    'fin_journee' => $detail['fin_journee'],
-                    'is_technician' => $detail['technicien'],
-                    'telework' => $detail['teletravail'],
-                    'hours' => $this->calculateWorkHours($detail),
-                    'calendar_id' => $calendar->id,
-                    'rotation_id' => $rotation['id'],
-                    'team_id' => Auth::user()->team_id,
-                    'user_id' => $userId,
-                ]);
+            if ($planning && !$type_fix && in_array($planning->type_day, config('teams.type_days_fix'))) {
+                $process = false;
+            }
+
+            if ($process) {
+                Planning::updateOrCreate([
+                    'id' => $planning ? $planning->id : null],
+                    [
+                        'type_day' => $detail['is_off'] ? 'Repos' : 'Planifié',
+                        'debut_journee' => $detail['debut_journee'],
+                        'debut_pause' => $detail['debut_pause'],
+                        'fin_pause' => $detail['fin_pause'],
+                        'fin_journee' => $detail['fin_journee'],
+                        'is_technician' => $detail['technicien'],
+                        'telework' => $detail['teletravail'],
+                        'hours' => $this->calculateWorkHours($detail),
+                        'calendar_id' => $calendar->id,
+                        'rotation_id' => $rotation['id'],
+                        'team_id' => Auth::user()->team_id,
+                        'user_id' => $userId,
+                    ]);
             }
 
             response()->json($planning);

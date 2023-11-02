@@ -3,7 +3,7 @@
         <div class="mx-2 py-10">
             <div v-if="days && days.length > 0" class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 w-full p-2">
                 <template v-for="(day, index) in days" :key="index">
-                    <div v-if="isStartOfWeek(day)" :class="weeklyHours[day.number_week] !== '35h00' ? 'text-red-600' : ''" class="hidden 2xl:flex flex-col p-2 min-h-[9.5rem] bg-gray-200 rounded-lg items-center justify-center text-xl font-bold" :style="{ margin: '8px' }">
+                    <div v-if="isStartOfWeek(day)" :class="weeklyHours[day.number_week] !== '35h00' ? 'text-red-600' : ''" class="hidden 2xl:flex flex-col p-2 min-h-[11rem] bg-gray-200 rounded-lg items-center justify-center text-xl font-bold" :style="{ margin: '8px' }">
                        {{ weeklyHours[day.number_week] || '00h00' }}
                     </div>
                     <div class="rounded-lg flex flex-col justify-between">
@@ -22,7 +22,7 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                                     </svg>
                                 </div>
-                            <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 min-h-[9.5rem]">
+                            <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 min-h-[11rem]">
 
                                 <div class="flex justify-center">
                                     <div class="flex items-center">
@@ -62,10 +62,10 @@
                                 </div>
 
                                 <div>
-                                    <p v-if="planning.debut_journee" class="text-lg font-bold">Début Journée : {{ planning.debut_journee }}</p>
-                                    <p v-if="planning.debut_pause" class="text-lg font-bold">Début Pause : {{ planning.debut_pause }}</p>
-                                    <p v-if="planning.fin_pause" class="text-lg font-bold">Fin Pause : {{ planning.fin_pause }}</p>
-                                    <p v-if="planning.fin_journee" class="text-lg font-bold">Fin Journée : {{ planning.fin_journee }}</p>
+                                    <p v-if="planning.debut_journee" class="text-md font-bold">Début Journée : {{ planning.debut_journee }}</p>
+                                    <p v-if="planning.debut_pause" class="text-md font-bold">Début Pause : {{ planning.debut_pause }}</p>
+                                    <p v-if="planning.fin_pause" class="text-md font-bold">Fin Pause : {{ planning.fin_pause }}</p>
+                                    <p v-if="planning.fin_journee" class="text-md font-bold">Fin Journée : {{ planning.fin_journee }}</p>
                                 </div>
 
                             </div>

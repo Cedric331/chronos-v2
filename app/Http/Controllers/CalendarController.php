@@ -37,7 +37,7 @@ class CalendarController extends Controller
             return $item->isCoordinateur() && $team->user_id !== $item->id;
         });
 
-        if (!$users->contains('id', $user->id)) {
+        if (count($users) > 0 && !$users->contains('id', $user->id)) {
             $user = $users->first();
         }
 
