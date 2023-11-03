@@ -61,7 +61,7 @@
                                     </div>
                                 </div>
 
-                                <div>
+                                <div :class="[planning.type_day === 'Planifié' && !day.is_holiday ? 'mt-6': '']">
                                     <p v-if="planning.debut_journee" class="text-md font-bold">Début Journée : {{ planning.debut_journee }}</p>
                                     <p v-if="planning.debut_pause" class="text-md font-bold">Début Pause : {{ planning.debut_pause }}</p>
                                     <p v-if="planning.fin_pause" class="text-md font-bold">Fin Pause : {{ planning.fin_pause }}</p>
