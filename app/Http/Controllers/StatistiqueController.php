@@ -15,22 +15,14 @@ class StatistiqueController extends Controller
         $endDate = $request->input('end_date');
 
         $calendars = Calendar::whereBetween('date', [$startDate, $endDate])->get();
-        
+
         $calendarIds = $calendars->pluck('id')->toArray();
 
         $plannings = Planning::where('user_id', $userId)
         ->whereIn('calendar_id', $calendarIds)
         ->get();
 
-        $types = [
-            'Planifié',
-            'Récup JF',
-            'Congés Payés',
-            'Jour Férié',
-            'Maladie',
-            'Repos',
-            'Formation',
-        ];
+        $types = config('teams.type_days_default');
 
         $statistics = [];
         foreach ($types as $type) {

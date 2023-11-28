@@ -4,7 +4,7 @@
     <div :class="{ 'dark': $store.state.isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen dark:bg-gray-900" >
-            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700" :style="{background: $store.state.isDarkMode? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color1 + ', ' + $page.props.auth.team.params.color2 + ')'}">
+            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700" :style="{background: $store.state.isDarkMode ? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color1 + ', ' + $page.props.auth.team.params.color2 + ')'}">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -12,7 +12,7 @@
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('planning')">
-                                    <ApplicationLogo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"/>
+                                    <ApplicationLogo class="block w-auto fill-current text-gray-800 dark:text-gray-200"/>
                                 </Link>
                             </div>
 
@@ -27,6 +27,9 @@
                                 <NavLink :href="route('information.index')" :active="route().current('information.index')">
                                     Information de la team
                                 </NavLink>
+                                <NavLink :href="route('paidleave.index')" :active="route().current('paidleave.index')">
+                                    Gestion des congés
+                                </NavLink>
                             </div>
                         </div>
 
@@ -39,7 +42,7 @@
                                             <template #trigger>
                                             <div class="inline-flex rounded-md">
                                                 <button
-                                                    class="inline-flex relative items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-800 dark:text-white bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150">
+                                                    class="inline-flex relative items-center px-3 py-2 border border-transparent text-md leading-4 font-medium rounded-md text-gray-800 dark:text-white bg-gray-300 dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150" style="background-color: transparent">
                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                                       <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                                                     </svg>

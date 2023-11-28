@@ -80,6 +80,11 @@ class User extends Authenticatable
         return $this->hasRole(['Administrateur']) || $this->hasPermissionTo('access-admin');
     }
 
+    public function isAdministrateur(): bool
+    {
+        return $this->hasRole(['Administrateur']);
+    }
+
     public function getHasAccessAdminAttribute (): bool
     {
         return $this->hasPermissionTo('access-admin');

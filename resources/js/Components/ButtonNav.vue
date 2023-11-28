@@ -4,7 +4,7 @@
         <div class="fixed bottom-4 right-4 z-50">
 
             <!-- Bouton fixe -->
-            <div v-show="$page.props.auth.isCoordinateur && daySelected.length > 0 || !$page.props.auth.isCoordinateur" @click.prevent="isMenuOpen = !isMenuOpen" class="h-12 w-12 bg-[#70a1ff] rounded-full flex items-center justify-center text-black cursor-pointer relative">
+            <div @click.prevent="isMenuOpen = !isMenuOpen" class="h-12 w-12 bg-[#70a1ff] rounded-full flex items-center justify-center text-black cursor-pointer relative">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                 </svg>
@@ -20,7 +20,7 @@
                 <div v-show="daySelected.length > 0" class="rounded-full py-2 space-y-2">
                     <button
                         id="horaires"
-                        @click.prevent="openUpdateDay()"
+                        @click.prevent="updateDay()"
                         class="bg-[#eccc68] px-3 py-3 rounded-full text-white dark:text-black text-sm flex items-center justify-center cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 dark:text-black text-white">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -49,15 +49,40 @@
                         </svg>
                     </button>
                 </div>
+
+                <div class="rounded-full py-2 space-y-2">
+                    <button @click.prevent="this.$emit('planningFull')"
+                            id="viewAllPlanning"
+                            class="bg-[#58B19F] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button v-show="daySelected.length > 0 && this.$page.props.auth.team.params.paid_leave" @click.prevent="openModalPaidLeave()"
+                        id="paidLeave"
+                        class="bg-[#eccc68] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 01-.421-.585l-1.08-2.16a.414.414 0 00-.663-.107.827.827 0 01-.812.21l-1.273-.363a.89.89 0 00-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 01-1.81 1.025 1.055 1.055 0 01-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 01-1.383-2.46l.007-.042a2.25 2.25 0 01.29-.787l.09-.15a2.25 2.25 0 012.37-1.048l1.178.236a1.125 1.125 0 001.302-.795l.208-.73a1.125 1.125 0 00-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 01-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 01-1.458-1.137l1.411-2.353a2.25 2.25 0 00.286-.76m11.928 9.869A9 9 0 008.965 3.525m11.928 9.868A9 9 0 118.965 3.525" />
+                    </svg>
+                </button>
             </div>
 
             <div v-else
                 class="absolute bottom-16 left-0 right-0 transition-all duration-300 transform origin-bottom"
                 :class="{'scale-y-0': !isMenuOpen, 'scale-y-100': isMenuOpen}">
-                    <div v-show="daySelected.length > 0 && $page.props.auth.team.params.update_planning" class="rounded-full py-2 space-y-2">
+                <button v-show="daySelected.length > 0 && this.$page.props.auth.team.params.paid_leave && isMyPlanning" @click.prevent="openModalPaidLeave()"
+                        id="paidLeave"
+                        class="bg-[#eccc68] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.893 13.393l-1.135-1.135a2.252 2.252 0 01-.421-.585l-1.08-2.16a.414.414 0 00-.663-.107.827.827 0 01-.812.21l-1.273-.363a.89.89 0 00-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 01-1.81 1.025 1.055 1.055 0 01-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 01-1.383-2.46l.007-.042a2.25 2.25 0 01.29-.787l.09-.15a2.25 2.25 0 012.37-1.048l1.178.236a1.125 1.125 0 001.302-.795l.208-.73a1.125 1.125 0 00-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 01-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 01-1.458-1.137l1.411-2.353a2.25 2.25 0 00.286-.76m11.928 9.869A9 9 0 008.965 3.525m11.928 9.868A9 9 0 118.965 3.525" />
+                    </svg>
+                </button>
+                    <div v-show="daySelected.length > 0 && $page.props.auth.team.params.update_planning && isMyPlanning" class="rounded-full py-2 space-y-2">
                         <button
                             id="horaires1"
-                            @click.prevent="openUpdateDay()"
+                            @click.prevent="updateDay()"
                             class="bg-[#1e90ff] relative px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -75,14 +100,15 @@
 <!--                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z" />-->
 <!--                        </svg>-->
 <!--                    </button>-->
+
                     <button @click.prevent="this.$emit('planningFull')"
                             id="viewAllPlanning"
-                            class="bg-[#34e7e4] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
+                            class="bg-[#58B19F] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
                         </svg>
                     </button>
-                    <button v-show="$page.props.auth.team.params.share_link_planning" @click.prevent="this.$emit('shareSchedule')"
+                    <button v-show="$page.props.auth.team.params.share_link_planning && isMyPlanning" @click.prevent="this.$emit('shareSchedule')"
                             id="shareSchedule"
                             class="bg-[#ffdd59] px-3 py-3 rounded-full text-black text-sm flex items-center justify-center cursor-pointer">
 
@@ -103,9 +129,11 @@ import Loading from "@/Components/Loading.vue";
 
 export default {
     components: {Loading},
-    emits: ['openUpdateDay', 'planningFull', 'shareSchedule', 'openEvent', 'deleteEvent'],
+    emits: ['openUpdateDay', 'openPaidLeave', 'planningFull', 'shareSchedule', 'openEvent', 'deleteEvent'],
     props: {
-        daySelected: Object
+        daySelected: Object,
+        getAllPlanning: Boolean,
+        isMyPlanning: Boolean,
     },
     data() {
         return {
@@ -127,7 +155,7 @@ export default {
         }
     },
     methods: {
-        openUpdateDay () {
+        updateDay () {
             this.$emit('openUpdateDay')
         },
         openEvent () {
@@ -152,6 +180,17 @@ export default {
             this.authWindow.addEventListener('load', () => {
                 this.isLoading = false;
             });
+        },
+        openModalPaidLeave () {
+            if (this.daySelected.length > 0) {
+                this.$emit('openPaidLeave')
+            } else {
+                this.$notify({
+                    type: 'warn',
+                    title: 'Action impossible',
+                    text: 'Vous devez sélectionner au moins un jour.',
+                });
+            }
         },
         handleAuthMessage(event) {
             // if (event.origin !== 'http://127.0.0.1:8000') {
@@ -180,7 +219,7 @@ export default {
     },
     mounted() {
         this.checkHasEvent()
-
+        let message = this.getAllPlanning ? 'Revenir au planning du jour' : 'Voir le planning complet'
         tippy('#horaires', {
             placement: 'left',
             content: 'Modification des horaires',
@@ -193,13 +232,13 @@ export default {
             placement: 'left',
             content: 'Synchroniser avec Google Agenda',
         });
-        tippy('#viewAllPlanning', {
-            placement: 'left',
-            content: 'Voir le planning complet',
-        });
         tippy('#shareSchedule', {
             placement: 'left',
             content: 'Créer un lien pour partager mon planning',
+        });
+        tippy('#viewAllPlanning', {
+            placement: 'left',
+            content: message,
         });
         tippy('#event', {
             placement: 'left',
@@ -208,6 +247,10 @@ export default {
         tippy('#event-delete', {
             placement: 'left',
             content: 'Supprimer les évènements de la journée',
+        });
+        tippy('#paidLeave', {
+            placement: 'left',
+            content: 'Demande de congé payé',
         });
     }
 }

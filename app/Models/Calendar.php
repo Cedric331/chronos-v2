@@ -47,4 +47,9 @@ class Calendar extends Model
             return null;
         }
     }
+
+    public function paidLeaves()
+    {
+        return $this->belongsToMany(PaidLeave::class, 'calendar_paid_leaves');
+    }
 }

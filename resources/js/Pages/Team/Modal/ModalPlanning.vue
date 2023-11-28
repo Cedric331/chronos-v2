@@ -64,7 +64,7 @@
                                                 </select>
                                             </div>
                                             <div v-if="user && user.hasPlanning" class="mt-4 text-black text-sm">
-                                                <p class="text-red-400">Ce collaborateur dispose déjà d'un planning.</p><p>Souhaitez-vous écraser les jours suivants ? <strong>(Congés Payés, RJF, Maladie, Formation)</strong></p>
+                                                <p class="text-red-400">Ce collaborateur dispose déjà d'un planning.</p><p>Souhaitez-vous écraser les jours suivants ? <strong>(Congés Payés, RJF, Maladie, Formation, CP Matin, CP Après-midi, Congés sans solde)</strong></p>
                                                 <Switch v-model="type_fix"></Switch>
                                             </div>
                                         </div>

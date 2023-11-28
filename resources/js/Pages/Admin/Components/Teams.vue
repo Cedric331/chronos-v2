@@ -8,6 +8,7 @@
                 </select>
             </div>
             <div class="flex-shrink-0 m-4">
+                <PrimaryButton v-if="$page.props.auth.isAdministrateur" @click.prevent="refreshTypeDays()" class="mr-5">Mettre à jour les types de jour</PrimaryButton>
                 <PrimaryButton @click.prevent="createTeam()">Créer une Team</PrimaryButton>
             </div>
         </div>
@@ -50,6 +51,22 @@ export default {
         }
     },
     methods: {
+        refreshTypeDays () {
+            axios.put('/chronos-admin/team/typedays')
+                .then(() => {
+                this.$notify({
+                    type: 'success',
+                    title: 'Success',
+                    text: 'Types de jours mis à jour avec succès.'
+                })
+            }).catch(error => {
+                this.$notify({
+                    type: 'error',
+                    title: 'Error',
+                    text: 'Une erreur est survenue lors de la mise à jour des types de jours.'
+                })
+            })
+        },
         createTeam() {
             this.showModalCreateTeam = true
         },

@@ -327,7 +327,7 @@ export default {
     },
     computed: {
         isTypeDayPlanifieOrFormation() {
-            return this.type_day === 'Planifié' || this.type_day === 'Formation';
+            return this.type_day === 'Planifié' || this.type_day === 'Formation' || this.type_day === 'CP Après-midi' || this.type_day === 'CP Matin';
         }
     },
     beforeMount() {

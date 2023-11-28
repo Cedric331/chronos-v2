@@ -62,6 +62,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'hasConnection' => \App\Http\Middleware\HasConnection::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
+        'isAdmin' => \App\Http\Middleware\IsAdmin::class,
         'isAdminOrHasPermission' => \App\Http\Middleware\IsAdminOrHasPermission::class,
         'isCoordinateur' => \App\Http\Middleware\isCoordinateur::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,

@@ -55,6 +55,7 @@
                         :daysProps="daysProps"
                         :weeklyHours="weeklyProps"
                         :isToday="isToday"
+                        :getAllPlanning="getAllPlanning"
                         @shareSchedule="this.showShare = true"
                         @planningFull="this.getAllPlanning = !this.getAllPlanning">
                     </Calendar>

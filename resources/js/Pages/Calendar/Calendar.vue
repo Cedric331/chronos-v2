@@ -11,6 +11,8 @@
                             @click.prevent="selectDate(day)"
                             class="w-full rounded-lg p-1 cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#ffffff]"
                             :class="[
+                                    {'halfLeaveMorning': isHalfLeave(day,'Morning')},
+                                    {'halfLeaveAfternoon': isHalfLeave(day, 'Afternoon')},
                                     {'selected': isDaySelected(day)},
                                     {'isToday' : isToday === day.date_fr},
                                     checkBgColor(day.plannings[0].type_day, day.plannings[0].is_technician)
@@ -53,7 +55,7 @@
                                 <div class="flex justify-center">
                                     <div class="flex items-center">
                                         <div class="mr-1">
-                                            <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' ? planning.type_day : '' }}</p>
+                                            <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' && planning.type_day !== 'CP Après-midi' ? planning.type_day : '' }}</p>
                                         </div>
                                         <div class="mr-1">
                                             <p class="text-lg font-bold">{{ day.is_holiday && planning.type_day !== 'Jour Férié' ? ' (Férié)' : null }}</p>
@@ -61,11 +63,19 @@
                                     </div>
                                 </div>
 
-                                <div :class="[planning.type_day === 'Planifié' && !day.is_holiday ? 'mt-6': '']">
+                                <div :class="[planning.type_day === 'Planifié' || planning.type_day === 'CP Matin' && !day.is_holiday ? 'mt-6': '']">
                                     <p v-if="planning.debut_journee" class="text-md font-bold">Début Journée : {{ planning.debut_journee }}</p>
                                     <p v-if="planning.debut_pause" class="text-md font-bold">Début Pause : {{ planning.debut_pause }}</p>
                                     <p v-if="planning.fin_pause" class="text-md font-bold">Fin Pause : {{ planning.fin_pause }}</p>
                                     <p v-if="planning.fin_journee" class="text-md font-bold">Fin Journée : {{ planning.fin_journee }}</p>
+                                </div>
+
+                                <div v-if="planning.type_day === 'CP Après-midi'" class="flex justify-center">
+                                    <div class="flex items-center">
+                                        <div class="mt-6">
+                                            <p class="text-lg font-bold">{{ planning.type_day }}</p>
+                                        </div>
+                                    </div>
                                 </div>
 
                             </div>
@@ -86,8 +96,19 @@
     <ModalConfirm v-if="showModalConfirm" :show="showModalConfirm" @close="this.showModalConfirm = false" @delete-confirm="this.deletePlanning()"></ModalConfirm>
     <ModalManagelEvent v-if="showModalEvent" :showEvent="showModalEvent" :days="daySelected" @store="data => newEvent(data)" @close="this.showModalEvent = false"></ModalManagelEvent>
     <ModalShowPlanningTeam v-if="showPlanningTeam && showDay" :show="showPlanningTeam" :showDay="showDay" @close="this.showPlanningTeam = false"></ModalShowPlanningTeam>
-    <ButtonNav :daySelected="daySelected" @shareSchedule="this.$emit('shareSchedule')" @planningFull="this.$emit('planningFull')" @deleteEvent="this.confirmDeleteEvent()" @openEvent="this.showModalEvent = true" @openUpdateDay="this.showUpdateDay = true"></ButtonNav>
+    <ButtonNav :key="getAllPlanning"
+               :isMyPlanning="isMyPlanning"
+               :daySelected="daySelected"
+               :getAllPlanning="getAllPlanning"
+               @openPaidLeave="this.showModalPaidLeave = true"
+               @shareSchedule="this.$emit('shareSchedule')"
+               @planningFull="this.$emit('planningFull')"
+               @deleteEvent="this.confirmDeleteEvent()"
+               @openEvent="this.showModalEvent = true"
+               @openUpdateDay="this.showUpdateDay = true">
+    </ButtonNav>
     <ModalUpdateDay v-if="showUpdateDay && daySelected.length > 0" :show="showUpdateDay" :daySelected="daySelected" @update="data => this.updatePlanning(data)" @close="this.showUpdateDay = false; this.daySelected= []" @deleteDayList="data => this.selectDate(data)"></ModalUpdateDay>
+    <ModalPaidLeave v-if="showModalPaidLeave" :show="showModalPaidLeave" :daysProps="daySelected" @deleteDayList="data => this.selectDate(data)" @close="this.showModalPaidLeave = false"></ModalPaidLeave>
     </section>
 </template>
 
@@ -100,17 +121,19 @@ import ModalShowPlanningTeam from "@/Pages/Calendar/Modal/ModalShowPlanningTeam.
 import 'tippy.js/dist/tippy.css';
 import ModalManagelEvent from "@/Pages/Calendar/Modal/ModalManagelEvent.vue";
 import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
+import ModalPaidLeave from "@/Pages/PaidLeave/Modal/ModalPaidLeave.vue";
 
 export default {
     name: "Calendar",
     emits: ['planningFull', 'shareSchedule'],
-    components: {ModalConfirm, ModalManagelEvent, ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
+    components: {ModalPaidLeave, ModalConfirm, ModalManagelEvent, ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
     props: {
         daysProps: Object,
         weeklyHours: {
             type: Object,
             default: () => []
         },
+        getAllPlanning: Boolean,
         isToday: String
     },
     watch: {
@@ -123,6 +146,8 @@ export default {
         return {
             days: this.daysProps,
             showDay: null,
+            isMyPlanning: false,
+            showModalPaidLeave: false,
             showModalEvent: false,
             showUpdateDay: false,
             showModalConfirm: false,
@@ -131,6 +156,9 @@ export default {
         }
     },
     methods: {
+        checkIsMyPlanning () {
+            this.isMyPlanning = this.daySelected[0].plannings[0].user_id === this.$page.props.auth.user.id
+        },
         isStartOfWeek(day) {
             return day.date_fr.startsWith('Lundi');
         },
@@ -178,13 +206,13 @@ export default {
         },
         checkBgColor (type_day, isTech) {
             let color = '';
-            if (type_day === 'Planifié') {
+            if (type_day === 'Planifié' || type_day === 'CP Matin' || type_day === 'CP Après-midi') {
                 if (isTech) {
                     color = 'bg-[#ff6b6b]';
                 } else {
                     color = 'bg-[#7bed9f]';
                 }
-            } else if (type_day === 'Congés Payés' || type_day === 'Récup JF') {
+            } else if (type_day === 'Congés Payés' || type_day === 'Congés sans solde' || type_day === 'Récup JF') {
                 color = 'bg-[#7ed6df]';
             } else if (type_day === 'Repos' || type_day === 'Jour Férié') {
                 color = 'bg-[#48dbfb]';
@@ -213,7 +241,7 @@ export default {
             this.showUpdateDay = false;
         },
         selectDate(day) {
-            if (this.$page.props.auth.isCoordinateur || this.$page.props.auth.team.params.update_planning) {
+            if (this.$page.props.auth.isCoordinateur || this.$page.props.auth.team.params.update_planning || this.$page.props.auth.team.params.paid_leave) {
                 const index = this.daySelected.findIndex(selectedDay => selectedDay.date === day.date);
                 if (index === -1) {
                     this.daySelected.push(day);
@@ -221,13 +249,22 @@ export default {
                     this.daySelected.splice(index, 1);
                     if (this.daySelected.length === 0) {
                         this.showUpdateDay = false
+                        this.showModalPaidLeave = false
                     }
                 }
                 this.daySelected.sort((a, b) => a.id - b.id);
+                this.checkIsMyPlanning()
             }
         },
         isDaySelected(day) {
             return this.daySelected.some(selectedDay => selectedDay.date === day.date);
+        },
+        isHalfLeave(day, type) {
+            if (type === 'Morning')
+                return day.plannings.some(planning => planning.type_day === 'CP Matin');
+            else if (type === 'Afternoon') {
+                return day.plannings.some(planning => planning.type_day === 'CP Après-midi');
+            }
         },
         newEvent (events) {
             events.forEach(event => {
@@ -309,9 +346,30 @@ export default {
         rgba(0, 0, 0, 0.15) 75%,
         transparent 75%,
         transparent
-    );
-    background-size: 40px 40px;
+    ) !important;
+    background-size: 40px 40px !important;
 }
+
+.halfLeaveMorning {
+    background-image: linear-gradient(
+        to bottom,
+        #7ed6df 50%,
+        transparent 50%
+    );
+    background-size: 100% 100%;
+}
+
+
+.halfLeaveAfternoon{
+    background-image: linear-gradient(
+        to bottom,
+        transparent 50%,
+        #7ed6df 50%
+    );
+    background-size: 100% 100%;
+}
+
+
 .isToday {
     box-shadow: cornflowerblue 0px 22px 70px 4px;
     /*box-shadow: 0 0 4px 4px cornflowerblue;*/

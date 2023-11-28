@@ -399,7 +399,7 @@ class PlanningController extends Controller
 
     private function checkTypeDay($typeDay): bool
     {
-        if ($typeDay === 'Formation' || $typeDay === 'Planifié') {
+        if ($typeDay === 'Formation' || $typeDay === 'Planifié' || $typeDay === 'CP Matin' || $typeDay === 'CP Après-midi') {
             return true;
         }
 

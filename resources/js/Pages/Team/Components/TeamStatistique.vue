@@ -36,24 +36,24 @@
                             <DoughnutChart :chartData="chartData" :options="options" />
                         </div>
                         <div v-else>
-                            <BarChart :chartData="chartData" :options="options" @chart:render="handleChartRender" @chart:update="handleChartUpdate" />
+                            <BarChart :chartData="chartData" :options="options" />
                         </div>
-<!--                        <div class="inline-flex items-center">-->
-<!--                            <div class="relative inline-block h-5 w-8 cursor-pointer rounded-full">-->
-<!--                                <input-->
-<!--                                    v-model="typeGraph"-->
-<!--                                    id="auto-update"-->
-<!--                                    type="checkbox"-->
-<!--                                    class="peer absolute h-5 w-8 cursor-pointer appearance-none rounded-full bg-blue-gray-100 transition-colors duration-300 checked:bg-pink-500 peer-checked:border-pink-500 peer-checked:before:bg-pink-500"-->
-<!--                                />-->
-<!--                            </div>-->
-<!--                            <label-->
-<!--                                for="auto-update"-->
-<!--                                class="mt-px ml-3 mb-0 cursor-pointer select-none font-light text-gray-700"-->
-<!--                            >-->
-<!--                                Switcher de graphique-->
-<!--                            </label>-->
-<!--                        </div>-->
+                        <div class="inline-flex items-center">
+                            <SwitchGroup>
+                                <div class="flex items-center">
+                                    <SwitchLabel class="mr-4"> {{ typeGraph ? 'Graphique en camembert' : 'Graphique en barre' }}</SwitchLabel>
+                                    <Switch
+                                        v-model="typeGraph"
+                                        :class='typeGraph ? "bg-[#70a1ff]" : "bg-gray-400"'
+                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                                                <span
+                                                    :class='typeGraph ? "translate-x-6" : "translate-x-1"'
+                                                    class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                                                />
+                                    </Switch>
+                                </div>
+                            </SwitchGroup>
+                        </div>
                     </div>
                     <div v-else class="flex items-center justify-center mx-auto">
                         <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">-- Aucune donnée --</h3>
@@ -69,12 +69,12 @@
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import {DoughnutChart, BarChart} from 'vue-chart-3';
 import { Chart, registerables } from "chart.js";
-import {Switch, SwitchLabel} from "@headlessui/vue";
+import {Switch, SwitchGroup, SwitchLabel} from "@headlessui/vue";
 
 Chart.register(...registerables);
 export default {
     name: "Statistique",
-    components: {SwitchLabel, Switch, SecondaryButton, DoughnutChart, BarChart},
+    components: {SwitchGroup, SwitchLabel, Switch, SecondaryButton, DoughnutChart, BarChart},
     props: {
         users: Array
     },
@@ -82,19 +82,12 @@ export default {
         return {
             typeGraph: true,
             chartData: {
-                labels: [
-                    'Planifié',
-                    'Récup JF',
-                    'Congés Payés',
-                    'Jour Férié',
-                    'Maladie',
-                    'Repos',
-                    'Formation'
-                ],
+                labels: [],
                 datasets: [
                     {
+                        label: 'Statistique',
                         data: [],
-                        backgroundColor: ['#00a8ff', '#9c88ff', '#fbc531', '#4cd137', '#487eb0','#38ada9','#e84118'],
+                        backgroundColor: ['#00a8ff', '#9c88ff', '#fbc531', '#4cd137', '#487eb0','#38ada9','#e84118', '#e1b12c', '#8e44ad', '#4a69bd', '#1e3799', '#0c2461', '#b71540', '#079992', '#4b658'],
                     },
                 ],
             },
@@ -123,12 +116,6 @@ export default {
         };
     },
     methods: {
-        handleChartRender(chartInstance) {
-            console.log("Chart rendered:", chartInstance);
-        },
-        handleChartUpdate(chartInstance) {
-            console.log("Chart updated:", chartInstance);
-        },
         submitForm() {
             this.errors = null;
             if (!this.selectedUser || !this.startDate || !this.endDate) {
@@ -147,6 +134,9 @@ export default {
                 this.errors = error.response.data.message;
             });
         }
+    },
+    mounted() {
+        this.chartData.labels = this.$page.props.type_days_default;
     }
 }
 </script>

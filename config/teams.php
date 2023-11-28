@@ -11,16 +11,30 @@ return [
         'Planifié',
         'Récup JF',
         'Congés Payés',
+        'Congés sans solde',
+        'CP Matin',
+        'CP Après-midi',
         'Jour Férié',
         'Maladie',
         'Repos',
         'Formation',
     ],
 
+    'type_days_off' => [
+        'Récup JF',
+        'Congés Payés',
+        'CP Matin',
+        'CP Après-midi',
+        'Congés sans solde'
+    ],
+
     // Détermine les types de jours à ne pas modifier
     'type_days_fix' => [
         'Récup JF',
         'Congés Payés',
+        'CP Matin',
+        'CP Après-midi',
+        'Congés sans solde',
         'Jour Férié',
         'Maladie',
         'Formation',

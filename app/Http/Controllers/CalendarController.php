@@ -91,6 +91,7 @@ class CalendarController extends Controller
     {
         $monday = Carbon::now()->startOfWeek();
         $user = User::findOrFail($request->user['id']);
+        $getAllPlanning = $request->getAllPlanning;
 
         $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
             $query->where('user_id', $user->id)
@@ -100,7 +101,11 @@ class CalendarController extends Controller
             ->with(['plannings' => function ($query) use ($user) {
                 $query->with('eventPlannings')->where('user_id', $user->id);
             }])
-            ->where('date', '>=', $monday)
+            ->where(function ($query) use ($monday, $getAllPlanning) {
+                if (!$getAllPlanning) {
+                    $query->where('date', '>=', $monday);
+                }
+            })
             ->get();
 
         $weeklyHours = [];

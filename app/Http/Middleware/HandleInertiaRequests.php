@@ -56,16 +56,18 @@ class HandleInertiaRequests extends Middleware
                 'isCoordinateur' => $user ? $user->isCoordinateur() : false,
                 'isResponsable' => $user ? $user->isResponsable() : false,
                 'isAdmin' => $user ? $user->isAdmin() : false,
+                'isAdministrateur' => $user?->isAdministrateur(),
                 'alerts' => $alerts,
             ],
+            'type_days_default' => config('teams.type_days_default'),
             'getMaxSizeFile' => $this->getMaxSizeFile(),
             'config' => config('teams'),
             'teams' => $teams,
-            'ziggy' => function () use ($request) {
-                return array_merge((new Ziggy)->toArray(), [
-                    'location' => $request->url(),
-                ]);
-            },
+//            'ziggy' => function () use ($request) {
+//                return array_merge((new Ziggy)->toArray(), [
+//                    'location' => $request->url(),
+//                ]);
+//            },
         ]);
     }
 

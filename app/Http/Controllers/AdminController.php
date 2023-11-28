@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['isAdminOrHasPermission']);
+        $this->middleware(['isAdminOrHasPermission', 'isAdmin']);
     }
 
     public function index()
@@ -45,6 +45,20 @@ class AdminController extends Controller
         ]);
 
         $teams = Team::withCount('users')->orderBy('name')->get();
+
+        return response()->json($teams, 201);
+    }
+
+    public function refreshTypeDays ()
+    {
+        $teams = Team::all();
+
+        foreach ($teams as $team) {
+            if ($team->params) {
+                $team->params->type_day = json_encode(config('teams.type_days_default'));
+                $team->params->save();
+            }
+        }
 
         return response()->json($teams, 201);
     }
