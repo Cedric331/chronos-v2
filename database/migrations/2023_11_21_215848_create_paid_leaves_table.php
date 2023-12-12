@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('paid_leaves', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['En attente', 'Validé', 'Refusé'])->default('En attente');
+            $table->enum('status', ['En attente', 'Accepté', 'Refusé'])->default('En attente');
             $table->string('type')->default('Congés payés');
             $table->longText('comment')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');

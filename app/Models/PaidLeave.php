@@ -22,6 +22,10 @@ class PaidLeave extends Model
         'number_days'
     ];
 
+    const STATUS_REFUSED = 'Refusé';
+    const STATUS_ACCEPTED = 'Accepté';
+    const STATUS_PENDING = 'En attente';
+
     public function calendars()
     {
         return $this->belongsToMany(Calendar::class, 'calendar_paid_leaves');

@@ -14,7 +14,13 @@ class PaidLeaveController extends Controller
         $user = Auth::user();
         $paidleaves = PaidLeave::with(['calendars', 'user'])
             ->where('team_id', $user->team_id)
+            ->orderBy('created_at', 'desc')
             ->get();
+
+        $paidleaves = $paidleaves->sortBy(function ($paidleave) {
+            return $paidleave->status !== PaidLeave::STATUS_PENDING;
+        })->values();
+
 
         return Inertia::render('PaidLeave/PaidLeave', [
             'leavesProps' => $paidleaves
@@ -65,9 +71,60 @@ class PaidLeaveController extends Controller
             'comment' => $request->comment,
             'user_id' => $user->id,
             'team_id' => $user->team_id,
+            'status' => PaidLeave::STATUS_PENDING
         ]);
 
         $paidLeave->calendars()->attach($calendars);
+
+        return response()->json($paidLeave);
+    }
+
+    public function accepted(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
+
+        $paidLeave = PaidLeave::find($request->id);
+
+        if (!$paidLeave) {
+            return response()->json([
+                'message' => 'La demande n\'existe pas'
+            ], 404);
+        }
+
+        $paidLeave->update([
+            'status' => PaidLeave::STATUS_ACCEPTED
+        ]);
+
+        return response()->json($paidLeave);
+    }
+
+    public function refused(Request $request)
+    {
+        if (!Auth::user()->isCoordinateur()) {
+            return response()->json([
+                'message' => 'Vous n\'avez pas les droits pour refuser une demande'
+            ], 403);
+        }
+
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
+
+        $paidLeave = PaidLeave::find($request->id);
+
+        if (!$paidLeave) {
+            return response()->json([
+                'message' => 'La demande n\'existe pas'
+            ], 404);
+        }
+
+        $paidLeave->update([
+            'status' => PaidLeave::STATUS_REFUSED
+        ]);
+
+        // TODO : send mail
 
         return response()->json($paidLeave);
     }
