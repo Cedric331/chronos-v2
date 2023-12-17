@@ -1,14 +1,15 @@
 import './bootstrap';
 import '../css/app.css';
 import i18n from './i18n';
-import tippy from 'tippy.js/dist/tippy.css';
+import { plugin as VueTippy } from 'vue-tippy'
+import 'tippy.js/dist/tippy.css'
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
 import dateFormatPlugin from './Plugin/date-format-plugin';
 import Notifications from '@kyvg/vue3-notification'
-import store from './store'; // Import the store
+import store from './store';
 import '@fortawesome/fontawesome-free/css/all.css';
 
 
@@ -20,7 +21,7 @@ createInertiaApp({
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
             .use(plugin)
-            .use(tippy)
+            .use(VueTippy)
             .use(store)
             .use(i18n)
             .use(Notifications)

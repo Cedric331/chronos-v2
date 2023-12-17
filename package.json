@@ -22,13 +22,14 @@
         "@headlessui/vue": "^1.7.13",
         "@kyvg/vue3-notification": "^2.9.0",
         "@quasar/vite-plugin": "^1.4.1",
-        "chart.js": "^3.1.0",
+        "chart.js": "^3.9.1",
         "flowbite": "^1.6.4",
         "flowbite-vue": "^0.0.10",
         "lodash": "^4.17.21",
         "tippy.js": "^6.3.7",
         "vue-chart-3": "^3.1.8",
         "vue-i18n": "^9.3.0-beta.17",
+        "vue-tippy": "^6.3.1",
         "vuex": "^4.1.0"
     }
 }

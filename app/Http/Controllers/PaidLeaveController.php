@@ -14,16 +14,13 @@ class PaidLeaveController extends Controller
         $user = Auth::user();
         $paidleaves = PaidLeave::with(['calendars', 'user'])
             ->where('team_id', $user->team_id)
+            ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")
             ->orderBy('created_at', 'desc')
-            ->get();
-
-        $paidleaves = $paidleaves->sortBy(function ($paidleave) {
-            return $paidleave->status !== PaidLeave::STATUS_PENDING;
-        })->values();
+            ->paginate(10);
 
 
         return Inertia::render('PaidLeave/PaidLeave', [
-            'leavesProps' => $paidleaves
+            'leavesProps' => $paidleaves,
         ]);
     }
 

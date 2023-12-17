@@ -41,7 +41,7 @@
                         <div class="inline-flex items-center">
                             <SwitchGroup>
                                 <div class="flex items-center">
-                                    <SwitchLabel class="mr-4"> {{ typeGraph ? 'Graphique en camembert' : 'Graphique en barre' }}</SwitchLabel>
+                                    <SwitchLabel class="mr-4" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'"> {{ typeGraph ? 'Graphique en camembert' : 'Graphique en barre' }}</SwitchLabel>
                                     <Switch
                                         v-model="typeGraph"
                                         :class='typeGraph ? "bg-[#70a1ff]" : "bg-gray-400"'

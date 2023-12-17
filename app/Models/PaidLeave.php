@@ -41,7 +41,7 @@ class PaidLeave extends Model
         $collection = collect();
         $calendars = $this->calendars()->get();
         foreach ($calendars as $calendar) {
-            $collection->push($calendar->date_fr);
+            $collection->push($calendar->date_fr . ' ' .  date('Y', strtotime($calendar->date)));
         }
         return $collection;
     }

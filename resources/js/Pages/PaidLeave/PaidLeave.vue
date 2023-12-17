@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <Head title="Gestion des congés payés" />
-        <section class="p-6">
+        <section class="p-6 flex justify-between">
             <div class="bg-gray-300 w-[70%] dark:bg-gray-800 shadow p-4 2xl:col-span-2" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
                 <div class="mb-4  flex items-center justify-between">
                     <div>
@@ -31,7 +31,7 @@
                                         Commentaire
                                     </th>
                                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
-                                        Période
+                                        Dates
                                     </th>
                                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                         Nombre de jours
@@ -87,11 +87,44 @@
                                 </tr>
                                 </tbody>
                             </table>
-
+                            <div class="flex flex-col items-center mt-10">
+                                <!-- Help text -->
+                                <span class="text-sm text-gray-700 dark:text-gray-400">
+                                    <span class="font-semibold text-gray-900 dark:text-white">{{ total }}</span> Résultats
+                                </span>
+                                <div class="inline-flex mt-2 xs:mt-0">
+                                    <!-- a -->
+                                    <a v-if="prev_page_url" :href="prev_page_url" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                        <svg class="w-3.5 h-3.5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
+                                        </svg>
+                                        Précédant
+                                    </a>
+                                    <a v-if="next_page_url" :href="next_page_url" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 border-0 border-l border-gray-700 rounded-r hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                                        Suivant
+                                        <svg class="w-3.5 h-3.5 ml-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
+                                        </svg>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 <ModalConfirm v-if="showConfirm" :isAccept="isAccept" :title="title" :message="message" @accept-confirm="this.accepted()" @delete-confirm="this.refused()" @close="this.closeConfirm()"></ModalConfirm>
+            </div>
+            <div class="w-[30%]">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 flex justify-center">
+                        Information sur les congés
+                    </h3>
+                    <div v-if="paidLeaves">
+                        <div v-if="paidLeaves && total > 0">
+                            <DoughnutChart ref="doughnutRef" :chartData="chartData" :options="options"></DoughnutChart>
+                            <h1 class="flex justify-center pt-5" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Nombre de demande : <span class="ml-4 text-md" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">{{ totalLeave }}</span></h1>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </AuthenticatedLayout>
@@ -106,6 +139,10 @@ import DangerButton from "@/Components/DangerButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
 import axios from "axios";
+import {DoughnutChart, BarChart} from 'vue-chart-3';
+import { Chart, registerables } from "chart.js";
+
+Chart.register(...registerables);
 
 export default {
     name: "PaidLeave",
@@ -114,6 +151,7 @@ export default {
         PrimaryButton,
         DangerButton,
         SecondaryButton,
+        DoughnutChart,
         Head,
         AuthenticatedLayout
     },
@@ -122,17 +160,92 @@ export default {
     },
     data () {
       return {
+        chartData: {},
+        options: {},
         paidLeaves: null,
         selectPaid: null,
         showConfirm: false,
         isAccept: false,
         title: '',
-        message: ''
+        message: '',
+        total: 0,
+        next_page_url: null,
+        prev_page_url: null,
       }
+    },
+    computed: {
+        acceptedPercent() {
+            if (this.paidLeaves) {
+                return (this.paidLeaves.filter(paidLeave => paidLeave.status === 'Accepté').length / this.total) * 100;
+            }
+        },
+        rejectedPercent() {
+            if (this.paidLeaves) {
+                return (this.paidLeaves.filter(paidLeave => paidLeave.status === 'Refusé').length / this.total) * 100;
+            }
+        },
+        pendingPercent() {
+            if (this.paidLeaves) {
+                return (this.paidLeaves.filter(paidLeave => paidLeave.status === 'En attente').length / this.total) * 100;
+            }
+        },
+        totalLeave() {
+            if (this.paidLeaves) {
+                return this.paidLeaves.length;
+            }
+        }
     },
     methods: {
         closeConfirm () {
             this.showConfirm = false
+        },
+        updateChartData() {
+            this.chartData = {
+                labels: ['Acceptées', 'Refusées', 'En attente'],
+                datasets: [
+                    {
+                        label: ['Acceptées', 'Refusées', 'En attente'],
+                        data: [
+                            this.acceptedPercent,
+                            this.rejectedPercent,
+                            this.pendingPercent,
+                        ],
+                        backgroundColor: ['#1dd1a1', '#ff6b6b', '#feca57'],
+                    },
+                ],
+            }
+            this.options = {
+                responsive: true,
+                    plugins: {
+                    legend: {
+                        labels: {
+                            color: this.$store.state.isDarkMode  ? '#ffffff' : '#000000',
+                                boxWidth: 20,
+                                padding: 20,
+                                font: {
+                                weight: 'bold'
+                            }
+                        },
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.label || '';
+                                if (label) {
+                                    label += ' : ';
+                                }
+                                if (context.parsed !== null) {
+                                    label += context.parsed.toFixed(2) + '%';
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                title: {
+                    display: false
+                },
+            }
         },
         accepted () {
             axios.post('/paidleave/accepted', {
@@ -157,6 +270,7 @@ export default {
             }).finally(() => {
                 this.showConfirm = false
                 this.selectPaid = null
+                this.updateChartData();
             })
         },
         refused () {
@@ -184,17 +298,24 @@ export default {
             }).finally(() => {
                 this.showConfirm = false
                 this.selectPaid = null
+                this.updateChartData()
             })
         }
     },
     mounted() {
-        this.paidLeaves = this.$page.props.leavesProps
+        this.paidLeaves = this.$page.props.leavesProps.data
+        this.total = this.$page.props.leavesProps.total
+        this.next_page_url = this.$page.props.leavesProps.next_page_url
+        this.prev_page_url = this.$page.props.leavesProps.prev_page_url
+
+        this.updateChartData()
+
         setTimeout(() => {
             this.paidLeaves.forEach((paidLeave, i) => {
                 tippy('#comment-' + i, {
                     placement: 'left',
                     content: paidLeave.comment,
-                });
+                })
             })
         }, 100)
     }
@@ -202,5 +323,28 @@ export default {
 </script>
 
 <style scoped>
+.progress-container {
+    width: 100%;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+}
 
+.progress-bar {
+    height: 20px;
+    background-color: green;
+    transition: width 0.5s ease;
+}
+
+.progress-bar.rejected {
+    background-color: red;
+}
+
+.progress-bar.pending {
+    background-color: yellow;
+}
+
+.progress-labels div {
+    margin-top: 10px;
+}
 </style>
