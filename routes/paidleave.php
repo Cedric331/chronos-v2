@@ -12,5 +12,6 @@ Route::middleware('auth')->group(function () {
         Route::post('/paidleave/accepted', [PaidLeaveController::class, 'accepted'])->name('paidleave.accepted');
         Route::post('/paidleave/refused', [PaidLeaveController::class, 'refused'])->name('paidleave.refused');
         Route::delete('/paidleave/delete', [PaidLeaveController::class, 'delete'])->name('paidleave.delete');
+        Route::get('/paidleave/export', [PaidLeaveController::class, 'export'])->name('paidleave.export');
     });
 });

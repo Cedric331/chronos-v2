@@ -9,8 +9,8 @@
                             Gestion des congés
                         </h3>
                     </div>
-                    <div class="flex-shrink-0">
-                        <SecondaryButton>
+                    <div v-if="$page.props.auth.isCoordinateur" class="flex-shrink-0">
+                        <SecondaryButton @click="exportData()">
                             Exporter les données
                         </SecondaryButton>
                     </div>
@@ -49,7 +49,7 @@
                                 </thead>
 
                                 <tbody class="bg-white dark:bg-gray-200 table-auto">
-                                <tr v-for="(paidLeave, i) in paidLeaves" class="border-b-[1px] border-black" :class="[i % 2 === 0 && paidLeave.status === 'En attente' ? 'bg-gray-100' : 'bg-gray-200', paidLeave.status === 'Accepté' ? 'bg-green-100' : '', paidLeave.status === 'Refusé' ? 'bg-red-100' : '']">
+                                <tr v-for="(paidLeave, i) in paidLeaves" class="border-b-[1px] border-black" :class="[i % 2 === 0 && paidLeave.status === 'En attente' ? 'bg-yellow-100' : 'bg-gray-200', paidLeave.status === 'Accepté' ? 'bg-green-100' : '', paidLeave.status === 'Refusé' ? 'bg-red-100' : '']">
                                     <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                         {{ paidLeave.user.name }}
                                     </td>
@@ -378,6 +378,26 @@ export default {
                     this.updateChartData()
                 })
             }
+        },
+        exportData() {
+            axios.get('/paidleave/export', {
+                responseType: 'blob'
+            })
+                .then(response => {
+                    let blob = new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})
+                    let link = document.createElement('a')
+                    link.href = window.URL.createObjectURL(blob)
+                    link.download = this.$page.props.auth.team.name.toLowerCase() + '-conge.xlsx'
+                    link.click()
+                })
+                .catch(error => {
+                    this.$notify({
+                        type: 'error',
+                        title: 'Error',
+                        text: 'Une erreur est survenue lors de l\'export du planning.'
+                    })
+                });
+
         }
     },
     mounted() {

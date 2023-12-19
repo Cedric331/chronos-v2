@@ -222,7 +222,6 @@ export default {
                         text: 'Une erreur est survenue lors de l\'export du planning.'
                     })
                 });
-
         },
         handleAuthMessage(event) {
             // if (event.origin !== 'http://127.0.0.1:8000') {

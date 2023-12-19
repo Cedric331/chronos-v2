@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PaidLeaveExport;
 use App\Mail\NewRequestLeave;
 use App\Models\PaidLeave;
 use App\Models\Team;
@@ -192,5 +193,12 @@ class PaidLeaveController extends Controller
             ->get();
 
         return response()->json($paidleaves);
+    }
+
+    public function export()
+    {
+        $team = Auth::user()->team;
+        return (new PaidLeaveExport)->team($team)->download('planning.xlsx');
+//        return (new PaidLeaveExport)->team($team)->download('planning.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }
