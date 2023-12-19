@@ -38,9 +38,8 @@
             <p :class="{'text-white' : $store.state.isDarkMode}" class="text-xs flex justify-center">
                 Les jours qui ne sont pas travaillés ne sont pas pris en compte.
             </p>
-            <br>
             <p :class="{'text-white' : $store.state.isDarkMode}" class="text-xs mb-4 flex justify-center">
-                Cela générera une demande auprès de votre responsable qui devra valider vos congés.
+                Cela enverra une demande de congés à votre responsable.
             </p>
 
             <InputError :message="errors" :can-close="true" @close="this.errors = null"></InputError>

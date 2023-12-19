@@ -16,6 +16,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/planning/team', [PlanningController::class, 'getPlanningTeam'])->name('planning.team');
     Route::post('/planning/share', [PlanningController::class, 'generateShareLink'])->name('planning.share');
     Route::delete('/planning/share/{link}', [PlanningController::class, 'deleteShareLink'])->name('planning.share.delete');
+
+    Route::get('/planning/user/export', [PlanningController::class, 'exportPlanning'])->name('planning.export');
 });
 
 Route::get('/planning/{token}', [PlanningController::class, 'getPlanningShare'])->name('planning.share.get');

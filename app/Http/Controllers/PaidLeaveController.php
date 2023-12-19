@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewRequestLeave;
 use App\Models\PaidLeave;
+use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class PaidLeaveController extends Controller
@@ -42,6 +46,7 @@ class PaidLeaveController extends Controller
         }
 
         $user = Auth::user();
+        $team = Team::find($user->team_id);
 
         $calendars = collect($request->days)
             ->map(function ($day) {
@@ -54,7 +59,7 @@ class PaidLeaveController extends Controller
             $query->whereIn('calendar_id', $calendars);
         })
             ->where('user_id', $user->id)
-            ->where('team_id', $user->team_id)
+            ->where('team_id', $team->id)
             ->first();
 
         if ($paidLeave) {
@@ -67,11 +72,25 @@ class PaidLeaveController extends Controller
             'type' => $request->type,
             'comment' => $request->comment,
             'user_id' => $user->id,
-            'team_id' => $user->team_id,
+            'team_id' => $team->id,
             'status' => PaidLeave::STATUS_PENDING
         ]);
 
         $paidLeave->calendars()->attach($calendars);
+
+        // send mail
+        if ($team->user_id !== null) {
+            $userCoordinateur = User::find($team->user_id);
+            $content = [
+                'coordinateur_name' => $userCoordinateur->name,
+                'name' => $user->name,
+                'leave_type' => $paidLeave->type,
+                'comment' => $paidLeave->comment,
+                'dates' => $paidLeave->calendars->pluck('date_fr')->toArray(),
+                'url' => route('paidleave.index')
+            ];
+            Mail::to($userCoordinateur->email)->send(new NewRequestLeave($content));
+        }
 
         return response()->json($paidLeave);
     }
@@ -93,6 +112,8 @@ class PaidLeaveController extends Controller
         $paidLeave->update([
             'status' => PaidLeave::STATUS_ACCEPTED
         ]);
+
+        // TODO: Send mail to user
 
         return response()->json($paidLeave);
     }
@@ -121,8 +142,55 @@ class PaidLeaveController extends Controller
             'status' => PaidLeave::STATUS_REFUSED
         ]);
 
-        // TODO : send mail
+        // TODO: Send mail to user
 
         return response()->json($paidLeave);
+    }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+        ]);
+
+        $paidLeave = PaidLeave::find($request->id);
+
+        if (!$paidLeave) {
+            return response()->json([
+                'message' => 'La demande n\'existe pas'
+            ], 404);
+        }
+
+        $paidLeave->calendars()->detach();
+        $paidLeave->delete();
+
+        return response()->json($paidLeave);
+    }
+
+    public function search (Request $request)
+    {
+        $user = Auth::user();
+        $paidleaves = PaidLeave::with(['calendars', 'user'])
+            ->whereHas('user', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            })
+            ->where('team_id', $user->team_id)
+            ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return response()->json($paidleaves);
+    }
+
+    public function statistics(Request $request)
+    {
+        $user = Auth::user();
+        $paidleaves = PaidLeave::where('team_id', $user->team_id)
+            ->whereHas('user', function ($query) use ($request) {
+                $query->where('name', 'like', '%' . $request->search . '%');
+            })
+            ->get();
+
+        return response()->json($paidleaves);
     }
 }

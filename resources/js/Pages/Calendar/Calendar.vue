@@ -157,7 +157,11 @@ export default {
     },
     methods: {
         checkIsMyPlanning () {
-            this.isMyPlanning = this.daySelected[0].plannings[0].user_id === this.$page.props.auth.user.id
+            if (this.daySelected.length > 0) {
+                this.isMyPlanning = this.daySelected[0].plannings[0].user_id === this.$page.props.auth.user.id
+            } else {
+                this.isMyPlanning = false
+            }
         },
         isStartOfWeek(day) {
             return day.date_fr.startsWith('Lundi');

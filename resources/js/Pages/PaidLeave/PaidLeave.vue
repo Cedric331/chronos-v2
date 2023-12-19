@@ -2,7 +2,7 @@
     <AuthenticatedLayout>
         <Head title="Gestion des congés payés" />
         <section class="p-6 flex justify-between">
-            <div class="bg-gray-300 w-[70%] dark:bg-gray-800 shadow p-4 2xl:col-span-2" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+            <div class="bg-gray-300 w-auto lg:w-[70%] dark:bg-gray-800 shadow p-4 2xl:col-span-2" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
                 <div class="mb-4  flex items-center justify-between">
                     <div>
                         <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">
@@ -15,6 +15,11 @@
                         </SecondaryButton>
                     </div>
                 </div>
+                <div class="mb-4 items-center">
+                    <div>
+                        <input type="search" class="w-[250px] rounded-2xl px-4 py-1" placeholder="Filtrer par conseiller" v-model="search">
+                    </div>
+                </div>
                 <div class="flex flex-col">
                     <div class="overflow-x-auto rounded-lg">
                         <div class="align-middle inline-block min-w-full">
@@ -22,7 +27,7 @@
                                 <thead class="bg-white dark:bg-gray-800">
                                 <tr>
                                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
-                                        Demandeur
+                                        Conseiller
                                     </th>
                                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                         Type
@@ -68,19 +73,26 @@
                                         {{ paidLeave.status }}
                                     </td>
                                     <td v-if="$page.props.auth.isCoordinateur" class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                        <div v-if="paidLeave.status === 'En attente'">
+                                        <div>
                                             <button
-                                                v-if="paidLeave.status !== 'Accepté'"
-                                                @click="this.showConfirm = true; this.selectPaid = paidLeave; this.isAccept = true; this.title = 'Accepter la demande de congés'; this.message = 'Êtes-vous sûr de vouloir accepter cette demande de congés ?'"
+                                                v-if="paidLeave.status !== 'Accepté' && paidLeave.status === 'En attente'"
+                                                @click="this.showConfirm = true; this.selectPaid = paidLeave; this.isAccept = true; this.delete = false; this.title = 'Accepter la demande'; this.message = 'Êtes-vous sûr de vouloir accepter cette demande ?'"
                                                 class="middle none center bg-[#1dd1a1] mr-4 h-8 max-h-[32px] w-8 max-w-[32px] rounded-lg font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                                 data-ripple-light="true">
                                                 <i class="fa-solid fa-check"></i>
                                             </button>
                                             <button
-                                                @click="this.showConfirm = true; this.selectPaid = paidLeave; this.isAccept = false; this.title = 'Refuser la demande de congés'; this.message = 'Êtes-vous sûr de vouloir refuser cette demande de congés ?'"
+                                                v-if="paidLeave.status === 'En attente'"
+                                                @click="this.showConfirm = true; this.selectPaid = paidLeave; this.isAccept = false; this.delete = false; this.title = 'Refuser la demande'; this.message = 'Êtes-vous sûr de vouloir refuser cette demande ?'"
                                                 class="middle none bg-[#ff6b6b] center mr-4 h-8 max-h-[32px] w-8 max-w-[32px] rounded-lg font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                                 data-ripple-light="true">
                                                 <i class="fa-solid fa-xmark"></i>
+                                            </button>
+                                            <button
+                                                @click="this.showConfirm = true; this.selectPaid = paidLeave; this.isAccept = false; this.delete = true; this.title = 'Supprimer la demande'; this.message = 'Êtes-vous sûr de vouloir supprimer cette demande ?'"
+                                                class="ml-8 middle none bg-[#e74c3c] center h-8 max-h-[32px] w-8 max-w-[32px] rounded-lg font-sans text-xs font-bold uppercase text-white shadow-md transition-all hover:shadow-lg focus:opacity-[0.85] focus:shadow-none active:opacity-[0.85] active:shadow-none disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
+                                                data-ripple-light="true">
+                                                <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </div>
                                     </td>
@@ -88,12 +100,10 @@
                                 </tbody>
                             </table>
                             <div class="flex flex-col items-center mt-10">
-                                <!-- Help text -->
                                 <span class="text-sm text-gray-700 dark:text-gray-400">
                                     <span class="font-semibold text-gray-900 dark:text-white">{{ total }}</span> Résultats
                                 </span>
                                 <div class="inline-flex mt-2 xs:mt-0">
-                                    <!-- a -->
                                     <a v-if="prev_page_url" :href="prev_page_url" class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-gray-800 rounded-l hover:bg-gray-900 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
                                         <svg class="w-3.5 h-3.5 mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5H1m0 0 4 4M1 5l4-4"/>
@@ -113,16 +123,14 @@
                 </div>
                 <ModalConfirm v-if="showConfirm" :isAccept="isAccept" :title="title" :message="message" @accept-confirm="this.accepted()" @delete-confirm="this.refused()" @close="this.closeConfirm()"></ModalConfirm>
             </div>
-            <div class="w-[30%]">
+            <div class="w-[30%] invisible md:visible">
                 <div>
                     <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 flex justify-center">
                         Information sur les congés
                     </h3>
-                    <div v-if="paidLeaves">
-                        <div v-if="paidLeaves && total > 0">
-                            <DoughnutChart ref="doughnutRef" :chartData="chartData" :options="options"></DoughnutChart>
-                            <h1 class="flex justify-center pt-5" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Nombre de demande : <span class="ml-4 text-md" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">{{ totalLeave }}</span></h1>
-                        </div>
+                    <div v-if="total > 0">
+                        <DoughnutChart ref="doughnutRef" :chartData="chartData" :options="options"></DoughnutChart>
+                        <h1 class="flex justify-center pt-5" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Nombre de demande : <span class="ml-4 text-md" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">{{ totalLeave }}</span></h1>
                     </div>
                 </div>
             </div>
@@ -162,10 +170,13 @@ export default {
       return {
         chartData: {},
         options: {},
+        paidLeavesData: null,
         paidLeaves: null,
         selectPaid: null,
         showConfirm: false,
+        delete: false,
         isAccept: false,
+        search: '',
         title: '',
         message: '',
         total: 0,
@@ -175,29 +186,65 @@ export default {
     },
     computed: {
         acceptedPercent() {
-            if (this.paidLeaves) {
-                return (this.paidLeaves.filter(paidLeave => paidLeave.status === 'Accepté').length / this.total) * 100;
+            if (this.paidLeavesData) {
+                return (this.paidLeavesData.filter(paidLeave => paidLeave.status === 'Accepté').length / this.total) * 100;
             }
         },
         rejectedPercent() {
-            if (this.paidLeaves) {
-                return (this.paidLeaves.filter(paidLeave => paidLeave.status === 'Refusé').length / this.total) * 100;
+            if (this.paidLeavesData) {
+                return (this.paidLeavesData.filter(paidLeave => paidLeave.status === 'Refusé').length / this.total) * 100;
             }
         },
         pendingPercent() {
-            if (this.paidLeaves) {
-                return (this.paidLeaves.filter(paidLeave => paidLeave.status === 'En attente').length / this.total) * 100;
+            if (this.paidLeavesData) {
+                return (this.paidLeavesData.filter(paidLeave => paidLeave.status === 'En attente').length / this.total) * 100;
             }
         },
         totalLeave() {
-            if (this.paidLeaves) {
-                return this.paidLeaves.length;
+            if (this.paidLeavesData) {
+                return this.paidLeavesData.length;
             }
+        },
+    },
+    watch: {
+        search () {
+            axios.post('/paidleave/search', {
+                search: this.search
+            }).then(response => {
+                this.paidLeaves = response.data.data
+                this.total = response.data.total
+                this.next_page_url = response.data.next_page_url
+                this.prev_page_url = response.data.prev_page_url
+                this.loadGraphData()
+            }).catch(() => {
+                this.$notify({
+                    type: 'error',
+                    title: 'Erreur',
+                    text: 'Impossible de charger les données du graphique.',
+                });
+            });
         }
     },
     methods: {
         closeConfirm () {
             this.showConfirm = false
+        },
+        loadGraphData() {
+            axios.get('/paidleave/statistics', {
+                params: {
+                    search: this.search
+                }
+            })
+            .then(response => {
+                this.paidLeavesData = response.data
+                this.updateChartData()
+            }).catch(() => {
+                this.$notify({
+                    type: 'error',
+                    title: 'Erreur',
+                    text: 'Impossible de charger les données du graphique.',
+                });
+            });
         },
         updateChartData() {
             this.chartData = {
@@ -208,7 +255,7 @@ export default {
                         data: [
                             this.acceptedPercent,
                             this.rejectedPercent,
-                            this.pendingPercent,
+                            this.pendingPercent
                         ],
                         backgroundColor: ['#1dd1a1', '#ff6b6b', '#feca57'],
                     },
@@ -261,6 +308,7 @@ export default {
                         paidLeave.status = response.data.status
                     }
                 })
+                this.loadGraphData()
             }).catch(error => {
                 this.$notify({
                     type: 'error',
@@ -274,32 +322,62 @@ export default {
             })
         },
         refused () {
-            axios.post('/paidleave/refused', {
-                id: this.selectPaid.id
-            }).then(response => {
-                this.showConfirm = false
-                this.$notify({
-                    type: 'success',
-                    title: 'Succès',
-                    text: 'La demande de congés a bien été refusée.',
-                });
-                this.paidLeaves.map(paidLeave => {
-                    if (paidLeave.id ===  response.data.id) {
-                        paidLeave.status = response.data.status
+            if (this.delete) {
+                axios.delete('/paidleave/delete', {
+                    data: {
+                        id: this.selectPaid.id
                     }
+                }).then(response => {
+                    this.showConfirm = false
+                    this.$notify({
+                        type: 'success',
+                        title: 'Succès',
+                        text: 'La demande a bien été supprimée.',
+                    });
+                    this.paidLeaves = this.paidLeaves.filter(paidLeave => paidLeave.id !== response.data.id)
+                    this.total = this.total - 1
+                    this.loadGraphData()
                 })
-            })
-            .catch(error => {
-                this.$notify({
-                    type: 'error',
-                    title: 'Erreur',
-                    text: error.response.data.message ? error.response.data.message : 'Une erreur est survenue.',
-                });
-            }).finally(() => {
-                this.showConfirm = false
-                this.selectPaid = null
-                this.updateChartData()
-            })
+                    .catch(error => {
+                        this.$notify({
+                            type: 'error',
+                            title: 'Erreur',
+                            text: error.response.data.message ? error.response.data.message : 'Une erreur est survenue.',
+                        });
+                    }).finally(() => {
+                    this.showConfirm = false
+                    this.selectPaid = null
+                    this.updateChartData()
+                })
+            } else {
+                axios.post('/paidleave/refused', {
+                    id: this.selectPaid.id
+                }).then(response => {
+                    this.showConfirm = false
+                    this.$notify({
+                        type: 'success',
+                        title: 'Succès',
+                        text: 'La demande de congés a bien été refusée.',
+                    });
+                    this.paidLeaves.map(paidLeave => {
+                        if (paidLeave.id ===  response.data.id) {
+                            paidLeave.status = response.data.status
+                        }
+                    })
+                    this.loadGraphData()
+                })
+                    .catch(error => {
+                        this.$notify({
+                            type: 'error',
+                            title: 'Erreur',
+                            text: error.response.data.message ? error.response.data.message : 'Une erreur est survenue.',
+                        });
+                    }).finally(() => {
+                    this.showConfirm = false
+                    this.selectPaid = null
+                    this.updateChartData()
+                })
+            }
         }
     },
     mounted() {
@@ -308,7 +386,7 @@ export default {
         this.next_page_url = this.$page.props.leavesProps.next_page_url
         this.prev_page_url = this.$page.props.leavesProps.prev_page_url
 
-        this.updateChartData()
+        this.loadGraphData()
 
         setTimeout(() => {
             this.paidLeaves.forEach((paidLeave, i) => {
@@ -323,26 +401,6 @@ export default {
 </script>
 
 <style scoped>
-.progress-container {
-    width: 100%;
-    background-color: #e0e0e0;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-bar {
-    height: 20px;
-    background-color: green;
-    transition: width 0.5s ease;
-}
-
-.progress-bar.rejected {
-    background-color: red;
-}
-
-.progress-bar.pending {
-    background-color: yellow;
-}
 
 .progress-labels div {
     margin-top: 10px;

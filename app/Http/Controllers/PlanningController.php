@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\PlanningsExport;
 use App\Http\Requests\RequestGeneratePlanning;
 use App\Models\Calendar;
 use App\Models\Planning;
@@ -440,5 +441,11 @@ class PlanningController extends Controller
         $minutes = ($totalWorkHours - $hours) * 60;
 
         return sprintf('%02d', $hours).'h'.sprintf('%02d', $minutes);
+    }
+
+    public function exportPlanning(): \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $user = Auth::user();
+        return (new PlanningsExport)->user($user)->download('planning.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 }

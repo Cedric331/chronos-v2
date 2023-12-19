@@ -22,7 +22,7 @@ class Calendar extends Model
         'zone',
     ];
 
-    protected $appends = ['date_fr'];
+    protected $appends = ['date_fr', 'date_fr_full'];
 
     public function getDay(): string
     {
@@ -43,6 +43,18 @@ class Calendar extends Model
             $date = Carbon::parse($this->date);
 
             return ucwords($date->isoFormat('dddd D MMMM'));
+        } else {
+            return null;
+        }
+    }
+
+    public function getDateFrFullAttribute(): ?string
+    {
+        if ($this->date) {
+            Carbon::setLocale('fr');
+            $date = Carbon::parse($this->date);
+
+            return ucwords($date->isoFormat('dddd D MMMM YYYY'));
         } else {
             return null;
         }

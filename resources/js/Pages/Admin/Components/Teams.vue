@@ -90,7 +90,7 @@ export default {
 
 .table-header, .team-row {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr; /* Répétez "1fr" pour autant de colonnes que vous avez dans votre tableau */
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     border-bottom: 1px solid #ddd;
 }
 
