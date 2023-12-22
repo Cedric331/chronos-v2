@@ -245,8 +245,8 @@ class TeamController extends Controller
         if (! Gate::check('has-role-coordinateur') || ! config('teams.active')) {
             return Inertia::render('Errors/401');
         }
-
-        Auth::user()->update(['team_id' => $team->id]);
+        $user = Auth::user();
+        $user->update(['team_id' => $team->id]);
 
         return response()->json(['url' => route('team.show', ['name' => $team->name])]);
     }

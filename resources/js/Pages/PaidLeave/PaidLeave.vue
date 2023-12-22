@@ -15,9 +15,20 @@
                         </SecondaryButton>
                     </div>
                 </div>
-                <div class="mb-4 items-center">
+                <div class="mb-4 items-center flex justify-start space-x-2">
                     <div>
-                        <input type="search" class="w-[250px] rounded-2xl px-4 py-1" placeholder="Filtrer par conseiller" v-model="search">
+                        <label for="countries" class="block mb-2 text-md font-medium text-gray-900 dark:text-gray-400">Filtrer par collaborateur : </label>
+                        <select class="w-[250px] rounded-2xl px-4 py-1" v-model="user">
+                            <option :value="null">Toutes les collaborateurs</option>
+                            <option v-for="item in usersProps" :value="item.id">{{ item.name }}</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="countries" class="block mb-2 text-md font-medium text-gray-900 dark:text-gray-400">Demande effectuée pour l'année : </label>
+                        <select class="w-[250px] rounded-2xl px-4 py-1" v-model="year">
+                            <option :value="null">Toutes les années</option>
+                            <option v-for="item in yearsProps" :value="item">{{ item }}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="flex flex-col">
@@ -164,19 +175,22 @@ export default {
         AuthenticatedLayout
     },
     props: {
-        leavesProps: Object
+        leavesProps: Object,
+        usersProps: Object,
+        yearsProps: Object,
     },
     data () {
       return {
         chartData: {},
         options: {},
+        year: null,
         paidLeavesData: null,
         paidLeaves: null,
         selectPaid: null,
         showConfirm: false,
         delete: false,
         isAccept: false,
-        search: '',
+        user: null,
         title: '',
         message: '',
         total: 0,
@@ -207,9 +221,21 @@ export default {
         },
     },
     watch: {
-        search () {
+        user () {
+            this.searchData()
+        },
+        year () {
+            this.searchData()
+        }
+    },
+    methods: {
+        closeConfirm () {
+            this.showConfirm = false
+        },
+        searchData () {
             axios.post('/paidleave/search', {
-                search: this.search
+                user: this.user,
+                year: this.year
             }).then(response => {
                 this.paidLeaves = response.data.data
                 this.total = response.data.total
@@ -223,16 +249,12 @@ export default {
                     text: 'Impossible de charger les données du graphique.',
                 });
             });
-        }
-    },
-    methods: {
-        closeConfirm () {
-            this.showConfirm = false
         },
         loadGraphData() {
             axios.get('/paidleave/statistics', {
                 params: {
-                    search: this.search
+                    user: this.user,
+                    year: this.year
                 }
             })
             .then(response => {
@@ -381,7 +403,11 @@ export default {
         },
         exportData() {
             axios.get('/paidleave/export', {
-                responseType: 'blob'
+                responseType: 'blob',
+                params: {
+                    year: this.year,
+                    user: this.user
+                }
             })
                 .then(response => {
                     let blob = new Blob([response.data], {type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'})

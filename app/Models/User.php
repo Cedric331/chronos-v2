@@ -109,4 +109,12 @@ class User extends Authenticatable
     {
         return $this->getRoleNames()->first();
     }
+
+    public function paidleaves(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(PaidLeave::class);
+    }
+
+    // Nombre de jours demandés durant l'année entre Juin et Mai de l'année prochaine
+
 }

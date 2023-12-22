@@ -29,4 +29,9 @@ class Rotation extends Model
     {
         return $this->hasMany(RotationDetail::class);
     }
+
+    public function plannings(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Planning::class);
+    }
 }

@@ -5,7 +5,9 @@ namespace App\Exports;
 use App\Models\Calendar;
 use App\Models\PaidLeave;
 use App\Models\Team;
+use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Support\Number;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
@@ -23,6 +25,7 @@ use PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues;
 use PhpOffice\PhpSpreadsheet\Chart\Legend;
 use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
 use PhpOffice\PhpSpreadsheet\Chart\Title;
+use Ramsey\Uuid\Type\Integer;
 
 
 class PaidLeaveExport implements FromQuery,WithStyles, WithMapping, WithHeadings, ShouldAutoSize, WithEvents, WithCharts
@@ -30,6 +33,8 @@ class PaidLeaveExport implements FromQuery,WithStyles, WithMapping, WithHeadings
     use Exportable, RegistersEventListeners;
 
     protected Team $team;
+    protected $user;
+    protected $year;
     protected array $rowTypes = [];
     protected array $dayTypeCounts = [];
 
@@ -42,10 +47,40 @@ class PaidLeaveExport implements FromQuery,WithStyles, WithMapping, WithHeadings
         return $this;
     }
 
+    public function user($user): static
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function year($year): static
+    {
+        $this->year = explode(' - ', $year);
+
+        return $this;
+    }
+
     public function query()
     {
         return PaidLeave::with(['calendars', 'user'])
             ->where('team_id', $this->team->id)
+            ->whereHas('user', function ($query)  {
+                if ($this->user) {
+                    $query->where('id', (int) $this->user);
+                }
+            })
+            ->whereHas('calendars', function ($query) {
+                if ($this->year) {
+                    $startDate = Carbon::createFromDate(trim($this->year[0]), 6, 1);
+                    $endDate = Carbon::createFromDate(trim($this->year[1]), 5, 31);
+
+                    $query->where(function ($subQuery) use ($startDate, $endDate) {
+                        $subQuery->where('date', '>=', $startDate)
+                            ->where('date', '<=', $endDate);
+                    });
+                }
+            })
             ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")
             ->orderBy('created_at', 'desc');
     }

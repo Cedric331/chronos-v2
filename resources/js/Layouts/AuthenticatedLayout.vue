@@ -27,7 +27,7 @@
                                 <NavLink :href="route('information.index')" :active="route().current('information.index')">
                                     Information de la team
                                 </NavLink>
-                                <NavLink :href="route('paidleave.index')" :active="route().current('paidleave.index')">
+                                <NavLink v-if="$page.props.auth.team.params.paid_leave" :href="route('paidleave.index')" :active="route().current('paidleave.index')">
                                     Gestion des congés
                                 </NavLink>
                             </div>
@@ -224,6 +224,9 @@
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('planning')" :active="route().current('planning')">
                             {{ $t('nav.dashboard') }}
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="$page.props.auth.team.params.paid_leave" :href="route('paidleave.index')" :active="route().current('paidleave.index')">
+                            Gestion des congés
                         </ResponsiveNavLink>
                     </div>
 

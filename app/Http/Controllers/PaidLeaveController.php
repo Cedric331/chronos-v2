@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Exports\PaidLeaveExport;
 use App\Mail\NewRequestLeave;
+use App\Models\Calendar;
 use App\Models\PaidLeave;
 use App\Models\Team;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -17,15 +19,29 @@ class PaidLeaveController extends Controller
     public function view()
     {
         $user = Auth::user();
+        $users = User::where('team_id', $user->team_id)
+            ->role('Conseiller')
+            ->get();
+
         $paidleaves = PaidLeave::with(['calendars', 'user'])
             ->where('team_id', $user->team_id)
             ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
+        $years = Calendar::whereHas('paidleaves', function ($query) use ($user) {
+            $query->where('team_id', $user->team_id);
+        })->get()->pluck('date')->map(function ($date) {
+            return Carbon::parse($date)->year;
+        })->unique()
+        ->map(function ($year) {
+            return $year . ' - ' . ($year + 1);
+        });
 
         return Inertia::render('PaidLeave/PaidLeave', [
             'leavesProps' => $paidleaves,
+            'yearsProps' => $years,
+            'usersProps' => $users,
         ]);
     }
 
@@ -170,10 +186,22 @@ class PaidLeaveController extends Controller
 
     public function search (Request $request)
     {
+        $years = explode('-', $request->year);
         $user = Auth::user();
         $paidleaves = PaidLeave::with(['calendars', 'user'])
             ->whereHas('user', function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->search . '%');
+                if ($request->user) {
+                    $query->where('id', $request->user);
+                }
+            })
+            ->whereHas('calendars', function ($query) use ($years) {
+                    $startDate = Carbon::createFromDate(trim($years[0]), 6, 1);
+                    $endDate = Carbon::createFromDate(trim($years[1]), 5, 31);
+
+                    $query->where(function ($subQuery) use ($startDate, $endDate) {
+                        $subQuery->where('date', '>=', $startDate)
+                            ->where('date', '<=', $endDate);
+                    });
             })
             ->where('team_id', $user->team_id)
             ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")
@@ -186,19 +214,33 @@ class PaidLeaveController extends Controller
     public function statistics(Request $request)
     {
         $user = Auth::user();
+        $years = explode('-', $request->year);
+
         $paidleaves = PaidLeave::where('team_id', $user->team_id)
             ->whereHas('user', function ($query) use ($request) {
-                $query->where('name', 'like', '%' . $request->search . '%');
+                if ($request->user) {
+                    $query->where('id', $request->user);
+                }
+            })
+            ->whereHas('calendars', function ($query) use ($years) {
+                $startDate = Carbon::createFromDate(trim($years[0]), 6, 1);
+                $endDate = Carbon::createFromDate(trim($years[1]), 5, 31);
+
+                $query->where(function ($subQuery) use ($startDate, $endDate) {
+                    $subQuery->where('date', '>=', $startDate)
+                        ->where('date', '<=', $endDate);
+                });
             })
             ->get();
 
         return response()->json($paidleaves);
     }
 
-    public function export()
+    public function export(Request $request)
     {
-        $team = Auth::user()->team;
-        return (new PaidLeaveExport)->team($team)->download('planning.xlsx');
-//        return (new PaidLeaveExport)->team($team)->download('planning.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        $team = Team::find(Auth::user()->team_id);
+        $years = $request->year;
+
+        return (new PaidLeaveExport)->team($team)->user($request->user)->year($years)->download('leavepaid.xlsx');
     }
 }

@@ -29,9 +29,9 @@
                                 <div class="flex justify-center">
                                     <div class="flex items-center">
                                         <div v-if="planning.hours" class="font-bold">
-                                            {{ planning.hours + ' - ' }}
+                                            {{ planning.hours }}
                                         </div>
-                                        <div class="font-bold ml-2">
+                                        <div v-if="planning.rotation" class="font-bold ml-2">
                                             {{ planning.rotation.name }}
                                         </div>
                                         <div :id="'event-'+day.id" v-if="planning.event_plannings.length" class="font-bold ml-2">

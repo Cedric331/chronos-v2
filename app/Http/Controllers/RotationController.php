@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\RotationRequest;
+use App\Models\Planning;
 use App\Models\Rotation;
 use Illuminate\Support\Facades\Auth;
 use App\Models\RotationDetail;
@@ -12,6 +13,11 @@ use Inertia\Inertia;
 
 class RotationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('isCoordinateur');
+    }
+
     public function store(RotationRequest $request, Team $team): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         if (! $request->ajax()) {
@@ -181,6 +187,31 @@ class RotationController extends Controller
                 ->performedOn($rotation)
                 ->withProperties($rotationWithDetails)
                 ->log('Une rotation a été modifiée');
+
+            DB::commit();
+
+            return response()->json(Rotation::where('team_id', Auth::user()->team_id)->with('details')->get());
+        } catch (\Exception $e) {
+            DB::rollback();
+            throw $e;
+        }
+    }
+
+    public function destroy(Rotation $rotation): \Illuminate\Http\JsonResponse|\Inertia\Response
+    {
+        DB::beginTransaction();
+        try {
+            $planningIds = $rotation->plannings()->pluck('id');
+            Planning::whereIn('id', $planningIds)->update(['rotation_id' => null]);
+
+            $rotationWithDetails = $rotation->load('details')->toArray();
+            $rotation->delete();
+
+            activity($rotation->team->name)
+                ->event('Suppression')
+                ->performedOn($rotation)
+                ->withProperties($rotationWithDetails)
+                ->log('Une rotation a été supprimée');
 
             DB::commit();
 
