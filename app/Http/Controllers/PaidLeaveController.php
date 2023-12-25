@@ -29,18 +29,24 @@ class PaidLeaveController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        $years = Calendar::whereHas('paidleaves', function ($query) use ($user) {
+        $dates = Calendar::whereHas('paidleaves', function ($query) use ($user) {
             $query->where('team_id', $user->team_id);
-        })->get()->pluck('date')->map(function ($date) {
+        })->get()->pluck('date');
+
+        $uniqueYears = $dates->map(function ($date) {
             return Carbon::parse($date)->year;
-        })->unique()
-        ->map(function ($year) {
-            return $year . ' - ' . ($year + 1);
+        })->unique()->values();
+
+        $yearRanges = $uniqueYears->map(function ($year) {
+            return [
+                'value' => $year . ' - ' . ($year + 1),
+                'option' => 'Juin ' . $year . ' - Mai ' . ($year + 1)
+            ];
         });
 
         return Inertia::render('PaidLeave/PaidLeave', [
             'leavesProps' => $paidleaves,
-            'yearsProps' => $years,
+            'yearsProps' => $yearRanges,
             'usersProps' => $users,
         ]);
     }
@@ -187,6 +193,7 @@ class PaidLeaveController extends Controller
     public function search (Request $request)
     {
         $years = explode('-', $request->year);
+
         $user = Auth::user();
         $paidleaves = PaidLeave::with(['calendars', 'user'])
             ->whereHas('user', function ($query) use ($request) {
@@ -214,7 +221,11 @@ class PaidLeaveController extends Controller
     public function statistics(Request $request)
     {
         $user = Auth::user();
-        $years = explode('-', $request->year);
+        $years = [];
+
+        if ($request->year) {
+            $years = explode('-', $request->year);
+        }
 
         $paidleaves = PaidLeave::where('team_id', $user->team_id)
             ->whereHas('user', function ($query) use ($request) {
@@ -223,13 +234,15 @@ class PaidLeaveController extends Controller
                 }
             })
             ->whereHas('calendars', function ($query) use ($years) {
-                $startDate = Carbon::createFromDate(trim($years[0]), 6, 1);
-                $endDate = Carbon::createFromDate(trim($years[1]), 5, 31);
+                if ($years) {
+                    $startDate = Carbon::createFromDate(trim($years[0]), 6, 1);
+                    $endDate = Carbon::createFromDate(trim($years[1]), 5, 31);
 
-                $query->where(function ($subQuery) use ($startDate, $endDate) {
-                    $subQuery->where('date', '>=', $startDate)
-                        ->where('date', '<=', $endDate);
-                });
+                    $query->where(function ($subQuery) use ($startDate, $endDate) {
+                        $subQuery->where('date', '>=', $startDate)
+                            ->where('date', '<=', $endDate);
+                    });
+                }
             })
             ->get();
 
@@ -239,8 +252,12 @@ class PaidLeaveController extends Controller
     public function export(Request $request)
     {
         $team = Team::find(Auth::user()->team_id);
-        $years = $request->year;
+        $years = [];
 
-        return (new PaidLeaveExport)->team($team)->user($request->user)->year($years)->download('leavepaid.xlsx');
+        if ($request->year) {
+            $years = explode('-', $request->year);
+        }
+
+        return (new PaidLeaveExport)->team($team)->user($request->user)->years($years)->download('leavepaid.xlsx');
     }
 }

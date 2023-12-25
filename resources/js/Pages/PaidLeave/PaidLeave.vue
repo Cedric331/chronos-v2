@@ -19,7 +19,7 @@
                     <div>
                         <label for="countries" class="block mb-2 text-md font-medium text-gray-900 dark:text-gray-400">Filtrer par collaborateur : </label>
                         <select class="w-[250px] rounded-2xl px-4 py-1" v-model="user">
-                            <option :value="null">Toutes les collaborateurs</option>
+                            <option :value="null">Tous les collaborateurs</option>
                             <option v-for="item in usersProps" :value="item.id">{{ item.name }}</option>
                         </select>
                     </div>
@@ -27,7 +27,7 @@
                         <label for="countries" class="block mb-2 text-md font-medium text-gray-900 dark:text-gray-400">Demande effectuée pour l'année : </label>
                         <select class="w-[250px] rounded-2xl px-4 py-1" v-model="year">
                             <option :value="null">Toutes les années</option>
-                            <option v-for="item in yearsProps" :value="item">{{ item }}</option>
+                            <option v-for="item in yearsProps" :value="item.value">{{ item.option }}</option>
                         </select>
                     </div>
                 </div>
@@ -38,7 +38,7 @@
                                 <thead class="bg-white dark:bg-gray-800">
                                 <tr>
                                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
-                                        Conseiller
+                                        Collaborateur
                                     </th>
                                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                         Type
@@ -140,7 +140,7 @@
                         Information sur les congés
                     </h3>
                     <div v-if="total > 0">
-                        <DoughnutChart ref="doughnutRef" :chartData="chartData" :options="options"></DoughnutChart>
+                        <DoughnutChart ref="doughnutRef" :chartData="chartData" :options="options" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'"></DoughnutChart>
                         <h1 class="flex justify-center pt-5" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Nombre de demande : <span class="ml-4 text-md" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">{{ totalLeave }}</span></h1>
                     </div>
                 </div>

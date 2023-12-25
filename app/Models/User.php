@@ -116,5 +116,14 @@ class User extends Authenticatable
     }
 
     // Nombre de jours demandés durant l'année entre Juin et Mai de l'année prochaine
+    public function getDaysPaidAcceptedAttribute(): int
+    {
+        return $this->paidleaves()->where('status', PaidLeave::STATUS_ACCEPTED)->count();
+    }
+    
+    public function getDaysPaidRefusedAttribute(): int
+    {
+        return $this->paidleaves()->where('status', PaidLeave::STATUS_REFUSED)->count();
+    }
 
 }

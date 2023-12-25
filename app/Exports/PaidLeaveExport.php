@@ -34,7 +34,7 @@ class PaidLeaveExport implements FromQuery,WithStyles, WithMapping, WithHeadings
 
     protected Team $team;
     protected $user;
-    protected $year;
+    protected $years;
     protected array $rowTypes = [];
     protected array $dayTypeCounts = [];
 
@@ -54,9 +54,9 @@ class PaidLeaveExport implements FromQuery,WithStyles, WithMapping, WithHeadings
         return $this;
     }
 
-    public function year($year): static
+    public function years($years): static
     {
-        $this->year = explode(' - ', $year);
+        $this->years = $years;
 
         return $this;
     }
@@ -71,9 +71,9 @@ class PaidLeaveExport implements FromQuery,WithStyles, WithMapping, WithHeadings
                 }
             })
             ->whereHas('calendars', function ($query) {
-                if ($this->year) {
-                    $startDate = Carbon::createFromDate(trim($this->year[0]), 6, 1);
-                    $endDate = Carbon::createFromDate(trim($this->year[1]), 5, 31);
+                if ($this->years) {
+                    $startDate = Carbon::createFromDate(trim($this->years[0]), 6, 1);
+                    $endDate = Carbon::createFromDate(trim($this->years[1]), 5, 31);
 
                     $query->where(function ($subQuery) use ($startDate, $endDate) {
                         $subQuery->where('date', '>=', $startDate)
