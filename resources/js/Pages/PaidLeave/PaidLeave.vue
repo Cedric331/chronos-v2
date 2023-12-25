@@ -1,7 +1,7 @@
 <template>
     <AuthenticatedLayout>
         <Head title="Gestion des congés payés" />
-        <section class="p-6 flex justify-between">
+        <section class="p-3 flex justify-between">
             <div class="bg-gray-300 w-auto lg:w-[70%] dark:bg-gray-800 shadow p-4 2xl:col-span-2" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
                 <div class="mb-4  flex items-center justify-between">
                     <div>
@@ -134,14 +134,52 @@
                 </div>
                 <ModalConfirm v-if="showConfirm" :isAccept="isAccept" :title="title" :message="message" @accept-confirm="this.accepted()" @delete-confirm="this.refused()" @close="this.closeConfirm()"></ModalConfirm>
             </div>
-            <div class="w-[30%] invisible md:visible">
+            <div class="w-[30%] invisible md:visible" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
                 <div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 flex justify-center">
+                    <h3 class="text-xl font-bold mb-2 flex justify-center" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
                         Information sur les congés
                     </h3>
                     <div v-if="total > 0">
                         <DoughnutChart ref="doughnutRef" :chartData="chartData" :options="options" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'"></DoughnutChart>
                         <h1 class="flex justify-center pt-5" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Nombre de demande : <span class="ml-4 text-md" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">{{ totalLeave }}</span></h1>
+                    </div>
+                </div>
+                <div class="w-full px-1 mx-auto mt-12">
+                    <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+                        <div class="rounded-t mb-0 px-4 py-3 border-0">
+                            <div class="flex flex-wrap items-center">
+                                <div class="relative w-full px-4 max-w-full flex-grow flex-1">
+                                    <h3 class="font-semibold text-base text-blueGray-700" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
+                                        Nombre de jours
+                                    </h3>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="block w-full overflow-x-auto">
+                            <table class="items-center w-full border-collapse text-blueGray-700  ">
+                                <thead class="thead-light ">
+                                <tr>
+                                    <th :class="$store.state.isDarkMode ? 'text-white' : 'text-black'" class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                        Collaborateur
+                                    </th>
+                                    <th :class="$store.state.isDarkMode ? 'text-white' : 'text-black'" class="px-6 bg-blueGray-50 text-blueGray-500 align-middle border border-solid border-blueGray-100 py-3 text-xs uppercase border-l-0 border-r-0 whitespace-nowrap font-semibold text-left">
+                                        Accepté
+                                    </th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr v-for="user in usersProps">
+                                    <th :class="$store.state.isDarkMode ? 'text-white' : 'text-black'" class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left">
+                                        {{ user.name }}
+                                    </th>
+                                    <td :class="[$store.state.isDarkMode ? 'text-white' : 'text-black', colorDay(user.days_paid_accepted_count)]" class="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                       {{ user.days_paid_accepted_count }}
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -199,6 +237,19 @@ export default {
       }
     },
     computed: {
+        colorDay() {
+            return (count) => {
+                if (count > 20) {
+                    return 'bg-red-500'
+                } else if (count > 15) {
+                    return 'bg-yellow-500'
+                } else if (count > 10) {
+                    return 'bg-orange-500'
+                } else {
+                    return 'bg-green-500'
+                }
+            }
+        },
         acceptedPercent() {
             if (this.paidLeavesData) {
                 return (this.paidLeavesData.filter(paidLeave => paidLeave.status === 'Accepté').length / this.total) * 100;

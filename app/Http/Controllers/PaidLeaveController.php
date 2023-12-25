@@ -20,6 +20,7 @@ class PaidLeaveController extends Controller
     {
         $user = Auth::user();
         $users = User::where('team_id', $user->team_id)
+            ->withCount(['daysPaidAccepted', 'daysPaidPending'])
             ->role('Conseiller')
             ->get();
 
