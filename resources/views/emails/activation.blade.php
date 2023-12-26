@@ -9,7 +9,7 @@ Activer mon compte
 </x-mail::button>
 
 <x-mail::panel>
-    Le lien est valable pendant 24h.
+    Le lien est valable pendant 48h.
 </x-mail::panel>
 
 Merci,<br>

@@ -95,7 +95,9 @@ class LoginRequest extends FormRequest
     public function sendActivationMail($user)
     {
 
-        $activationLink = URL::temporarySignedRoute('activation', now()->addHour(24), ['email' => $user->email, 'name' => $user->name]);
+        $activationLink = URL::temporarySignedRoute('activation', now()->addHour(48), ['email' => $user->email, 'name' => $user->name]);
+        $user->last_invitation = now();
+        $user->save();
 
         $mailData = [
             'link' => $activationLink,

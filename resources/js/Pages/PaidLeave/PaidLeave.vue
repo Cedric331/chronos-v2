@@ -143,14 +143,18 @@
                         <DoughnutChart ref="doughnutRef" :chartData="chartData" :options="options" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'"></DoughnutChart>
                         <h1 class="flex justify-center pt-5" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Nombre de demande : <span class="ml-4 text-md" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">{{ totalLeave }}</span></h1>
                     </div>
+                    <div v-else>
+                        <h1 class="flex justify-center pt-5" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Aucune demande en cours</h1>
+                    </div>
                 </div>
+                <hr class="mt-5 w-1/2 mx-auto">
                 <div class="w-full px-1 mx-auto mt-12">
                     <div class="relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
                         <div class="rounded-t mb-0 px-4 py-3 border-0">
                             <div class="flex flex-wrap items-center">
                                 <div class="relative w-full px-4 max-w-full flex-grow flex-1">
                                     <h3 class="font-semibold text-base text-blueGray-700" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
-                                        Nombre de jours
+                                        Nombre de jours pour {{ yearsRange }}
                                     </h3>
                                 </div>
                             </div>
@@ -216,6 +220,7 @@ export default {
         leavesProps: Object,
         usersProps: Object,
         yearsProps: Object,
+        yearsRange: String,
     },
     data () {
       return {
@@ -339,13 +344,14 @@ export default {
                     plugins: {
                     legend: {
                         labels: {
-                            color: this.$store.state.isDarkMode  ? '#ffffff' : '#000000',
                                 boxWidth: 20,
                                 padding: 20,
                                 font: {
                                 weight: 'bold'
                             }
                         },
+                        className: 'text-gray-900',
+                            position: 'bottom',
                     },
                     tooltip: {
                         callbacks: {

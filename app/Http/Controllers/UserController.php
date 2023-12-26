@@ -67,6 +67,8 @@ class UserController extends Controller
         $user->syncRoles($request->role);
 
         $activationLink = URL::temporarySignedRoute('activation', now()->addHour(48), ['email' => $user->email, 'name' => $user->name]);
+        $user->last_invitation = now();
+        $user->save();
 
         $mailData = [
             'link' => $activationLink,
@@ -179,5 +181,34 @@ class UserController extends Controller
         $user->delete();
 
         return response()->json(['message' => 'Utilisateur supprimé'], 200);
+    }
+
+    public function sendInvitation(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    {
+        if (! Gate::check('has-role-coordinateur')) {
+            return Inertia::render('Errors/401');
+        }
+
+        $user = User::find($request->id);
+        $activationLink = URL::temporarySignedRoute('activation', now()->addHour(48), ['email' => $user->email, 'name' => $user->name]);
+        $user->last_invitation = now();
+        $user->save();
+
+        $mailData = [
+            'link' => $activationLink,
+            'email' => $user->email,
+            'name' => $user->name,
+            'title' => 'Bienvenue sur Chronos',
+        ];
+
+        Mail::to($user->email)->send(new ActivationAccount($mailData));
+
+        activity($user->team->name)
+            ->event('Relance de l\'invitation')
+            ->performedOn($user)
+            ->withProperties($user->getOriginal())
+            ->log('L\'utilisateur ' . $user->name . ' a reçu une relance d\'invitation');
+
+        return response()->json($user);
     }
 }

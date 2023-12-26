@@ -197,21 +197,23 @@ class RotationController extends Controller
         }
     }
 
-    public function destroy(Rotation $rotation): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function destroy(Rotation $rotation): \Illuminate\Http\JsonResponse
     {
         DB::beginTransaction();
         try {
+
             $planningIds = $rotation->plannings()->pluck('id');
             Planning::whereIn('id', $planningIds)->update(['rotation_id' => null]);
-
             $rotationWithDetails = $rotation->load('details')->toArray();
-            $rotation->delete();
 
             activity($rotation->team->name)
-                ->event('Suppression')
+                ->event('La rotation a été supprimée')
                 ->performedOn($rotation)
                 ->withProperties($rotationWithDetails)
                 ->log('Une rotation a été supprimée');
+
+            $rotation->details()->delete();
+            $rotation->delete();
 
             DB::commit();
 

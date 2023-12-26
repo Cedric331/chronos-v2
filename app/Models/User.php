@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -27,6 +28,8 @@ class User extends Authenticatable
         'google_id',
         'phone',
         'account_active',
+        'last_invitation',
+        'avatar',
         'company_id',
         'team_id',
         'password',
@@ -53,7 +56,7 @@ class User extends Authenticatable
 
     protected $with = ['team'];
 
-    protected $appends = ['hasPlanning', 'role', 'hasAccessAdmin'];
+    protected $appends = ['hasPlanning', 'role', 'hasAccessAdmin', 'CanResendInvitation'];
 
     public function plannings()
     {
@@ -110,6 +113,18 @@ class User extends Authenticatable
         return $this->getRoleNames()->first();
     }
 
+    public function getCanResendInvitationAttribute()
+    {
+        if ($this->last_invitation) {
+            $date = Carbon::parse($this->last_invitation);
+            return now() > $date->addHours(48) && !$this->isActivated();
+        } else if (!$this->isActivated()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public function paidleaves(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(PaidLeave::class);
@@ -117,17 +132,15 @@ class User extends Authenticatable
 
     public function daysPaidAccepted()
     {
-        return $this->paidleaves()->where('status', PaidLeave::STATUS_ACCEPTED);
+        return $this->paidleaves()->where('status', PaidLeave::STATUS_ACCEPTED)
+            ->whereHas('calendars', function ($query) {
+                $startDate = Carbon::createFromDate(date('Y'), 6, 1);
+                $endDate = Carbon::createFromDate(date('Y'), 5, 31);
+                $endDate->addYear();
+                $query->where(function ($subQuery) use ($startDate, $endDate) {
+                    $subQuery->where('date', '>=', $startDate)
+                        ->where('date', '<=', $endDate);
+                });
+            });
     }
-
-    public function daysPaidRefused()
-    {
-        return $this->paidleaves()->where('status', PaidLeave::STATUS_REFUSED);
-    }
-
-    public function daysPaidPending()
-    {
-        return $this->paidleaves()->where('status', PaidLeave::STATUS_PENDING);
-    }
-
 }

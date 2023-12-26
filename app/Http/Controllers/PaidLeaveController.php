@@ -20,7 +20,7 @@ class PaidLeaveController extends Controller
     {
         $user = Auth::user();
         $users = User::where('team_id', $user->team_id)
-            ->withCount(['daysPaidAccepted', 'daysPaidPending'])
+            ->withCount('daysPaidAccepted')
             ->role('Conseiller')
             ->get();
 
@@ -45,10 +45,12 @@ class PaidLeaveController extends Controller
             ];
         });
 
+        $dateYear = Carbon::now()->year;
         return Inertia::render('PaidLeave/PaidLeave', [
             'leavesProps' => $paidleaves,
             'yearsProps' => $yearRanges,
             'usersProps' => $users,
+            'yearsRange' => 'Juin ' . $dateYear . ' - Mai ' . $dateYear + 1,
         ]);
     }
 
@@ -203,6 +205,7 @@ class PaidLeaveController extends Controller
                 }
             })
             ->whereHas('calendars', function ($query) use ($years) {
+                if ($years[0] && $years[1]) {
                     $startDate = Carbon::createFromDate(trim($years[0]), 6, 1);
                     $endDate = Carbon::createFromDate(trim($years[1]), 5, 31);
 
@@ -210,6 +213,7 @@ class PaidLeaveController extends Controller
                         $subQuery->where('date', '>=', $startDate)
                             ->where('date', '<=', $endDate);
                     });
+                }
             })
             ->where('team_id', $user->team_id)
             ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")

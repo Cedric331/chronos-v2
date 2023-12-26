@@ -1,4 +1,5 @@
 <template>
+    <Loading v-if="isLoading" :show="isLoading" :messageLoading="'Envoi de l\'invitation en cours'" />
     <div class="bg-gray-300 dark:bg-gray-800 shadow p-4 2xl:col-span-2" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
         <div class="mb-4  flex items-center justify-between">
             <div>
@@ -35,7 +36,7 @@
                             </tr>
                             </thead>
 
-                            <tbody class="bg-white dark:bg-gray-200">
+                            <tbody v-if="users" class="bg-white dark:bg-gray-200">
                             <tr v-for="(user, i) in users">
                                 <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                     {{ user.name }}
@@ -53,11 +54,18 @@
                                     <div v-if="user.account_active">
                                         Compte activé
                                     </div>
-                                    <div v-else class="flex justify-start">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                        </svg>
-                                        Invitation envoyée
+                                    <div v-else>
+                                        <div v-if="user.CanResendInvitation">
+                                            <PrimaryButton @click.prevent="sendInvitation(user)">
+                                                Renvoyer l'invitation
+                                            </PrimaryButton>
+                                        </div>
+                                        <div v-else class="flex justify-start">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                            Invitation envoyée
+                                        </div>
                                     </div>
                                 </td>
                                 <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900 flex justify-between">
@@ -91,10 +99,12 @@ import SecondaryButton from "@/Components/SecondaryButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
+import Loading from "@/Components/Loading.vue";
 
 export default {
     name: "TeamUser",
     components: {
+        Loading,
         ModalConfirm,
         ModalUser,
         SecondaryButton,
@@ -102,14 +112,16 @@ export default {
         AuthenticatedLayout,
     },
     props: {
-        users: Object
+        usersProps: Object
     },
     data() {
         return {
+            isLoading: false,
             confirmDeleteUser: false,
             showUser: false,
             title: '',
             message: '',
+            users: null,
             user: null
         }
     },
@@ -134,7 +146,6 @@ export default {
                 }
 
             } else {
-                console.log(this.users)
                 const index = Object.keys(this.users).find(key => this.users[key].id === this.user.id);
 
                 if (index) {
@@ -147,6 +158,26 @@ export default {
                 type: 'success',
                 title: 'Succès',
                 text: 'Utilisateur modifié avec succès'
+            })
+        },
+        sendInvitation (user) {
+            this.isLoading = true
+            axios.post('/user/invitation', {
+                id: user.id
+            })
+            .then(() => {
+                this.users.find((item) => item.id === user.id).CanResendInvitation = false
+                this.$notify({
+                    type: 'success',
+                    title: 'Succès',
+                    text: 'Invitation envoyée avec succès'
+                })
+            })
+            .catch(error =>  {
+                console.log(error)
+            })
+            .finally(() => {
+                this.isLoading = false
             })
         },
         dateFormatFr (date) {
@@ -206,6 +237,9 @@ export default {
             this.user = null
             this.showUser = false
         }
+    },
+    mounted() {
+        this.users = this.usersProps
     }
 }
 </script>
