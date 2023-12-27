@@ -38,8 +38,9 @@
 
                             <tbody v-if="users" class="bg-white dark:bg-gray-200">
                             <tr v-for="(user, i) in users">
-                                <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
-                                    {{ user.name }}
+                                <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900 flex justify-start m-auto">
+                                    <img :src="user.avatar" class="h-8 mr-2 rounded-full overflow-hidden shadow" alt="Avatar">
+                                    <p class="mt-2">{{ user.name }}</p>
                                 </td>
                                 <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                     {{ user.email }}

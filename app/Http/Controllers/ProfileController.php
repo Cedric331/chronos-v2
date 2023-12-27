@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,6 +35,18 @@ class ProfileController extends Controller
     {
         $request->user()->fill($request->validated());
 
+        if ($request->user()->avatar && $request->hasFile('avatar')) {
+            $files = Storage::allFiles('public/avatars/1', 'public');
+            foreach ($files as $file) {
+                Storage::delete($file);
+            }
+        }
+
+        if ($request->hasFile('avatar')) {
+            $avatarPath = $request->file('avatar')->store('avatars/'.$request->user()->id, 'public');
+            $request->user()->avatar = Storage::url($avatarPath);
+        }
+
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
         }
@@ -56,6 +69,7 @@ class ProfileController extends Controller
 
         Auth::logout();
 
+        Storage::deleteDirectory('public/avatars/'.$user->id);
         $user->delete();
 
         $request->session()->invalidate();

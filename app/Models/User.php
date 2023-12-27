@@ -113,6 +113,15 @@ class User extends Authenticatable
         return $this->getRoleNames()->first();
     }
 
+    public function getAvatarAttribute($value): string
+    {
+        if ($value) {
+            return $value;
+        } else {
+            return '/images/avatar_default.png';
+        }
+    }
+
     public function getCanResendInvitationAttribute()
     {
         if ($this->last_invitation) {

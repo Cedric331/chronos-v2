@@ -140,6 +140,8 @@
                                                     type="button"
                                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-800 dark:text-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
                                                 >
+                                                    <img :src="$page.props.auth.user.avatar" class="h-7 rounded-full overflow-hidden shadow mr-2" alt="Avatar">
+
                                                     {{ $page.props.auth.user.name }}
 
                                                     <svg

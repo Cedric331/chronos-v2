@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('team_params', function (Blueprint $table) {
-            $table->boolean('paid_leave')->default(false)->after('share_link');
+            $table->boolean('paid_leave')->default(true)->after('share_link');
         });
     }
 
