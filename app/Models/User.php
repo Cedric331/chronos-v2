@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Carbon\Carbon;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -12,7 +14,7 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
@@ -58,6 +60,11 @@ class User extends Authenticatable
 
     protected $appends = ['hasPlanning', 'role', 'hasAccessAdmin', 'CanResendInvitation'];
 
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin() || $this->hasPermissionTo('access-admin');
+    }
+
     public function plannings()
     {
         return $this->hasMany(Planning::class);
@@ -93,7 +100,7 @@ class User extends Authenticatable
         return $this->hasPermissionTo('access-admin');
     }
 
-    public function isActivated(): bool
+    public function isActivated()
     {
         return $this->account_active;
     }
