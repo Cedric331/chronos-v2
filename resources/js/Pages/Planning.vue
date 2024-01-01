@@ -3,7 +3,10 @@
         <Loading :show="isLoading"></Loading>
         <template #header>
             <div class="flex justify-between">
-                <h2 class="font-semibold text-xl flex justify-center items-center text-gray-800 dark:text-gray-200 leading-tight">Planning de {{ selectedUser.name }}</h2>
+                <h2 class="font-semibold text-xl flex justify-center items-center text-gray-800 dark:text-gray-200 leading-tight">
+                    <img :src="selectedUser.avatar" class="h-7 rounded-full overflow-hidden shadow mr-2" alt="Avatar">
+                    Planning de {{ selectedUser.name }}
+                </h2>
                 <div>
                     <Listbox v-model="selectedUser" class="min-w-[230px]">
                         <div class="relative mt-1">

@@ -13,7 +13,7 @@ import { Link } from '@inertiajs/vue3';
 
 <style>
 #background {
-    background-image: url('/images/background_login.jpg');
+    background-image: url('/images/background_login.jpg?v=1');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
