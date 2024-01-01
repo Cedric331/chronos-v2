@@ -33,7 +33,10 @@ class TeamObserver
      */
     public function deleted(Team $team): void
     {
-        //
+        $users = $team->users()->get();
+        foreach ($users as $user) {
+            $user->team_id = null;
+        }
     }
 
     /**

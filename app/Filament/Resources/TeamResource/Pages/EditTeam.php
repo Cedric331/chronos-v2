@@ -16,4 +16,9 @@ class EditTeam extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function beforeDelete(): void
+    {
+        $this->record->users()->delete();
+    }
 }
