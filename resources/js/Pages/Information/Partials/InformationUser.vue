@@ -18,6 +18,9 @@
                 <thead class="bg-white dark:bg-gray-800">
                 <tr>
                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
+                        Avatar
+                    </th>
+                    <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                         {{ $t('name') }}
                     </th>
                     <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
@@ -36,6 +39,9 @@
 
                 <tbody class="bg-white dark:bg-gray-200">
                 <tr v-for="(user, i) in users" class="hover:bg-gray-200 dark:hover:bg-gray-400">
+                    <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
+                        <img :src="user.avatar" class="h-7 rounded-full overflow-hidden shadow mr-2" alt="Avatar">
+                    </td>
                     <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                         {{ user.name }}
                     </td>

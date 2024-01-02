@@ -161,7 +161,7 @@
                                         </template>
 
                                         <template #content>
-                                            <DropdownLink :href="route('admin.index')">
+                                            <DropdownLink v-if="$page.props.auth.isAdmin" :href="route('admin.index')">
                                                Administration
                                             </DropdownLink>
                                             <DropdownLink :href="route('profile.edit')">
@@ -277,7 +277,7 @@
                         </div>
 
                         <div class="mt-3 space-y-1">
-                            <ResponsiveNavLink :href="route('admin.index')">
+                            <ResponsiveNavLink v-if="$page.props.auth.isAdmin" :href="route('admin.index')">
                                 Administration
                             </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('profile.edit')">
