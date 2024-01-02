@@ -161,7 +161,7 @@
                                         </template>
 
                                         <template #content>
-                                            <DropdownLink :href="route('admin.index')">
+                                            <DropdownLink v-if="$page.props.auth.canAdmin" :href="route('admin.index')">
                                                Administration
                                             </DropdownLink>
                                             <DropdownLink :href="route('profile.edit')">

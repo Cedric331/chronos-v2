@@ -35,15 +35,17 @@ class ProfileController extends Controller
     {
         $request->user()->fill($request->validated());
 
-        if ($request->user()->avatar && $request->hasFile('avatar')) {
-            $files = Storage::allFiles('public/avatars/1', 'public');
-            foreach ($files as $file) {
-                Storage::delete($file);
-            }
-        }
-
         if ($request->hasFile('avatar')) {
-            $avatarPath = $request->file('avatar')->store('avatars/'.$request->user()->id, 'public');
+            if ($request->user()->avatar) {
+                Storage::disk('public')->delete($request->user()->avatar);
+            }
+
+            $userFolder = 'avatar/'.$request->user()->name;
+            if (! Storage::disk('public')->exists($userFolder)) {
+                Storage::disk('public')->makeDirectory($userFolder);
+            }
+
+            $avatarPath = $request->file('avatar')->store('avatar/'.$request->user()->id, 'public');
             $request->user()->avatar = Storage::url($avatarPath);
         }
 

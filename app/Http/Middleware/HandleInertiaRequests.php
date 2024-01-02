@@ -57,6 +57,7 @@ class HandleInertiaRequests extends Middleware
                 'isResponsable' => $user ? $user->isResponsable() : false,
                 'isAdmin' => $user ? $user->isAdmin() : false,
                 'isAdministrateur' => $user?->isAdministrateur(),
+                'canAdmin' => $user?->hasAccessAdmin,
                 'alerts' => $alerts,
             ],
             'type_days_default' => config('teams.type_days_default'),
