@@ -7,7 +7,7 @@
                     <p class="text-md font-bold">Planning de {{ planning.user.name }}</p>
                     <br>
                     <div>
-                        <p class="text-md font-bold">{{ planning.type_day }} - {{ planning.rotation ? ' - ' + planning.rotation.name : '' }}</p>
+                        <p class="text-md font-bold">{{ planning.type_day }} {{ planning.rotation ? ' - ' + planning.rotation.name : '' }}</p>
                     </div>
                     <p v-if="planning.type_day !== 'Repos' && planning.hours" class="text-md font-bold">{{ planning.hours }}</p>
                     <br>

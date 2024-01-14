@@ -35,6 +35,9 @@ class PaidLeaveController extends Controller
         })->get()->pluck('date');
 
         $uniqueYears = $dates->map(function ($date) {
+            if ($date->month < 6) {
+                $date->subYear();
+            }
             return Carbon::parse($date)->year;
         })->unique()->values();
 
@@ -45,7 +48,11 @@ class PaidLeaveController extends Controller
             ];
         });
 
-        $dateYear = Carbon::now()->year;
+        $date = Carbon::now();
+        if ($date->month < 6) {
+            $date->subYear();
+        }
+        $dateYear = Carbon::parse($date)->year;
         return Inertia::render('PaidLeave/PaidLeave', [
             'leavesProps' => $paidleaves,
             'yearsProps' => $yearRanges,
