@@ -161,6 +161,9 @@ class PlanningController extends Controller
             }
 
             $user = User::find($planning->user_id);
+        }
+
+        if ($user && $planning) {
             activity(Auth::user()->team->name)
                 ->event('Mise à jour')
                 ->performedOn($user)
