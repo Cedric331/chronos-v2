@@ -150,9 +150,13 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->paidleaves()->where('status', PaidLeave::STATUS_ACCEPTED)
             ->whereHas('calendars', function ($query) {
-                $startDate = Carbon::createFromDate(date('Y'), 6, 1);
-                $endDate = Carbon::createFromDate(date('Y'), 5, 31);
-                $endDate->addYear();
+
+            $currentYear = date('Y');
+            $currentMonth = date('m');
+            $yearOfStartDate = $currentMonth >= 6 ? $currentYear : $currentYear - 1;
+
+            $startDate = Carbon::createFromDate($yearOfStartDate, 6, 1);
+            $endDate = (clone $startDate)->addYear()->subDay();
                 $query->where(function ($subQuery) use ($startDate, $endDate) {
                     $subQuery->where('date', '>=', $startDate)
                         ->where('date', '<=', $endDate);

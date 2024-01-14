@@ -2,9 +2,9 @@
     <AuthenticatedLayout>
         <Loading :show="isLoading"></Loading>
         <template #header>
-            <div class="flex justify-between">
-                <h2 class="font-semibold text-xl flex justify-center items-center text-gray-800 dark:text-gray-200 leading-tight">
-                    <img :src="selectedUser.avatar" class="h-7 rounded-full overflow-hidden shadow mr-2" alt="Avatar">
+            <div class="flex flex-col md:flex-row justify-between">
+             <h2 class="font-semibold text-xl flex justify-center items-center text-gray-800 dark:text-gray-200 leading-tight">
+                    <img :src="selectedUser.avatar" class="h-10 mb-2 md:mb-0 md:h-7 rounded-full overflow-hidden shadow mr-2" alt="Avatar">
                     Planning de {{ selectedUser.name }}
                 </h2>
                 <div>
