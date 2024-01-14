@@ -35,6 +35,7 @@ class PaidLeaveController extends Controller
         })->get()->pluck('date');
 
         $uniqueYears = $dates->map(function ($date) {
+            $date = Carbon::parse($date);
             if ($date->month < 6) {
                 $date->subYear();
             }
