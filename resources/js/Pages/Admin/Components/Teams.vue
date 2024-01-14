@@ -13,7 +13,7 @@
             </div>
         </div>
         <hr class="h-1 border-t-0">
-        <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 mb-2">
+        <div class="w-full grid grid-cols-1 2xl:grid-cols-2 mb-2">
             <TeamGestion :team="team" :key="team" :coordinateursProps="coordinateursProps"></TeamGestion>
             <TeamUser :usersProps="team.users" :key="team"></TeamUser>
         </div>

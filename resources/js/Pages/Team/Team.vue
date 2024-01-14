@@ -19,7 +19,7 @@
                 <div>
                     <div v-if="activeTab === 'team'" class="p-4 rounded-lg">
                         <div class="pt-6 px-4">
-                            <div class="w-full grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-4 gap-4 mb-10">
+                            <div class="w-full grid grid-cols-1 2xl:grid-cols-2 gap-4 mb-10">
                                 <TeamGestion :team="team" :coordinateursProps="coordinateursProps"></TeamGestion>
                                 <TeamUser :usersProps="team.users"></TeamUser>
                             </div>

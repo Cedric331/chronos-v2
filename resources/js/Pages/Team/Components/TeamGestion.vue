@@ -7,7 +7,7 @@
         </div>
         <div class="flex flex-col">
             <div class="overflow-x-auto rounded-lg">
-                <div class="align-middle inline-block min-w-full">
+                <div class="align-middle inline-block min-w-full overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-white dark:bg-gray-800">
                         <tr>
@@ -81,21 +81,6 @@
                         </thead>
 
                         <tbody class="bg-white dark:bg-gray-200">
-<!--                        <tr>-->
-<!--                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">-->
-<!--                                Type de Jour-->
-<!--                            </th>-->
-<!--                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">-->
-<!--                                <div v-for="type_day in team.params.type_day" :key="type_day" :class="`m-1 flex justify-between`">-->
-<!--                                    <p>{{ type_day }}</p>-->
-<!--                                </div>-->
-<!--                            </th>-->
-<!--                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">-->
-<!--                                <SecondaryButton @click="editTypeDay()">-->
-<!--                                    {{ $t('team_gestion.buttonUpdate') }}-->
-<!--                                </SecondaryButton>-->
-<!--                            </td>-->
-<!--                        </tr>-->
                         <tr>
                             <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 <svg id="sendCoordinateur" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">

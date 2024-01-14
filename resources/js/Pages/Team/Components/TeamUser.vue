@@ -20,36 +20,43 @@
                             <thead class="bg-white dark:bg-gray-800">
                             <tr>
                                 <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
+                                    Avatar
+                                </th>
+                                <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                     {{ $t('name') }}
                                 </th>
                                 <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                     Email
                                 </th>
-                                <th v-if="$page.props.auth.isAdmin" scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
+                                <th scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
+                                    Anniversaire
+                                </th>
+                                <th  scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
                                     Rôle
                                 </th>
-                                <th v-else scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
-                                    {{ $t('birthday') }}
+                                <th  scope="col" class="p-4 text-left text-xs dark:text-white font-medium text-gray-500 uppercase tracking-wider">
+                                    Statut
                                 </th>
-                                <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                                 <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
                             </tr>
                             </thead>
 
                             <tbody v-if="users" class="bg-white dark:bg-gray-200">
                             <tr v-for="(user, i) in users">
-                                <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900 flex justify-start m-auto">
+                                <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                     <img :src="user.avatar" class="h-8 mr-2 rounded-full overflow-hidden shadow" alt="Avatar">
+                                </td>
+                                <td class="p-4 whitespace-nowrap text-sm font-bold text-gray-900">
                                     <p class="mt-2">{{ user.name }}</p>
                                 </td>
                                 <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
                                     {{ user.email }}
                                 </td>
-                                <td v-if="$page.props.auth.isAdmin" class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
-                                    {{ user.role }}
-                                </td>
-                                <td v-else class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                     {{ dateFormatFr(user.birthday) }}
+                                </td>
+                                <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                                    {{ user.role }}
                                 </td>
                                 <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
                                     <div v-if="user.account_active">

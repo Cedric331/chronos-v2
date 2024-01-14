@@ -55,11 +55,11 @@
 
                                             <template #content>
                                                 <div v-if="unreadAlertsItems.length > 0">
-                                                    <div class="flex justify-center text-blue-400 p-1 text-xs cursor-pointer" @click="markAllRead()">
+                                                    <div class="flex justify-center my-1 text-blue-400 hover:text-black hover:bg-red-300 p-1 text-xs cursor-pointer" @click="markAllRead()">
                                                         Marquer comme lu
                                                     </div>
                                                 </div>
-                                                <div v-for="alert in unreadAlertsItems" :key="alert.id">
+                                                <div v-for="alert in unreadAlertsItems" :key="alert.id" class="p-1">
                                                     <div v-if="!alert.is_read" @click="markAllReadOne(alert.id)" class="dark:text-white w-full hover:bg-gray-200 p-1 text-xs dark:hover:bg-gray-50 dark:hover:text-black cursor-pointer"> {{ alert.message }} </div>
                                                 </div>
                                             </template>
@@ -140,7 +140,7 @@
                                                     type="button"
                                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-800 dark:text-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
                                                 >
-                                                    <img :src="$page.props.auth.user.avatar" class="h-7 rounded-full overflow-hidden shadow mr-2" alt="Avatar">
+                                                    <img :src="$page.props.auth.user.avatar" class="h-8 object-cover rounded-full overflow-hidden shadow mr-2" alt="Avatar">
 
                                                     {{ $page.props.auth.user.name }}
 
