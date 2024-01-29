@@ -29,7 +29,5 @@ createInertiaApp({
             .use(dateFormatPlugin)
             .mount(el);
     },
-    progress: {
-        color: '#4B5563',
-    },
+    progress: false,
 });
