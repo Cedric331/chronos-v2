@@ -2,7 +2,7 @@ import './bootstrap';
 import '../css/app.css';
 import i18n from './i18n';
 import { plugin as VueTippy } from 'vue-tippy'
-import 'tippy.js/dist/tippy.css'
+// import 'tippy.js/dist/tippy.css'
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
