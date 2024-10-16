@@ -10,18 +10,18 @@
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.5.10",
         "@vitejs/plugin-vue": "^4.0.0",
-        "autoprefixer": "^10.4.16",
-        "axios": "^1.1.2",
+        "autoprefixer": "^10.4.17",
+        "axios": "^1.6.7",
         "laravel-vite-plugin": "^0.7.2",
-        "postcss": "^8.4.32",
+        "postcss": "^8.4.33",
         "postcss-nesting": "^12.0.2",
-        "tailwindcss": "^3.4.0",
-        "vite": "^4.0.0",
-        "vue": "^3.2.41"
+        "tailwindcss": "^3.4.1",
+        "vite": "^4.5.2",
+        "vue": "^3.4.15"
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^6.5.1",
-        "@headlessui/vue": "^1.7.13",
+        "@headlessui/vue": "^1.7.17",
         "@kyvg/vue3-notification": "^2.9.0",
         "@quasar/vite-plugin": "^1.4.1",
         "chart.js": "^3.9.1",
@@ -30,7 +30,7 @@
         "lodash": "^4.17.21",
         "tippy.js": "^6.3.7",
         "vue-chart-3": "^3.1.8",
-        "vue-i18n": "^9.3.0-beta.17",
+        "vue-i18n": "^9.9.0",
         "vue-tippy": "^6.3.1",
         "vuex": "^4.1.0"
     }
