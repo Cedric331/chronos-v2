@@ -22,7 +22,7 @@
                                 </svg>
                             </div>
                             <div class="flex-grow pl-4">
-                                <h2 class="title-font mb-1 mt-3 text-sm font-medium tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des dates et du collaborateur</h2>
+                                <h2 class="title-font mb-1 mt-3 text-sm font-medium tracking-wider text-black">Sélection des dates et du collaborateur</h2>
                             </div>
                         </div>
 
@@ -33,7 +33,7 @@
                                 </svg>
                             </div>
                             <div class="flex-grow pl-4 mt-3">
-                                <h2 class="title-font mb-1 text-sm font-medium tracking-wider" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Sélection des rotations</h2>
+                                <h2 class="title-font mb-1 text-sm font-medium tracking-wider text-black">Sélection des rotations</h2>
                             </div>
                         </div>
                     </div>

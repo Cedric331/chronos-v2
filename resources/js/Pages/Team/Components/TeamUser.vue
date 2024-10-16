@@ -216,7 +216,17 @@ export default {
                   })
               })
               .catch(error =>  {
-                  console.log(error)
+                  let errorMessage = 'Erreur lors de l\'envoi de l\'invitation.';
+                  if (error.response && error.response.data && error.response.data.message) {
+                      errorMessage = error.response.data.message;
+                  } else if (error.message) {
+                      errorMessage += ` Détail : ${error.message}`;
+                  }
+                  this.$notify({
+                      type: 'error',
+                      title: 'Échec',
+                      text: errorMessage
+                  });
               })
               .finally(() => {
                   this.closeConfirm()

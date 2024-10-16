@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Mail\ActivationAccount;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -183,6 +184,10 @@ class UserController extends Controller
         return response()->json(['message' => 'Utilisateur supprimé'], 200);
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse|\Inertia\Response
+     */
     public function sendInvitation(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         if (! Gate::check('has-role-coordinateur')) {
@@ -201,14 +206,17 @@ class UserController extends Controller
             'title' => 'Bienvenue sur Chronos',
         ];
 
-        Mail::to($user->email)->send(new ActivationAccount($mailData));
+        try {
+            Mail::to($user->email)->send(new ActivationAccount($mailData));
+            activity($user->team->name)
+                ->event('Relance de l\'invitation')
+                ->performedOn($user)
+                ->withProperties($user->getOriginal())
+                ->log('L\'utilisateur ' . $user->name . ' a reçu une relance d\'invitation');
 
-        activity($user->team->name)
-            ->event('Relance de l\'invitation')
-            ->performedOn($user)
-            ->withProperties($user->getOriginal())
-            ->log('L\'utilisateur ' . $user->name . ' a reçu une relance d\'invitation');
-
-        return response()->json($user);
+            return response()->json($user);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email : ' . $e->getMessage()], 500);
+        }
     }
 }
