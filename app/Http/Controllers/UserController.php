@@ -46,7 +46,7 @@ class UserController extends Controller
             return Inertia::render('Errors/401');
         }
 
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'birthday' => 'nullable|date',
@@ -56,11 +56,11 @@ class UserController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'birthday' => $request->input('birthday'),
-            'phone' => $request->input('phone'),
-            'team_id' => $request->input('team_id'),
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'birthday' => $validatedData['birthday'],
+            'phone' => $validatedData['phone'],
+            'team_id' => $validatedData['team_id'],
             'password' => bcrypt(Str::random(30)),
             'company_id' => Auth::user()->company_id,
         ]);
@@ -78,15 +78,20 @@ class UserController extends Controller
             'title' => 'Bienvenue sur Chronos',
         ];
 
-        Mail::to($user->email)->send(new ActivationAccount($mailData));
+        try {
+            Mail::to($user->email)->send(new ActivationAccount($mailData));
+            activity($user->team->name)
+                ->event('Enregistrement')
+                ->performedOn($user)
+                ->withProperties($user->getOriginal())
+                ->log('L\'utilisateur ' . $user->name . ' a été créé');
 
-        activity($user->team->name)
-            ->event('Enregistrement')
-            ->performedOn($user)
-            ->withProperties($user->getOriginal())
-            ->log('L\'utilisateur ' . $user->name . ' a été créé');
+            return response()->json($user);
+        } catch (Exception $e) {
+            $user->delete();
 
-        return response()->json($user);
+            return response()->json(['message' => 'L\'inscription a échoué, impossible d\'envoyer l\'email d\'invitation. Erreur: ' . $e->getMessage()], 500);
+        }
     }
 
     /**
