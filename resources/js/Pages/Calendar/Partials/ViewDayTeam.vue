@@ -6,8 +6,13 @@
                 <div v-for="planning in item.plannings" class="p-5 text-center" :class="checkBgColor(planning.type_day, planning.is_technician)">
                     <p class="text-md font-bold">Planning de {{ planning.user.name }}</p>
                     <br>
-                    <div>
-                        <p class="text-md font-bold">{{ planning.type_day }} {{ planning.rotation ? ' - ' + planning.rotation.name : '' }}</p>
+                    <div class="flex justify-center">
+                        <p class="text-md font-bold text-center">{{ planning.type_day }} {{ planning.rotation ? ' - ' + planning.rotation.name : '' }}</p>
+                        <div :id="'event-'+planning.id" v-if="planning.event_plannings.length" class="font-bold ml-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff9f43" class="w-5 h-5">
+                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                            </svg>
+                        </div>
                     </div>
                     <p v-if="planning.type_day !== 'Repos' && planning.hours" class="text-md font-bold">{{ planning.hours }}</p>
                     <br>
@@ -22,6 +27,8 @@
 </template>
 
 <script>
+import tippy from "tippy.js";
+
 export default {
     name: "ViewDayTeam",
     props: {
@@ -47,6 +54,33 @@ export default {
             }
             return { [color]: true };
         },
+        loadEvent() {
+            this.$nextTick(() => {
+                this.showDates.forEach(item => {
+                    item.plannings.forEach(planning => {
+                        if (planning.event_plannings && planning.event_plannings.length) {
+                            let content = '';
+                            planning.event_plannings.forEach(event => {
+                                content += `<p><strong>Titre :</strong> ${event.title}</p>`;
+                                if (event.description) {
+                                    content += `<p><strong>Description :</strong> ${event.description}</p>`;
+                                }
+                                content += '<br>';
+                            });
+
+                            tippy(`#event-${planning.id}`, {
+                                placement: 'right',
+                                content: content,
+                                allowHTML: true,
+                            });
+                        }
+                    });
+                });
+            });
+        }
+    },
+    mounted() {
+        this.loadEvent()
     }
 }
 </script>

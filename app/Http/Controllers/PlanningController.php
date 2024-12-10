@@ -348,28 +348,30 @@ class PlanningController extends Controller
         $endOfWeek = $date->copy()->endOfWeek(Carbon::SUNDAY);
 
         if ($request->mobile) {
-            $calendar = Calendar::whereHas('plannings', function ($query) use ($user) {
-                $query->where('team_id', $user->team_id);
-            })
-                ->with(['plannings' => function ($query) use ($user) {
+            $calendar = Calendar::where('date', $date)
+                ->whereHas('plannings', function ($query) use ($user) {
                     $query->where('team_id', $user->team_id);
-                }, 'plannings.user'])
-                ->where('date', '=', $date)
+                })
+                ->with([
+                    'plannings' => function ($query) use ($user) {
+                        $query->where('team_id', $user->team_id)
+                            ->with('eventPlannings');
+                    },
+                    'plannings.user',
+                ])
                 ->get();
         } else {
             $calendar = User::where('team_id', $user->team_id)
-                ->whereHas('plannings', function ($query) use ($startOfWeek, $endOfWeek) {
-                    $query->whereHas('calendar', function ($query) use ($startOfWeek, $endOfWeek) {
-                        $query->where('date', '>=', $startOfWeek)
-                            ->where('date', '<=', $endOfWeek);
-                    });
+                ->whereHas('plannings.calendar', function ($query) use ($startOfWeek, $endOfWeek) {
+                    $query->where('date', '>=', $startOfWeek)
+                        ->where('date', '<=', $endOfWeek);
                 })
                 ->with(['plannings' => function ($query) use ($startOfWeek, $endOfWeek) {
                     $query->whereHas('calendar', function ($query) use ($startOfWeek, $endOfWeek) {
                         $query->where('date', '>=', $startOfWeek)
                             ->where('date', '<=', $endOfWeek);
-                    });
-                }, 'plannings.calendar'])
+                    })->with(['calendar', 'eventPlannings']);
+                }])
                 ->get();
         }
 
