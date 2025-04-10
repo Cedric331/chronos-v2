@@ -10,22 +10,16 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
 
-    protected function scheduleRunsHourly(Schedule $schedule)
-    {
-        foreach ($schedule->events() as $event) {
-            $event->expression = substr_replace($event->expression, '*', 0, 1);
-        }
-    }
-
     /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command(GeneratePlanning::class)->everyMinute();
-        $this->scheduleRunsHourly($schedule);
-        $schedule->command(CheckAlertModule::class)->everyMinute();
-        $this->scheduleRunsHourly($schedule);
+        // Run GeneratePlanning once per day at midnight
+        $schedule->command(GeneratePlanning::class)->dailyAt('00:00');
+
+        // Run CheckAlertModule once per hour
+        $schedule->command(CheckAlertModule::class)->hourly();
     }
 
 
