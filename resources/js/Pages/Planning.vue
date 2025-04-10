@@ -13,10 +13,10 @@
                 <div class="w-full md:w-auto">
                     <Listbox v-model="selectedUser" class="min-w-[230px]">
                         <div class="relative">
-                            <ListboxButton class="relative w-full cursor-pointer rounded-lg bg-white dark:bg-gray-700 py-2.5 pl-4 pr-10 text-left shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-300 sm:text-sm">
+                            <ListboxButton class="relative w-full cursor-pointer rounded-lg dark:text-white bg-white dark:bg-gray-700 py-2.5 pl-4 pr-10 text-left shadow-md hover:shadow-lg transition-all duration-300 border border-gray-200 dark:border-gray-600 focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-indigo-300 sm:text-sm">
                                 <div class="flex items-center">
                                     <img :src="selectedUser.avatar" class="h-6 w-6 rounded-full mr-2 border border-gray-200 dark:border-gray-600" alt="User avatar">
-                                    <span class="block truncate font-medium">{{ selectedUser.name }}</span>
+                                    <span class="block truncate font-medium ">{{ selectedUser.name }}</span>
                                 </div>
                                 <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 text-gray-500 dark:text-gray-300">

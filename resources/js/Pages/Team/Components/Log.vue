@@ -17,13 +17,13 @@
                     </thead>
                     <tbody class="divide-y divide-gray-100">
                     <tr v-for="activity in activities" class="text-gray-500">
-                        <th class="border-t-0 px-4 align-middle text-sm font-normal whitespace-nowrap p-4 text-left">{{ activity.event }}</th>
-                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.log_name }}</td>
-                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.description }}</td>
-                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.subject_type ? activity.subject_type : ''}}</td>
-                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.subject ? activity.subject.name : ''}}</td>
-                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.causer ? activity.causer.name : null }}</td>
-                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 whitespace-nowrap p-4">{{ activity.formatted_date }}</td>
+                        <th class="border-t-0 px-4 align-middle text-sm font-normal whitespace-nowrap  dark:text-white p-4 text-left">{{ activity.event }}</th>
+                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 dark:text-white whitespace-nowrap p-4">{{ activity.log_name }}</td>
+                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 dark:text-white whitespace-nowrap p-4">{{ activity.description }}</td>
+                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 dark:text-white whitespace-nowrap p-4">{{ activity.subject_type ? activity.subject_type : ''}}</td>
+                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 dark:text-white whitespace-nowrap p-4">{{ activity.subject ? activity.subject.name : ''}}</td>
+                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 dark:text-white whitespace-nowrap p-4">{{ activity.causer ? activity.causer.name : null }}</td>
+                        <td class="border-t-0 px-4 align-middle text-xs font-medium text-gray-900 dark:text-white whitespace-nowrap p-4">{{ activity.formatted_date }}</td>
                     </tr>
                     </tbody>
                 </table>

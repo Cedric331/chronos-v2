@@ -71,19 +71,19 @@
                                     <div class="flex items-center">
                                         <i class="fas fa-birthday-cake text-pink-500 mr-2"></i>
                                         <span v-if="user.birthday">{{ dateFormatFr(user.birthday) }}</span>
-                                        <span v-else class="text-gray-400 dark:text-gray-500 italic">Non défini</span>
+                                        <span v-else class="text-gray-400 dark:text-gray-200 italic">Non défini</span>
                                     </div>
                                 </td>
                                 <td class="p-4 whitespace-nowrap text-sm font-normal">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" :class="{
                                         'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300': user.role === 'Administrateur',
                                         'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': user.role === 'Coordinateur',
-                                        'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': user.role === 'Utilisateur'
+                                        'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': user.role === 'Conseiller'
                                     }">
                                         <i class="mr-1" :class="{
                                             'fas fa-crown': user.role === 'Administrateur',
                                             'fas fa-user-tie': user.role === 'Coordinateur',
-                                            'fas fa-user': user.role === 'Utilisateur'
+                                            'fas fa-user': user.role === 'Conseiller'
                                         }"></i>
                                         {{ user.role }}
                                     </span>

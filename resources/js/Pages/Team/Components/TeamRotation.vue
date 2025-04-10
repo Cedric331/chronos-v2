@@ -8,7 +8,7 @@
                     :disabled="this.team.rotations.length === 0">
                     <i class="fas fa-calendar-plus mr-2"></i> {{ $t('team_rotation.button_planning') }}
                 </PrimaryButton>
-                <SecondaryButton @click="addRotation()" class="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm">
+                <SecondaryButton @click="addRotation()" class="bg-blue-600 hover:bg-blue-700 text-white dark:text-black border-0 shadow-sm">
                     <i class="fas fa-plus-circle mr-2"></i> {{ $t('team_rotation.button_rotation') }}
                 </SecondaryButton>
             </div>
