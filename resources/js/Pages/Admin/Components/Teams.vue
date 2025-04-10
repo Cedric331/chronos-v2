@@ -1,24 +1,79 @@
 <template>
-    <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
-        <div class="h-20 flex items-center justify-between dark:bg-gray-600 bg-gray-200" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
-            <div class="m-4 flex justify-start">
-                <h3 class="text-xl font-bold" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Administration de la Team</h3>
-                <select v-model="team" class="rounded-lg h-10 ml-5">
-                    <option v-for="item in teams" :value="item">{{ item.name }}</option>
-                </select>
-            </div>
-            <div class="flex-shrink-0 m-4">
-                <PrimaryButton v-if="$page.props.auth.isAdministrateur" @click.prevent="refreshTypeDays()" class="mr-5">Mettre à jour les types de jour</PrimaryButton>
-                <PrimaryButton @click.prevent="createTeam()">Créer une Team</PrimaryButton>
+    <div class="h-full w-full relative overflow-y-auto">
+        <!-- Header with team selector and actions -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm mb-6 transition-all duration-300">
+            <div class="p-4 md:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div class="flex flex-col md:flex-row items-start md:items-center gap-4 w-full md:w-auto">
+                    <div class="flex items-center">
+                        <i class="fas fa-users-cog text-indigo-500 dark:text-indigo-400 text-xl mr-3"></i>
+                        <h3 class="text-xl font-bold" :class="$store.state.isDarkMode ? 'text-white' : 'text-gray-800'">Gestion des équipes</h3>
+                    </div>
+                    <div class="relative w-full md:w-auto">
+                        <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                            <i class="fas fa-building text-gray-400"></i>
+                        </div>
+                        <select
+                            v-model="team"
+                            class="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg w-full md:w-auto focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm transition-all duration-200"
+                        >
+                            <option v-for="item in teams" :value="item">{{ item.name }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-3 w-full md:w-auto">
+                    <PrimaryButton
+                        v-if="$page.props.auth.isAdministrateur"
+                        @click.prevent="refreshTypeDays()"
+                        class="bg-amber-600 hover:bg-amber-700 text-white border-0 shadow-sm transition-all duration-200 transform hover:scale-105 flex items-center"
+                    >
+                        <i class="fas fa-sync-alt mr-2"></i> Mettre à jour les types de jour
+                    </PrimaryButton>
+                    <PrimaryButton
+                        @click.prevent="createTeam()"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm transition-all duration-200 transform hover:scale-105 flex items-center"
+                    >
+                        <i class="fas fa-plus-circle mr-2"></i> Créer une équipe
+                    </PrimaryButton>
+                </div>
             </div>
         </div>
-        <hr class="h-1 border-t-0">
-        <div class="w-full grid grid-cols-1 2xl:grid-cols-2 mb-2">
-            <TeamGestion :team="team" :key="team" :coordinateursProps="coordinateursProps"></TeamGestion>
-            <TeamUser :usersProps="team.users" :key="team"></TeamUser>
+
+        <!-- Team Management Content -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
+            <!-- Team Settings Panel -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+                <div class="p-4 bg-indigo-50 dark:bg-indigo-900 border-b border-indigo-100 dark:border-indigo-800">
+                    <h2 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 flex items-center">
+                        <i class="fas fa-cogs mr-2"></i> Configuration de l'équipe
+                    </h2>
+                </div>
+                <div class="p-0">
+                    <TeamGestion :team="team" :key="team.id" :coordinateursProps="coordinateursProps"></TeamGestion>
+                </div>
+            </div>
+
+            <!-- Team Users Panel -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden transition-all duration-300 hover:shadow-md">
+                <div class="p-4 bg-indigo-50 dark:bg-indigo-900 border-b border-indigo-100 dark:border-indigo-800">
+                    <h2 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300 flex items-center">
+                        <i class="fas fa-user-friends mr-2"></i> Membres de l'équipe
+                    </h2>
+                </div>
+                <div class="p-0">
+                    <TeamUser :usersProps="team.users" :key="team.id + '-users'"></TeamUser>
+                </div>
+            </div>
         </div>
     </div>
-    <ModalTeam v-if="showModalCreateTeam" :show="showModalCreateTeam" :coordinateursProps="coordinateursProps" @store-team="args => this.storeTeam(args)" @close="this.showModalCreateTeam = false"></ModalTeam>
+
+    <!-- Modal for creating a new team -->
+    <ModalTeam
+        v-if="showModalCreateTeam"
+        :show="showModalCreateTeam"
+        :coordinateursProps="coordinateursProps"
+        @store-team="args => this.storeTeam(args)"
+        @close="this.showModalCreateTeam = false"
+    ></ModalTeam>
 </template>
 
 <script>
@@ -84,35 +139,75 @@ export default {
 </script>
 
 <style scoped>
+/* Table styles */
 .team-table {
-    border: 1px solid #ddd;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
 }
 
 .table-header, .team-row {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.table-header {
+    background-color: #f9fafb;
+    font-weight: 600;
 }
 
 .col {
-    padding: 0.5rem;
+    padding: 0.75rem 1rem;
 }
 
 .team-details {
     grid-column: span 6; /* Pour que les détails s'étendent sur toutes les colonnes */
-    padding: 0.5rem;
-    border-bottom: 1px solid #ddd;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    background-color: #f9fafb;
 }
 
-
+/* Animation and transitions */
 .team-details {
-    /* autres styles */
     overflow: hidden;
-    transition: max-height 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
 }
 
 [expandedTeamId] .team-details {
-    max-height: 30rem; /* ou un autre nombre si vous le souhaitez */
+    max-height: 30rem;
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .table-header, .team-row {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .team-details {
+        grid-column: span 2;
+    }
+}
+
+/* Button hover effects */
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* Card styles */
+.card {
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
 </style>

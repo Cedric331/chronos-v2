@@ -1,8 +1,8 @@
 <template>
-    <div class="h-auto bg-gray-300 dark:bg-gray-800 p-5" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
-        <div class="p-4 sm:p-6 xl:p-8 ">
-            <h3 class="text-xl leading-none font-bold text-gray-900 mb-10 dark:text-white">Log de la Team</h3>
-            <div class="block w-full overflow-x-auto bg-white rounded-lg p-2">
+    <div class="p-6">
+        <div>
+            <h3 class="text-xl leading-none font-bold text-gray-900 mb-6 dark:text-white">Log de la Team</h3>
+            <div class="block w-full overflow-x-auto bg-white dark:bg-gray-700 rounded-lg p-4 shadow-sm">
                 <table class="items-center w-full bg-transparent border-collapse">
                     <thead>
                     <tr>

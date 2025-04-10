@@ -4,7 +4,7 @@
     <div :class="{ 'dark': $store.state.isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen dark:bg-gray-900" >
-            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700" :style="{background: $store.state.isDarkMode ? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color1 + ', ' + $page.props.auth.team.params.color2 + ')'}">
+            <nav class="bg-gray-300 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-60" :style="{background: $store.state.isDarkMode ? '': 'linear-gradient(to right, ' + $page.props.auth.team.params.color1 + ', ' + $page.props.auth.team.params.color2 + ')'}">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between h-16">
@@ -295,7 +295,7 @@
             </nav>
 
             <!-- Page Heading -->
-            <header class="border-1 top-0 dark:bg-gray-800 bg-gray-100 sticky top-0" v-if="$slots.header" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
+            <header class="border-1 top-0 dark:bg-gray-800 bg-gray-100 sticky z-50" v-if="$slots.header" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                 <div class="w-auto mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>

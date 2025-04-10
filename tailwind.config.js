@@ -22,6 +22,11 @@ module.exports = {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
             },
+            zIndex: {
+                '55': '55',
+                '60': '60',
+                '70': '70',
+            },
         },
     },
 

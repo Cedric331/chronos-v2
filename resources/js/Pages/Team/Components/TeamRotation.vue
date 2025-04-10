@@ -1,13 +1,15 @@
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800 rounded-lg mb-4 p-4 sm:p-6 h-full shadow-md" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
-        <div class="flex items-center justify-between mb-4">
+    <div class="p-6">
+        <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Gestion des rotations</h3>
-            <div>
-                <PrimaryButton @click="createPlanning()" :title="this.team.rotations.length === 0 ? 'Vous devez créer des rotations avant de pouvoir générer un planning' : ''" class="mr-5" :class="[this.team.rotations.length === 0 ? 'opacity-50 cursor-not-allowed' : '']" :disabled="this.team.rotations.length === 0">
-                    {{ $t('team_rotation.button_planning') }}
+            <div class="flex space-x-3">
+                <PrimaryButton @click="createPlanning()" :title="this.team.rotations.length === 0 ? 'Vous devez créer des rotations avant de pouvoir générer un planning' : ''"
+                    :class="[this.team.rotations.length === 0 ? 'opacity-50 cursor-not-allowed' : 'bg-indigo-600 hover:bg-indigo-700 shadow-sm']"
+                    :disabled="this.team.rotations.length === 0">
+                    <i class="fas fa-calendar-plus mr-2"></i> {{ $t('team_rotation.button_planning') }}
                 </PrimaryButton>
-                <SecondaryButton @click="addRotation()">
-                    {{ $t('team_rotation.button_rotation') }}
+                <SecondaryButton @click="addRotation()" class="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-sm">
+                    <i class="fas fa-plus-circle mr-2"></i> {{ $t('team_rotation.button_rotation') }}
                 </SecondaryButton>
             </div>
         </div>

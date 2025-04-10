@@ -1,8 +1,8 @@
 
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800  2xl:col-span-2 shadow p-4" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
-        <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white">Statistique</h3>
-        <p class="dark:text-white my-2">
+    <div class="p-6">
+        <h3 class="text-xl font-bold leading-none text-gray-900 dark:text-white mb-4">Statistique</h3>
+        <p class="dark:text-white mb-6 text-gray-600">
             Vous pouvez consulter le détail de la planification de chaque conseiller.
         </p>
 

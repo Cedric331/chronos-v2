@@ -1,89 +1,102 @@
 <template>
-    <section class="dark:bg-gray-900 bg-gray-50 min-h-screen">
+    <section class="dark:bg-gray-900 bg-gray-50 min-h-screen relative z-0">
         <div class="mx-2 py-10">
-            <div v-if="days && days.length > 0" class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8 w-full p-2">
-                <template v-for="(day, index) in days" :key="index">
-                    <div v-if="isStartOfWeek(day)" :class="weeklyHours[day.number_week] !== '35h00' ? 'text-red-600' : ''" class="hidden 2xl:flex flex-col p-2 min-h-[11rem] bg-gray-200 rounded-lg items-center justify-center text-xl font-bold" :style="{ margin: '8px' }">
-                       {{ weeklyHours[day.number_week] || '00h00' }}
-                    </div>
-                    <div class="rounded-lg flex flex-col justify-between">
-                        <div
-                            @click.prevent="selectDate(day)"
-                            class="w-full rounded-lg p-1 cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#ffffff]"
-                            :class="[
-                                    {'halfLeaveMorning': isHalfLeave(day,'Morning')},
-                                    {'halfLeaveAfternoon': isHalfLeave(day, 'Afternoon')},
-                                    {'selected': isDaySelected(day)},
-                                    {'isToday' : isToday === day.date_fr},
-                                    checkBgColor(day.plannings[0].type_day, day.plannings[0].is_technician)
-                                ]">
-
-                                <div class="flex justify-center">
-                                    <h1 class="font-bold text-sm mr-2">{{ day.date_fr }}</h1>
-                                    <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-                                    </svg>
-                                </div>
-                            <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 min-h-[11rem]">
-
-                                <div class="flex justify-center">
-                                    <div class="flex items-center">
-                                        <div v-if="planning.hours" class="font-bold">
-                                            {{ planning.hours }}
-                                        </div>
-                                        <div v-if="planning.rotation" class="font-bold ml-2">
-                                            {{ planning.rotation.name }}
-                                        </div>
-                                        <div :id="'event-'+day.id" v-if="planning.event_plannings.length" class="font-bold ml-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff9f43" class="w-5 h-5">
-                                                <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                        <div v-if="planning.is_technician" id="is_technician">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
-                                            </svg>
-                                        </div>
-                                        <div v-if="planning.telework" id="telework">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="flex justify-center">
-                                    <div class="flex items-center">
-                                        <div class="mr-1">
-                                            <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' && planning.type_day !== 'CP Après-midi' ? planning.type_day : '' }}</p>
-                                        </div>
-                                        <div class="mr-1">
-                                            <p class="text-lg font-bold">{{ day.is_holiday && planning.type_day !== 'Jour Férié' ? ' (Férié)' : null }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div :class="[planning.type_day === 'Planifié' || planning.type_day === 'CP Matin' && !day.is_holiday ? 'mt-6': '']">
-                                    <p v-if="planning.debut_journee" class="text-md font-bold">Début Journée : {{ planning.debut_journee }}</p>
-                                    <p v-if="planning.debut_pause" class="text-md font-bold">Début Pause : {{ planning.debut_pause }}</p>
-                                    <p v-if="planning.fin_pause" class="text-md font-bold">Fin Pause : {{ planning.fin_pause }}</p>
-                                    <p v-if="planning.fin_journee" class="text-md font-bold">Fin Journée : {{ planning.fin_journee }}</p>
-                                </div>
-
-                                <div v-if="planning.type_day === 'CP Après-midi'" class="flex justify-center">
-                                    <div class="flex items-center">
-                                        <div class="mt-6">
-                                            <p class="text-lg font-bold">{{ planning.type_day }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
+            <!-- Affichage des jours regroupés par semaine -->
+            <div v-if="days && days.length > 0" class="space-y-12">
+                <template v-for="(weekNumber, weekIndex) in getUniqueWeeks()" :key="'week-'+weekIndex">
+                    <div class="week-container relative">
+                        <!-- Affichage du crochet avec les heures hebdomadaires -->
+                        <div>
+                            <WeeklyHoursBracket
+                                :hours="weeklyHours[weekNumber]"
+                                :week-number="weekNumber"
+                            />
                         </div>
-                        <div v-if="day.zone" class="w-full mt-1">
-                            <div :class="[day.zone.includes('A') ? 'bg-blue-600 p-1 m-1' : '']" id="zoneA"></div>
-                            <div :class="[day.zone.includes('B') ? 'bg-green-600 p-1 m-1' : '']" id="zoneB"></div>
-                            <div :class="[day.zone.includes('C') ? 'bg-red-600 p-1 m-1' : '']" id="zoneC"></div>
+
+                        <!-- Affichage des jours de la semaine -->
+                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 w-full p-2 pt-4">
+                            <template v-for="(day, dayIndex) in getDaysForWeek(weekNumber)" :key="'day-'+weekNumber+'-'+dayIndex">
+                                <div class="rounded-lg flex flex-col justify-between">
+                                    <div
+                                        @click.prevent="selectDate(day)"
+                                        class="w-full rounded-lg p-1 cursor-pointer hover:bg-[#2f3542] hover:text-white dark:hover:text-gray-600 dark:hover:bg-[#ffffff]"
+                                        :class="[
+                                            {'halfLeaveMorning': isHalfLeave(day,'Morning')},
+                                            {'halfLeaveAfternoon': isHalfLeave(day, 'Afternoon')},
+                                            {'selected': isDaySelected(day)},
+                                            {'isToday' : isToday === day.date_fr},
+                                            checkBgColor(day.plannings[0].type_day, day.plannings[0].is_technician)
+                                        ]">
+
+                                        <div class="flex justify-center">
+                                            <h1 class="font-bold text-sm mr-2">{{ day.date_fr }}</h1>
+                                            <svg @click.stop="viewPlanningTeam(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                                            </svg>
+                                        </div>
+                                        <div v-for="planning in day.plannings" :key="planning" class="flex flex-col p-2 min-h-[11rem]">
+
+                                            <div class="flex justify-center">
+                                                <div class="flex items-center">
+                                                    <div v-if="planning.hours" class="font-bold">
+                                                        {{ planning.hours }}
+                                                    </div>
+                                                    <div v-if="planning.rotation" class="font-bold ml-2">
+                                                        {{ planning.rotation.name }}
+                                                    </div>
+                                                    <div :id="'event-'+day.id" v-if="planning.event_plannings.length" class="font-bold ml-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#ff9f43" class="w-5 h-5">
+                                                            <path fill-rule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clip-rule="evenodd" />
+                                                        </svg>
+                                                    </div>
+                                                    <div v-if="planning.is_technician" id="is_technician">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z" />
+                                                        </svg>
+                                                    </div>
+                                                    <div v-if="planning.telework" id="telework">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-2">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="flex justify-center">
+                                                <div class="flex items-center">
+                                                    <div class="mr-1">
+                                                        <p class="text-lg font-bold">{{ planning.type_day !== 'Planifié' && planning.type_day !== 'CP Après-midi' ? planning.type_day : '' }}</p>
+                                                    </div>
+                                                    <div class="mr-1">
+                                                        <p class="text-lg font-bold">{{ day.is_holiday && planning.type_day !== 'Jour Férié' ? ' (Férié)' : null }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div :class="[planning.type_day === 'Planifié' || planning.type_day === 'CP Matin' && !day.is_holiday ? 'mt-6': '']">
+                                                <p v-if="planning.debut_journee" class="text-md font-bold">Début Journée : {{ planning.debut_journee }}</p>
+                                                <p v-if="planning.debut_pause" class="text-md font-bold">Début Pause : {{ planning.debut_pause }}</p>
+                                                <p v-if="planning.fin_pause" class="text-md font-bold">Fin Pause : {{ planning.fin_pause }}</p>
+                                                <p v-if="planning.fin_journee" class="text-md font-bold">Fin Journée : {{ planning.fin_journee }}</p>
+                                            </div>
+
+                                            <div v-if="planning.type_day === 'CP Après-midi'" class="flex justify-center">
+                                                <div class="flex items-center">
+                                                    <div class="mt-6">
+                                                        <p class="text-lg font-bold">{{ planning.type_day }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div v-if="day.zone" class="w-full mt-1">
+                                        <div :class="[day.zone.includes('A') ? 'bg-blue-600 p-1 m-1' : '']" id="zoneA"></div>
+                                        <div :class="[day.zone.includes('B') ? 'bg-green-600 p-1 m-1' : '']" id="zoneB"></div>
+                                        <div :class="[day.zone.includes('C') ? 'bg-red-600 p-1 m-1' : '']" id="zoneC"></div>
+                                    </div>
+                                </div>
+                            </template>
                         </div>
                     </div>
                 </template>
@@ -122,11 +135,12 @@ import 'tippy.js/dist/tippy.css';
 import ModalManagelEvent from "@/Pages/Calendar/Modal/ModalManagelEvent.vue";
 import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
 import ModalPaidLeave from "@/Pages/PaidLeave/Modal/ModalPaidLeave.vue";
+import WeeklyHoursBracket from "@/Components/WeeklyHoursBracket.vue";
 
 export default {
     name: "Calendar",
     emits: ['planningFull', 'shareSchedule'],
-    components: {ModalPaidLeave, ModalConfirm, ModalManagelEvent, ModalShowPlanningTeam, ModalUpdateDay, ButtonNav},
+    components: {ModalPaidLeave, ModalConfirm, ModalManagelEvent, ModalShowPlanningTeam, ModalUpdateDay, ButtonNav, WeeklyHoursBracket},
     props: {
         daysProps: Object,
         weeklyHours: {
@@ -165,6 +179,25 @@ export default {
         },
         isStartOfWeek(day) {
             return day.date_fr.startsWith('Lundi');
+        },
+        getUniqueWeeks() {
+            // Récupère tous les numéros de semaine uniques présents dans les jours
+            const weekNumbers = [];
+            let currentWeek = null;
+
+            // Parcourir les jours dans l'ordre et extraire les numéros de semaine uniques
+            this.days.forEach(day => {
+                if (day.number_week !== currentWeek) {
+                    currentWeek = day.number_week;
+                    weekNumbers.push(currentWeek);
+                }
+            });
+
+            return weekNumbers;
+        },
+        getDaysForWeek(weekNumber) {
+            // Retourne tous les jours appartenant à une semaine spécifique
+            return this.days.filter(day => day.number_week === weekNumber);
         },
         deletePlanning () {
           axios.delete('/event', {
@@ -352,6 +385,24 @@ export default {
         transparent
     ) !important;
     background-size: 40px 40px !important;
+}
+
+.week-container {
+    position: relative;
+}
+
+.week-container:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 5%;
+    width: 90%;
+    height: 1px;
+    background: #E5E7EB;
+}
+
+.dark .week-container:not(:last-child)::after {
+    background: #4B5563;
 }
 
 .halfLeaveMorning {

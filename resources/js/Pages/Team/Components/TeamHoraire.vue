@@ -1,7 +1,7 @@
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800  2xl:col-span-2 shadow p-4" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
-        <h3 class="text-xl font-bold leading-none text-gray-900 my-2 dark:text-white">Gestion des alertes horaires</h3>
-        <p class="dark:text-white my-2">Vous pouvez préciser pour chaque jour de la semaine et créneau horaire le nombre de conseillers que vous voulez, auquel cas il vous en informera en début de semaine.</p>
+    <div class="p-6">
+        <h3 class="text-xl font-bold leading-none text-gray-900 mb-4 dark:text-white">Gestion des alertes horaires</h3>
+        <p class="dark:text-white mb-6 text-gray-600">Vous pouvez préciser pour chaque jour de la semaine et créneau horaire le nombre de conseillers que vous voulez, auquel cas il vous en informera en début de semaine.</p>
 
         <div class="flex flex-col">
             <div class="overflow-x-auto rounded-lg">

@@ -1,162 +1,138 @@
 <template>
-    <div class="bg-gray-300 dark:bg-gray-800 2xl:col-span-2 shadow p-4" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
-        <div class="mb-4 flex items-center justify-between">
-            <div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">{{ $t('team_gestion.titre') }}</h3>
+    <div class="p-6">
+        <!-- Team Info Card -->
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm mb-6 overflow-hidden transition-all duration-300 hover:shadow-md">
+            <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center">
+                    <div class="mr-4">
+                        <div v-if="team.logo_url" class="relative inline-block">
+                            <img :src="team.logo_url" alt="Logo" class="rounded-full w-16 h-16 object-cover border-2 border-indigo-100 dark:border-indigo-900 shadow-sm" />
+                            <button @click.prevent="deleteLogo()" id="deleteImage"
+                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transform translate-x-1/3 -translate-y-1/3 shadow-sm hover:bg-red-600 transition-colors duration-200">
+                                <i class="fas fa-times text-xs"></i>
+                            </button>
+                        </div>
+                        <div v-else class="relative inline-block bg-gray-100 dark:bg-gray-700 rounded-full w-16 h-16 flex items-center justify-center">
+                            <i class="fas fa-building text-indigo-500 dark:text-indigo-400 text-2xl"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ team.name }}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                            <span v-if="team.departement">{{ team.departement }}</span>
+                            <span v-if="team.departement && team.code_departement"> - </span>
+                            <span v-if="team.code_departement">{{ team.code_departement }}</span>
+                        </p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center" v-if="team.coordinateur">
+                            <i class="fas fa-user-tie mr-1 text-indigo-500 dark:text-indigo-400"></i>
+                            Coordinateur: {{ team.coordinateur.name }}
+                        </p>
+                    </div>
+                </div>
+                <div>
+                    <SecondaryButton @click="editTeam()" class="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm transition-all duration-200 transform hover:scale-105 flex items-center">
+                        <i class="fas fa-edit mr-2"></i> Modifier
+                    </SecondaryButton>
+                </div>
             </div>
         </div>
-        <div class="flex flex-col">
-            <div class="overflow-x-auto rounded-lg">
-                <div class="align-middle inline-block min-w-full overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-white dark:bg-gray-800">
+
+        <!-- Team Settings Parameters -->
+        <div class="flex flex-col mt-6">
+            <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                <i class="fas fa-toggle-on mr-2 text-indigo-500 dark:text-indigo-400"></i> Options et modules
+            </h4>
+            <div class="overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-sm transition-all duration-300 hover:shadow-md">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead class="bg-gray-50 dark:bg-gray-700">
                         <tr>
-                            <th v-if="$page.props.config.logo" scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-                                Logo
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Option
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-                                {{ $t('name') }}
+                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                                Statut
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-                                {{ $t('department') }}
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-                                Coordinateur
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider"></th>
                         </tr>
                         </thead>
 
-                        <tbody class="bg-white dark:bg-gray-200">
+                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                         <tr>
-                            <td v-if="$page.props.config.logo" class="p-4 whitespace-nowrap text-sm font-normal text-gray-900 flex justify-start">
-                                <div v-if="team.logo_url" class="relative inline-block">
-                                    <img :src="team.logo_url" alt="Logo" class="rounded-full w-10 h-10" />
-                                    <button @click.prevent="deleteLogo()" id="deleteImage" class="absolute top-1 right-0 bg-[#ff4757] text-white rounded-full w-4 h-4 p-2.5 flex items-center justify-center transform translate-x-1/2 -translate-y-1/2">
-                                        <div>
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                            </svg>
-                                        </div>
-                                    </button>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                                <div class="p-2 rounded-full bg-blue-100 dark:bg-blue-900 mr-3">
+                                    <i id="sendCoordinateur" class="fas fa-user-tie text-blue-600 dark:text-blue-400"></i>
                                 </div>
-                                <div v-else class="relative inline-block">
-                                        <img src="/images/logo.png" alt="Logo" :class="[$page.props.auth.user ? 'w-10 h-10' : 'w-34']" class="rounded-full" />
+                                <span>Afficher le Coordinateur dans le planning</span>
+                            </td>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <checkbox @update:checked="val => updateTeamParamsCheck('send_coordinateur', val)" :checked="team.params.send_coordinateur" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
-                                {{ team.name }}
-                            </td>
-
-                            <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
-                                {{ team.departement ? team.departement : '' }}
-                                {{ team.departement && team.code_departement ? ' - ' : '' }}
-                                {{ team.code_departement ? team.code_departement : '' }}
-                            </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-900">
-                                {{ team.coordinateur ? team.coordinateur.name : '' }}
-                            </td>
-                            <td class="p-4 whitespace-nowrap items-end text-sm font-semibold">
-                                <SecondaryButton @click="editTeam()">
-                                    Modifier
-                                </SecondaryButton>
-                            </td>
                         </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="align-middle inline-block min-w-full mt-5">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-white dark:bg-gray-800">
                         <tr>
-                            <th v-if="$page.props.config.logo" scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-white uppercase tracking-wider">
-                                Paramètre
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase dark:text-white tracking-wider">
-                                Valeur
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
-                        </tr>
-                        </thead>
-
-                        <tbody class="bg-white dark:bg-gray-200">
-                        <tr>
-                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <svg id="sendCoordinateur" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                </svg>
-                                Afficher le Coordinateur dans le planning
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <checkbox @update:checked="val => updateTeamParamsCheck('send_coordinateur', val)" :checked="team.params.send_coordinateur"></checkbox>
-                            </th>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                                <div class="p-2 rounded-full bg-green-100 dark:bg-green-900 mr-3">
+                                    <i id="updatePlanning" class="fas fa-calendar-check text-green-600 dark:text-green-400"></i>
+                                </div>
+                                <span>Autoriser la modification du planning</span>
+                            </td>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <checkbox @update:checked="val => updateTeamParamsCheck('update_planning', val)" :checked="team.params.update_planning" class="toggle-checkbox"></checkbox>
+                                </div>
                             </td>
                         </tr>
                         <tr>
-                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <svg id="updatePlanning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                </svg>
-                                Autoriser la modification du planning
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <checkbox @update:checked="val => updateTeamParamsCheck('update_planning', val)" :checked="team.params.update_planning"></checkbox>
-                            </th>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                                <div class="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900 mr-3">
+                                    <i id="shareLinkPlanning" class="fas fa-share-alt text-indigo-600 dark:text-indigo-400"></i>
+                                </div>
+                                <span>Partage du planning</span>
+                            </td>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <checkbox @update:checked="val => updateTeamParamsCheck('share_link_planning', val)" :checked="team.params.share_link_planning" class="toggle-checkbox"></checkbox>
+                                </div>
                             </td>
                         </tr>
                         <tr>
-                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <svg id="shareLinkPlanning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                </svg>
-                                Activer le partage de planning
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <checkbox @update:checked="val => updateTeamParamsCheck('share_link_planning', val)" :checked="team.params.share_link_planning"></checkbox>
-                            </th>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                                <div class="p-2 rounded-full bg-amber-100 dark:bg-amber-900 mr-3">
+                                    <i id="paid_leave" class="fas fa-umbrella-beach text-amber-600 dark:text-amber-400"></i>
+                                </div>
+                                <span>Gestion des congés</span>
+                            </td>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <checkbox @update:checked="val => updateTeamParamsCheck('paid_leave', val)" :checked="team.params.paid_leave" class="toggle-checkbox"></checkbox>
+                                </div>
                             </td>
                         </tr>
                         <tr>
-                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <svg id="paid_leave" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                </svg>
-                                Activer le module de gestion des congés
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <checkbox @update:checked="val => updateTeamParamsCheck('paid_leave', val)" :checked="team.params.paid_leave"></checkbox>
-                            </th>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                                <div class="p-2 rounded-full bg-red-100 dark:bg-red-900 mr-3">
+                                    <i id="moduleAlert" class="fas fa-bell text-red-600 dark:text-red-400"></i>
+                                </div>
+                                <span>Module d'alerte</span>
+                            </td>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <checkbox @update:checked="val => updateTeamParamsCheck('module_alert', val)" :checked="team.params.module_alert" class="toggle-checkbox"></checkbox>
+                                </div>
                             </td>
                         </tr>
                         <tr>
-                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <svg id="moduleAlert" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                </svg>
-                                Activer le module alerte
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <checkbox @update:checked="val => updateTeamParamsCheck('module_alert', val)" :checked="team.params.module_alert"></checkbox>
-                            </th>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                                <div class="p-2 rounded-full bg-purple-100 dark:bg-purple-900 mr-3">
+                                    <i id="shareLink" class="fas fa-link text-purple-600 dark:text-purple-400"></i>
+                                </div>
+                                <span>Partage de liens</span>
                             </td>
-                        </tr>
-                        <tr>
-                            <th scope="col" class="p-4 flex justify-start text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <svg id="shareLink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-                                </svg>
-                                Activer le module de partage des liens
-                            </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <checkbox @update:checked="val => updateTeamParamsCheck('share_link', val)" :checked="team.params.share_link"></checkbox>
-                            </th>
-                            <td class="p-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <checkbox @update:checked="val => updateTeamParamsCheck('share_link', val)" :checked="team.params.share_link" class="toggle-checkbox"></checkbox>
+                                </div>
                             </td>
                         </tr>
                         </tbody>
@@ -293,5 +269,49 @@ export default {
 </script>
 
 <style scoped>
+/* Toggle checkbox styling */
+.toggle-checkbox {
+    @apply appearance-none cursor-pointer rounded-full bg-gray-300 dark:bg-gray-600;
+    transition: background-color 0.3s ease;
+    position: relative;
+    height: 1.5rem;
+    width: 3rem;
+}
 
+.toggle-checkbox:checked {
+    @apply bg-indigo-500;
+}
+
+.toggle-checkbox:focus {
+    @apply outline-none ring-2 ring-offset-2 ring-indigo-500;
+}
+
+.toggle-checkbox:checked:after {
+    transform: translateX(100%);
+}
+
+.toggle-checkbox:after {
+    content: '';
+    @apply absolute top-0.5 left-0.5 bg-white rounded-full;
+    height: 1rem;
+    width: 1rem;
+    transition: transform 0.3s ease;
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .p-6 {
+        padding: 1rem;
+    }
+}
 </style>
