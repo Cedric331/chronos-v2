@@ -151,9 +151,19 @@ export default {
         isToday: String
     },
     watch: {
-        daysProps () {
-            this.days = this.daysProps
-            this.loadEvent()
+        daysProps: {
+            handler(newDays) {
+                if (newDays) {
+                    // Create a new array to maintain reactivity
+                    this.days = [...newDays];
+
+                    // Ensure the loadEvent is called after the DOM has updated
+                    this.$nextTick(() => {
+                        this.loadEvent();
+                    });
+                }
+            },
+            deep: true
         }
     },
     data () {
@@ -207,15 +217,29 @@ export default {
           })
           .then(response => {
               this.daySelected = [];
+
+              // Create a copy of the days array to maintain reactivity
+              const updatedDays = [...this.days];
+
               response.data.forEach(planning => {
-                  this.days.forEach(day => {
+                  updatedDays.forEach(day => {
                       day.plannings.forEach(item => {
                           if (planning.id === item.id) {
+                              // Create a new empty array for event_plannings
                               item.event_plannings = [];
                           }
                       })
                   })
               })
+
+              // Update the days array with the modified copy
+              this.days = updatedDays;
+
+              // Force re-render of the component
+              this.$nextTick(() => {
+                  this.loadEvent();
+              });
+
               this.$notify({
                   title: "Succès",
                   type: "success",
@@ -261,13 +285,27 @@ export default {
             return { [color]: true };
         },
         updatePlanning(data) {
-            this.days.map((day, index) => {
+            // Create a new array to maintain reactivity
+            const updatedDays = [...this.days];
+
+            // Update each day while preserving the array structure
+            updatedDays.forEach((day, index) => {
                 data.forEach(item => {
                     if (day.id === item.id) {
-                        this.days[index] = item
+                        // Ensure we preserve the number_week property
+                        item.number_week = day.number_week;
+                        updatedDays[index] = item;
                     }
-                })
-            })
+                });
+            });
+
+            // Replace the days array with the updated one
+            this.days = updatedDays;
+
+            // Force re-render of the component
+            this.$nextTick(() => {
+                this.loadEvent();
+            });
 
             this.$notify({
                 title: "Succès",
@@ -304,22 +342,34 @@ export default {
             }
         },
         newEvent (events) {
+            // Create a copy of the days array to maintain reactivity
+            const updatedDays = [...this.days];
+
             events.forEach(event => {
-                this.days.forEach(day => {
+                updatedDays.forEach(day => {
                     day.plannings.forEach(planning => {
                         if (event.planning_id === planning.id) {
-                            planning.event_plannings.push(event);
+                            // Create a new array for event_plannings to maintain reactivity
+                            planning.event_plannings = [...planning.event_plannings, event];
                         }
                     })
                 })
             })
+
+            // Update the days array with the modified copy
+            this.days = updatedDays;
 
             this.$notify({
                 title: "Succès",
                 type: "success",
                 text: "Événement ajouté avec succès!",
             });
-            this.loadEvent()
+
+            // Force re-render of the component
+            this.$nextTick(() => {
+                this.loadEvent();
+            });
+
             this.showModalEvent = false;
             this.daySelected = [];
         },

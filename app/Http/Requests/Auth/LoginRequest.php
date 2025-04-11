@@ -44,29 +44,12 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        // Vérifier si nous sommes en environnement local
-        if (app()->environment('local')) {
-            // En local, on cherche l'utilisateur par email sans vérifier le mot de passe
-            $user = \App\Models\User::where('email', $this->input('email'))->first();
+        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+            RateLimiter::hit($this->throttleKey());
 
-            if (!$user) {
-                RateLimiter::hit($this->throttleKey());
-                throw ValidationException::withMessages([
-                    'email' => trans('auth.failed'),
-                ]);
-            }
-
-            // Connecter l'utilisateur manuellement
-            Auth::login($user, $this->boolean('remember'));
-        } else {
-            // En production, comportement normal
-            if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-                RateLimiter::hit($this->throttleKey());
-
-                throw ValidationException::withMessages([
-                    'email' => trans('auth.failed'),
-                ]);
-            }
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
         }
 
         $user = Auth::user();
