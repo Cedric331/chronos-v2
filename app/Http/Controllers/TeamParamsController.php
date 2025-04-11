@@ -14,25 +14,60 @@ class TeamParamsController extends Controller
 
     public function update(Request $request, TeamParams $teamParams): \Illuminate\Http\JsonResponse
     {
-        //        $unique_type = collect($request->type_day);
-
-        $teamParams->update([
-            //            'type_day' => json_encode($unique_type->unique()->all()),
-            'send_coordinateur' => $request->send_coordinateur,
-            'share_link_planning' => $request->share_link_planning,
-            'share_link' => $request->share_link,
-            'paid_leave' => $request->paid_leave,
-            'update_planning' => $request->update_planning,
-            'module_alert' => $request->module_alert,
+        // Log les données reçues
+        \Log::info('TeamParamsController::update - Request data', [
+            'team_params_id' => $teamParams->id,
+            'request_data' => $request->all()
         ]);
-        $teamParams->save();
 
-        activity($teamParams->team->name)
-            ->event('Mise à jour')
-            ->performedOn($teamParams->team)
-            ->withProperties($teamParams->getOriginal())
-            ->log('Les paramètres de l\'équipe ont été modifiés');
+        // Valider les données reçues
+        $validated = $request->validate([
+            'send_coordinateur' => 'required|boolean',
+            'share_link_planning' => 'required|boolean',
+            'share_link' => 'required|boolean',
+            'paid_leave' => 'required|boolean',
+            'update_planning' => 'required|boolean',
+            'module_alert' => 'required|boolean',
+            'exchange_module' => 'required|boolean',
+        ]);
 
-        return response()->json($teamParams);
+        // Log les données validées
+        \Log::info('TeamParamsController::update - Validated data', [
+            'team_params_id' => $teamParams->id,
+            'validated_data' => $validated
+        ]);
+
+
+        try {
+            // Mettre à jour les paramètres
+            $teamParams->update($validated);
+            $teamParams->save();
+
+            // Log les paramètres après la mise à jour
+            \Log::info('TeamParamsController::update - After update', [
+                'team_params_id' => $teamParams->id,
+                'updated_data' => $teamParams->toArray()
+            ]);
+
+            // Enregistrer l'activité
+            activity($teamParams->team->name)
+                ->event('Mise à jour')
+                ->performedOn($teamParams->team)
+                ->withProperties($validated)
+                ->log('Les paramètres de l\'équipe ont été modifiés');
+            // Recharger les paramètres pour s'assurer d'avoir les dernières valeurs
+            $teamParams->refresh();
+
+            return response()->json($teamParams);
+        } catch (\Exception $e) {
+            // Log l'erreur
+            \Log::error('Error updating team params', [
+                'team_params_id' => $teamParams->id,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json(['message' => 'Une erreur est survenue lors de la mise à jour des paramètres.'], 500);
+        }
     }
 }

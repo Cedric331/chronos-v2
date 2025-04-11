@@ -21,6 +21,7 @@ class TeamParams extends Model
         'share_link_planning',
         'share_link',
         'paid_leave',
+        'exchange_module',
         'type_day',
         'color1',
         'color2',

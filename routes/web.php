@@ -48,3 +48,4 @@ require __DIR__.'/planning.php';
 require __DIR__.'/statistique.php';
 require __DIR__.'/paidleave.php';
 require __DIR__.'/team_schedule.php';
+require __DIR__.'/exchange.php';

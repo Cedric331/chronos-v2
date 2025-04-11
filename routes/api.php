@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CalendarController;
+use App\Http\Controllers\PlanningController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,12 @@ use Illuminate\Support\Facades\Route;
     Route::get('/planning', [CalendarController::class, 'getPlanning']);
     Route::get('/auth/check', function () {
         return response()->json(['authenticated' => Auth::check()]);
+    });
+
+    // Routes pour le module d'échange de planning
+    Route::middleware(['auth', 'exchange.enabled'])->group(function () {
+        Route::get('/users/{user}/plannings', [PlanningController::class, 'getUserPlannings']);
+        Route::get('/users/{user}/exchange-dates', [PlanningController::class, 'getExchangeDates']);
     });
 
 //Route::group([

@@ -135,6 +135,19 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
+                                <div class="p-2 rounded-full bg-teal-100 dark:bg-teal-900 mr-3">
+                                    <i id="exchangeModule" class="fas fa-exchange-alt text-teal-600 dark:text-teal-400"></i>
+                                </div>
+                                <span>Module d'échange de planning</span>
+                            </td>
+                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <checkbox @update:checked="val => updateTeamParamsCheck('exchange_module', val)" :checked="team.params.exchange_module" class="toggle-checkbox"></checkbox>
+                                </div>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                 </div>
@@ -200,27 +213,46 @@ export default {
                 })
         },
         updateTeamParamsCheck (paramName, newVal) {
+            // Sauvegarder l'ancienne valeur au cas où la requête échoue
+            const oldVal = this.team.params[paramName];
+
+            // Mettre à jour la valeur localement
             this.team.params[paramName] = newVal;
-            axios.patch('/team/params/update/' + this.team.team_params_id, {
+
+            // Préparer les données pour la requête
+            const data = {
                 send_coordinateur: this.team.params.send_coordinateur,
                 update_planning: this.team.params.update_planning,
                 module_alert: this.team.params.module_alert,
                 paid_leave: this.team.params.paid_leave,
                 share_link: this.team.params.share_link,
                 share_link_planning: this.team.params.share_link_planning,
+                exchange_module: this.team.params.exchange_module,
                 // type_day: this.team.params.type_day
-            })
+            };
+
+            axios.patch('/team/params/update/' + this.team.team_params_id, data)
                 .then(response => {
+
                     this.$notify({
                         title: "Succès",
                         type: "success",
                         text: "Modification effectuée avec succès!",
                     });
-                    this.team.params = response.data
-                    router.reload({ only: ['auth'] })
+
+                    // Mettre à jour les paramètres avec les données retournées par le serveur
+                    this.team.params = response.data;
                 })
                 .catch(error => {
-                    console.log(error)
+                    // Restaurer l'ancienne valeur en cas d'erreur
+                    this.team.params[paramName] = oldVal;
+
+                    // Afficher une notification d'erreur
+                    this.$notify({
+                        title: "Erreur",
+                        type: "error",
+                        text: error.response?.data?.message || "Une erreur est survenue lors de la modification des paramètres.",
+                    });
                 })
         },
 
@@ -264,6 +296,10 @@ export default {
             placement: 'top',
             content: 'Permets d\'activer le module de gestion des congés. Ce module permet aux membres de l\'équipe de faire une demande de congés et de pouvoir les gérer.',
         });
+        tippy('#exchangeModule', {
+            placement: 'top',
+            content: 'Permets d\'activer le module d\'échange de planning. Ce module permet aux membres de l\'équipe de proposer et d\'accepter des échanges de planning entre eux.',
+        });
     }
 }
 </script>
@@ -271,30 +307,51 @@ export default {
 <style scoped>
 /* Toggle checkbox styling */
 .toggle-checkbox {
-    @apply appearance-none cursor-pointer rounded-full bg-gray-300 dark:bg-gray-600;
-    transition: background-color 0.3s ease;
+    /* Reset tous les styles par défaut */
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    appearance: none !important;
+    background-image: none !important;
+    background-color: #d1d5db !important; /* bg-gray-300 */
+    border: none !important;
+    box-shadow: none !important;
+
+    /* Nos styles personnalisés */
     position: relative;
+    cursor: pointer;
     height: 1.5rem;
     width: 3rem;
+    border-radius: 9999px;
+    transition: background-color 0.3s ease;
+}
+
+.dark .toggle-checkbox {
+    background-color: #4b5563 !important; /* dark:bg-gray-600 */
 }
 
 .toggle-checkbox:checked {
-    @apply bg-indigo-500;
+    background-color: #6366f1 !important; /* bg-indigo-500 */
+    background-image: none !important;
 }
 
 .toggle-checkbox:focus {
-    @apply outline-none ring-2 ring-offset-2 ring-indigo-500;
+    outline: none !important;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #6366f1 !important;
 }
 
 .toggle-checkbox:checked:after {
-    transform: translateX(100%);
+    transform: translateX(1.5rem);
 }
 
 .toggle-checkbox:after {
     content: '';
-    @apply absolute top-0.5 left-0.5 bg-white rounded-full;
+    position: absolute;
+    top: 0.25rem;
+    left: 0.25rem;
     height: 1rem;
     width: 1rem;
+    border-radius: 9999px;
+    background-color: white;
     transition: transform 0.3s ease;
 }
 

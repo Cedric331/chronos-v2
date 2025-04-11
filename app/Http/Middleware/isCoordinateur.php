@@ -18,7 +18,7 @@ class isCoordinateur
             return redirect(RouteServiceProvider::HOME);
         }
 
-        if (! $request->user()->isCoordinateur()) {
+        if (! $request->user()->isCoordinateur() && ! $request->user()->isAdmin() && ! $request->user()->hasPermissionTo('access-admin')) {
             return Inertia::render('Errors/401');
         }
 

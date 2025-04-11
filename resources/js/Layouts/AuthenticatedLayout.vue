@@ -30,6 +30,9 @@
                                 <NavLink v-if="$page.props.auth.team.params.paid_leave" :href="route('paidleave.index')" :active="route().current('paidleave.index')">
                                     Gestion des congés
                                 </NavLink>
+                                <NavLink v-if="$page.props.auth.team && $page.props.auth.team.params && Boolean($page.props.auth.team.params.exchange_module)" :href="route('exchanges.index')" :active="route().current('exchanges.*')">
+                                    Échanges de planning
+                                </NavLink>
                             </div>
                         </div>
 
@@ -229,6 +232,9 @@
                         </ResponsiveNavLink>
                         <ResponsiveNavLink v-if="$page.props.auth.team.params.paid_leave" :href="route('paidleave.index')" :active="route().current('paidleave.index')">
                             Gestion des congés
+                        </ResponsiveNavLink>
+                        <ResponsiveNavLink v-if="$page.props.auth.team && $page.props.auth.team.params && Boolean($page.props.auth.team.params.exchange_module)" :href="route('exchanges.index')" :active="route().current('exchanges.*')">
+                            Échanges de planning
                         </ResponsiveNavLink>
                     </div>
 

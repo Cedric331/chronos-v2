@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\PlanningsExport;
 use App\Http\Requests\RequestGeneratePlanning;
 use App\Models\Calendar;
+use App\Models\ExchangeRequest;
 use App\Models\Planning;
 use App\Models\Rotation;
 use App\Models\ShareLink;
@@ -452,5 +453,102 @@ class PlanningController extends Controller
     {
         $user = Auth::user();
         return (new PlanningsExport)->user($user)->download('planning.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    /**
+     * Récupère les plannings d'un utilisateur spécifique pour les 30 prochains jours
+     * Utilisé par l'API pour le module d'échange de planning
+     */
+    public function getUserPlannings(User $user): \Illuminate\Http\JsonResponse
+    {
+        $currentUser = Auth::user();
+
+        // Vérifier que l'utilisateur connecté et l'utilisateur demandé sont dans la même équipe
+        if ($currentUser->team_id !== $user->team_id) {
+            return response()->json(['error' => 'Vous n\'avez pas accès aux plannings de cet utilisateur'], 403);
+        }
+
+        // Récupérer les plannings de l'utilisateur pour les 30 prochains jours
+        $plannings = Planning::with('calendar')
+            ->where('user_id', $user->id)
+            ->whereHas('calendar', function ($query) {
+                $query->where('date', '>=', Carbon::now()->startOfDay())
+                    ->where('date', '<=', Carbon::now()->addDays(30)->endOfDay());
+            })
+            ->get();
+
+        return response()->json($plannings);
+    }
+
+    /**
+     * Récupère les dates disponibles pour un échange de planning entre l'utilisateur connecté et un autre utilisateur
+     * Utilisé par l'API pour le module d'échange de planning
+     */
+    public function getExchangeDates(User $user): \Illuminate\Http\JsonResponse
+    {
+        $currentUser = Auth::user();
+
+        // Vérifier que l'utilisateur connecté et l'utilisateur demandé sont dans la même équipe
+        if ($currentUser->team_id !== $user->team_id) {
+            return response()->json(['error' => 'Vous n\'avez pas accès aux plannings de cet utilisateur'], 403);
+        }
+
+        // Récupérer les dates communes aux deux utilisateurs pour les 30 prochains jours
+        $dates = Calendar::whereHas('plannings', function ($query) use ($currentUser) {
+                $query->where('user_id', $currentUser->id);
+            })
+            ->whereHas('plannings', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->where('date', '>=', Carbon::now()->startOfDay())
+            ->where('date', '<=', Carbon::now()->addDays(30)->endOfDay())
+            ->with(['plannings' => function ($query) use ($currentUser, $user) {
+                $query->whereIn('user_id', [$currentUser->id, $user->id]);
+            }])
+            ->get();
+
+        // Vérifier s'il existe déjà des demandes d'échange en cours pour ces plannings
+        $existingExchangeRequests = ExchangeRequest::where('status', ExchangeRequest::STATUS_PENDING)
+            ->where(function ($query) use ($currentUser, $user) {
+                $query->where('requester_id', $currentUser->id)
+                    ->orWhere('requester_id', $user->id)
+                    ->orWhere('requested_id', $currentUser->id)
+                    ->orWhere('requested_id', $user->id);
+            })
+            ->get();
+
+        $existingPlanningIds = [];
+        foreach ($existingExchangeRequests as $request) {
+            $existingPlanningIds[] = $request->requester_planning_id;
+            $existingPlanningIds[] = $request->requested_planning_id;
+        }
+
+        // Formater les données pour le front-end
+        $availableDates = [];
+        foreach ($dates as $date) {
+            $yourPlanning = null;
+            $colleaguePlanning = null;
+
+            foreach ($date->plannings as $planning) {
+                if ($planning->user_id === $currentUser->id) {
+                    $yourPlanning = $planning;
+                } else if ($planning->user_id === $user->id) {
+                    $colleaguePlanning = $planning;
+                }
+            }
+
+            // Vérifier que les deux plannings existent et ne sont pas déjà dans une demande d'échange
+            if ($yourPlanning && $colleaguePlanning &&
+                !in_array($yourPlanning->id, $existingPlanningIds) &&
+                !in_array($colleaguePlanning->id, $existingPlanningIds)) {
+                $availableDates[] = [
+                    'calendar' => $date,
+                    'yourPlanning' => $yourPlanning,
+                    'colleaguePlanning' => $colleaguePlanning
+                ];
+            }
+        }
+
+        return response()->json($availableDates);
     }
 }

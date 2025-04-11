@@ -70,6 +70,30 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Planning::class);
     }
 
+    /**
+     * Get the exchange requests initiated by this user.
+     */
+    public function sentExchangeRequests()
+    {
+        return $this->hasMany(ExchangeRequest::class, 'requester_id');
+    }
+
+    /**
+     * Get the exchange requests received by this user.
+     */
+    public function receivedExchangeRequests()
+    {
+        return $this->hasMany(ExchangeRequest::class, 'requested_id');
+    }
+
+    /**
+     * Get the exchange requests approved by this user (as a coordinator).
+     */
+    public function approvedExchangeRequests()
+    {
+        return $this->hasMany(ExchangeRequest::class, 'approved_by');
+    }
+
     public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Team::class);

@@ -65,6 +65,7 @@ class Kernel extends HttpKernel
         'isAdmin' => \App\Http\Middleware\IsAdmin::class,
         'isAdminOrHasPermission' => \App\Http\Middleware\IsAdminOrHasPermission::class,
         'isCoordinateur' => \App\Http\Middleware\isCoordinateur::class,
+        'exchange.enabled' => \App\Http\Middleware\CheckExchangeModuleEnabled::class,
         'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,

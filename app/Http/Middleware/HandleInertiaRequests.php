@@ -37,7 +37,24 @@ class HandleInertiaRequests extends Middleware
 
         if ($user) {
             if (config('teams.active') && $user->team_id) {
+                // Charger l'équipe avec ses relations
+                // Utiliser fresh() pour s'assurer d'avoir les dernières données de la base de données
                 $team = Team::with(['rotations.details', 'params'])->find($user->team_id);
+
+                // Forcer le rechargement des paramètres d'équipe pour s'assurer d'avoir les dernières valeurs
+                if ($team && $team->params) {
+                    $team->params->refresh();
+                }
+
+                // Log pour débogage
+                \Log::info('HandleInertiaRequests::share - Team params', [
+                    'user_id' => $user->id,
+                    'team_id' => $team->id,
+                    'team_params' => $team->params ? $team->params->toArray() : null,
+                    'exchange_module' => $team->params ? $team->params->exchange_module : null,
+                    'exchange_module_type' => $team->params ? gettype($team->params->exchange_module) : null
+                ]);
+
                 if ($user->isCoordinateur()) {
                     $alerts = $team->alerts;
                 }
