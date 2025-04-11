@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, onUnmounted, ref, nextTick } from 'vue';
 
 const props = defineProps({
     align: {
@@ -19,8 +19,15 @@ const closeOnEscape = (e) => {
     }
 };
 
-onMounted(() => document.addEventListener('keydown', closeOnEscape));
-onUnmounted(() => document.removeEventListener('keydown', closeOnEscape));
+onMounted(() => {
+    document.addEventListener('keydown', closeOnEscape);
+});
+
+onUnmounted(() => {
+    document.removeEventListener('keydown', closeOnEscape);
+    window.removeEventListener('resize', updateDropdownPosition);
+    window.removeEventListener('scroll', updateDropdownPosition);
+});
 
 const contentClasses = props.contentClasses.toString();
 
@@ -43,35 +50,69 @@ const alignmentClasses = computed(() => {
 });
 
 const open = ref(false);
+const triggerRef = ref(null);
+const dropdownPosition = ref({ top: 0, left: 0, width: 0 });
+
+const updateDropdownPosition = () => {
+    if (!triggerRef.value) return;
+
+    const rect = triggerRef.value.getBoundingClientRect();
+    dropdownPosition.value = {
+        top: rect.bottom + window.scrollY,
+        left: props.align === 'left' ? rect.left : rect.right - (props.width === '48' ? 192 : (props.width === '72' ? 288 : 384)),
+        width: props.width === '48' ? 192 : (props.width === '72' ? 288 : 384)
+    };
+};
+
+const toggleDropdown = () => {
+    open.value = !open.value;
+    if (open.value) {
+        nextTick(() => {
+            updateDropdownPosition();
+            window.addEventListener('resize', updateDropdownPosition);
+            window.addEventListener('scroll', updateDropdownPosition);
+        });
+    } else {
+        window.removeEventListener('resize', updateDropdownPosition);
+        window.removeEventListener('scroll', updateDropdownPosition);
+    }
+};
 </script>
 
 <template>
     <div class="relative">
-        <div @click="open = !open">
+        <div ref="triggerRef" @click="toggleDropdown">
             <slot name="trigger" />
         </div>
 
-        <!-- Full Screen Dropdown Overlay -->
-        <div v-show="open" class="fixed inset-0 z-55" @click="open = false"></div>
+        <teleport to="body">
+            <!-- Full Screen Dropdown Overlay -->
+            <div v-if="open" class="fixed inset-0 z-90" @click="open = false"></div>
 
-        <transition
-            enter-active-class="transition ease-out duration-200"
-            enter-from-class="transform opacity-0 scale-95"
-            enter-to-class="transform opacity-100 scale-100"
-            leave-active-class="transition ease-in duration-75"
-            leave-from-class="transform opacity-100 scale-100"
-            leave-to-class="transform opacity-0 scale-95"
-        >
-            <div
-                v-show="open"
-                class="absolute z-70 mt-2 rounded-md shadow-lg"
-                :class="[widthClass, alignmentClasses]"
-                style="display: none"
+            <transition
+                enter-active-class="transition ease-out duration-200"
+                enter-from-class="transform opacity-0 scale-95"
+                enter-to-class="transform opacity-100 scale-100"
+                leave-active-class="transition ease-in duration-75"
+                leave-from-class="transform opacity-100 scale-100"
+                leave-to-class="transform opacity-0 scale-95"
             >
-                <div class="rounded-md ring-1 p-1 ring-black ring-opacity-5 bg-white dark:bg-gray-700" :class="contentClasses">
-                    <slot name="content" />
+                <div
+                    v-if="open"
+                    class="fixed z-90 mt-2 rounded-md shadow-lg"
+                    :style="{
+                        top: `${dropdownPosition.top}px`,
+                        left: `${dropdownPosition.left}px`,
+                        width: `${dropdownPosition.width}px`,
+                        maxHeight: '80vh',
+                        overflowY: 'auto'
+                    }"
+                >
+                    <div class="rounded-md ring-1 p-1 ring-black ring-opacity-5 bg-white dark:bg-gray-700" :class="contentClasses">
+                        <slot name="content" />
+                    </div>
                 </div>
-            </div>
-        </transition>
+            </transition>
+        </teleport>
     </div>
 </template>

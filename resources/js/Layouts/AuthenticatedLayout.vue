@@ -4,7 +4,7 @@
     <div :class="{ 'dark': $store.state.isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen dark:bg-gray-900" >
-            <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-60 shadow-lg backdrop-filter backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90" :style="{background: $store.state.isDarkMode ? '': 'linear-gradient(135deg, ' + $page.props.auth.team.params.color1 + '80 0%, ' + $page.props.auth.team.params.color2 + '90 100%)'}">
+            <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-50 shadow-lg backdrop-filter backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90" :style="{background: $store.state.isDarkMode ? '': 'linear-gradient(135deg, ' + $page.props.auth.team.params.color1 + '80 0%, ' + $page.props.auth.team.params.color2 + '90 100%)'}">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-1">
                     <div class="flex justify-between h-16">
@@ -41,7 +41,7 @@
                             <div v-if="$page.props.auth.team.name" class="hidden lg:flex lg:items-center lg:ml-6">
                                 <div v-if="$page.props.auth.isCoordinateur && $page.props.auth.team.params.module_alert">
                                     <div v-if="$page.props.auth.alerts && $page.props.auth.alerts.length > 0 && $page.props.auth.alerts.find(item => !item.is_read)">
-                                        <Dropdown align="right" width="96" contentClasses="bg-white dark:bg-gray-700 mt-1 border-1 overflow-y-auto max-h-72 rounded-lg shadow-lg">
+                                        <Dropdown align="right" width="96" contentClasses="bg-white dark:bg-gray-700 mt-1 border-1 overflow-y-auto max-h-72 rounded-lg shadow-lg z-90">
                                             <template #trigger>
                                             <div class="inline-flex rounded-md">
                                                 <button
@@ -90,7 +90,7 @@
                                             </strong>
                                         </span>
                                         </div>
-                                        <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" content-classes="overflow-y-auto max-h-96 bg-white dark:bg-gray-700 rounded-lg shadow-lg">
+                                        <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" contentClasses="overflow-y-auto max-h-96 bg-white dark:bg-gray-700 rounded-lg shadow-lg z-90">
                                             <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button
@@ -136,7 +136,7 @@
                             <div class="hidden lg:flex lg:items-center lg:ml-6">
                                 <!-- Settings Dropdown -->
                                 <div class="ml-3 relative">
-                                    <Dropdown align="right" width="48" contentClasses="bg-white dark:bg-gray-700 rounded-lg shadow-lg">
+                                    <Dropdown align="right" width="48" contentClasses="bg-white dark:bg-gray-700 rounded-lg shadow-lg z-90">
                                         <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button
@@ -240,7 +240,7 @@
 
                     <div v-if="$page.props.config.active">
                         <div class="ml-3 relative">
-                            <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" content-classes="overflow-y-auto max-h-96">
+                            <Dropdown v-if="$page.props.auth.isCoordinateur" align="right" width="48" contentClasses="overflow-y-auto max-h-96 bg-white dark:bg-gray-700 rounded-lg shadow-lg z-90">
                                 <template #trigger>
                                             <span class="inline-flex rounded-md">
                                                 <button
@@ -301,7 +301,7 @@
             </nav>
 
             <!-- Page Heading -->
-            <header class="border-1 top-0 dark:bg-gray-800 bg-gray-100 sticky z-50 shadow-sm" v-if="$slots.header" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2, backgroundImage: $store.state.isDarkMode ? '' : 'linear-gradient(to right, ' + $page.props.auth.team.params.color2 + '99, ' + $page.props.auth.team.params.color2 + ')' }">
+            <header class="border-1 top-0 dark:bg-gray-800 bg-gray-100 sticky z-40 shadow-sm" v-if="$slots.header" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2, backgroundImage: $store.state.isDarkMode ? '' : 'linear-gradient(to right, ' + $page.props.auth.team.params.color2 + '99, ' + $page.props.auth.team.params.color2 + ')' }">
                 <div class="w-auto mx-auto py-4 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
