@@ -4,6 +4,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Email Rate Limiting
+    |--------------------------------------------------------------------------
+    |
+    | This option allows you to limit the number of emails sent per hour to avoid
+    | hitting email service provider limits. Set 'enabled' to true to activate
+    | rate limiting and adjust 'per_hour' to set the maximum number of emails
+    | that can be sent in an hour.
+    |
+    */
+
+    'rate_limiting' => [
+        'enabled' => env('MAIL_RATE_LIMITING', true),
+        'per_hour' => env('MAIL_RATE_LIMIT_PER_HOUR', 150),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Default Mailer
     |--------------------------------------------------------------------------
     |

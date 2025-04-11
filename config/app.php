@@ -197,6 +197,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\Filament\AdminChronosPanelProvider::class,
         App\Providers\RouteServiceProvider::class,
+        App\Providers\EmailLogServiceProvider::class,
 
     ],
 

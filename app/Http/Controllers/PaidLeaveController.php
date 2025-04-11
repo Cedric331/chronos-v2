@@ -123,7 +123,7 @@ class PaidLeaveController extends Controller
                 'dates' => $paidLeave->calendars->pluck('date_fr')->toArray(),
                 'url' => route('paidleave.index')
             ];
-            Mail::to($userCoordinateur->email)->send(new NewRequestLeave($content));
+            Mail::to($userCoordinateur->email)->queue(new NewRequestLeave($content));
         }
 
         return response()->json($paidLeave);

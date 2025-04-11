@@ -51,7 +51,7 @@ class PasswordResetLinkController extends Controller
                     'title' => 'Bienvenue sur Chronos',
                 ];
 
-                Mail::to($user->email)->send(new ActivationAccount($mailData));
+                Mail::to($user->email)->queue(new ActivationAccount($mailData));
                 throw ValidationException::withMessages([
                     'email' => ['Votre compte n\'est pas activé. Veuillez cliquer sur le lien d\'activation dans le mail que vous avez reçu. Un nouvel email vous a été envoyé.'],
                 ]);

@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::post('/contact', [ContactController::class, 'send'])->name('contact');
+    Route::post('/contact', [ContactController::class, 'send'])->middleware('email.limit')->name('contact');
 
     Route::get('/privacy-policy', function () {
         return Inertia::render('PrivacyPolicy');

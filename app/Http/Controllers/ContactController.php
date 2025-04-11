@@ -31,7 +31,7 @@ class ContactController extends Controller
         $admin = User::role('Administrateur')->first();
 
         try {
-            Mail::to($admin->email)->send(new ContactAdministrateur($data));
+            Mail::to($admin->email)->queue(new ContactAdministrateur($data));
         } catch (\Exception $e) {
             Log::error('Erreur lors de l\'envoi du mail: ' . $e->getMessage());
 

@@ -105,7 +105,7 @@ class LoginRequest extends FormRequest
             'name' => $user->name,
         ];
 
-        Mail::to($user->email)->send(new ActivationAccount($mailData));
+        Mail::to($user->email)->queue(new ActivationAccount($mailData));
 
         Auth::guard('web')->logout();
 

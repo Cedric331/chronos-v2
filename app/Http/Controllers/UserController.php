@@ -79,7 +79,7 @@ class UserController extends Controller
         ];
 
         try {
-            Mail::to($user->email)->send(new ActivationAccount($mailData));
+            Mail::to($user->email)->queue(new ActivationAccount($mailData));
             activity($user->team->name)
                 ->event('Enregistrement')
                 ->performedOn($user)
@@ -212,7 +212,7 @@ class UserController extends Controller
         ];
 
         try {
-            Mail::to($user->email)->send(new ActivationAccount($mailData));
+            Mail::to($user->email)->queue(new ActivationAccount($mailData));
             activity($user->team->name)
                 ->event('Relance de l\'invitation')
                 ->performedOn($user)

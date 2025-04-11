@@ -36,7 +36,7 @@ class CreateUser extends CreateRecord
             'title' => 'Bienvenue sur Chronos',
         ];
 
-        Mail::to($user->email)->send(new ActivationAccount($mailData));
+        Mail::to($user->email)->queue(new ActivationAccount($mailData));
     }
 
     protected function getCreatedNotification(): ?Notification
