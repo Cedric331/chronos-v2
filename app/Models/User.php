@@ -170,6 +170,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(PaidLeave::class);
     }
 
+    /**
+     * Get the user's preferences.
+     */
+    public function preference()
+    {
+        return $this->hasOne(UserPreference::class);
+    }
+
     public function daysPaidAccepted()
     {
         return $this->paidleaves()->where('status', PaidLeave::STATUS_ACCEPTED)

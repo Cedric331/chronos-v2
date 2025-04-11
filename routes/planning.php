@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\PlanningWidgetController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('isCoordinateur')->group(function () {
@@ -18,6 +19,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/planning/share/{link}', [PlanningController::class, 'deleteShareLink'])->name('planning.share.delete');
 
     Route::get('/planning/user/export', [PlanningController::class, 'exportPlanning'])->name('planning.export');
+
+    // Planning Widget Routes
+    Route::post('/planning/widgets/preferences', [PlanningWidgetController::class, 'updatePreferences'])->name('planning.widgets.preferences');
+    Route::patch('/planning/widgets/{widget}/settings', [PlanningWidgetController::class, 'updateWidgetSettings'])->name('widgets.update.settings');
+    Route::patch('/planning/widgets/{widget}/toggle', [PlanningWidgetController::class, 'toggleWidgetVisibility'])->name('widgets.toggle');
+    Route::delete('/planning/widgets/{widget}', [PlanningWidgetController::class, 'removeWidget'])->name('widgets.remove');
+    Route::post('/planning/stats', [PlanningController::class, 'getStats'])->name('planning.stats');
+    Route::post('/planning/events', [PlanningController::class, 'getEvents'])->name('planning.events');
+    Route::post('/planning/team-presence', [PlanningController::class, 'getTeamPresence'])->name('planning.team-presence');
 });
 
 Route::get('/planning/{token}', [PlanningController::class, 'getPlanningShare'])->name('planning.share.get');

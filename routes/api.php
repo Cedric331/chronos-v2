@@ -3,6 +3,9 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\PlanningController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\TeamEventsController;
+use App\Http\Controllers\BirthdayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +32,18 @@ use Illuminate\Support\Facades\Route;
     Route::middleware(['auth', 'exchange.enabled'])->group(function () {
         Route::get('/users/{user}/plannings', [PlanningController::class, 'getUserPlannings']);
         Route::get('/users/{user}/exchange-dates', [PlanningController::class, 'getExchangeDates']);
+    });
+
+    // Routes pour les widgets
+    Route::middleware(['auth'])->group(function () {
+        // Route pour récupérer les actualités
+        Route::post('/fetch-news', [NewsController::class, 'fetchNews']);
+
+        // Route pour récupérer les événements d'équipe et anniversaires
+        Route::post('/team-events', [TeamEventsController::class, 'getTeamEvents']);
+
+        // Route pour récupérer uniquement les anniversaires
+        Route::post('/birthdays', [BirthdayController::class, 'getBirthdays']);
     });
 
 //Route::group([

@@ -9,6 +9,7 @@ use App\Models\ExchangeRequest;
 use App\Models\Planning;
 use App\Models\Rotation;
 use App\Models\ShareLink;
+use App\Models\Team;
 use App\Models\User;
 use Carbon\Carbon;
 use DateTime;
@@ -20,6 +21,197 @@ use Inertia\Inertia;
 
 class PlanningController extends Controller
 {
+    /**
+     * Get planning statistics for the widget.
+     */
+    public function getStats(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'period' => 'required|string|in:week,month,year',
+        ]);
+
+        $user = Auth::user();
+        $period = $request->period;
+
+        // Define the date range based on the period
+        $startDate = null;
+        $endDate = Carbon::now();
+
+        switch ($period) {
+            case 'week':
+                $startDate = Carbon::now()->startOfWeek();
+                $endDate = Carbon::now()->endOfWeek();
+                break;
+            case 'month':
+                $startDate = Carbon::now()->startOfMonth();
+                $endDate = Carbon::now()->endOfMonth();
+                break;
+            case 'year':
+                $startDate = Carbon::now()->startOfYear();
+                $endDate = Carbon::now()->endOfYear();
+                break;
+        }
+
+        // Calculer le nombre total de jours dans la période
+        $totalDaysInPeriod = $startDate->diffInDays($endDate) + 1;
+
+        // Calculer le nombre de jours ouvrables dans la période (lundi-vendredi)
+        $workingDaysInPeriod = 0;
+        $currentDate = clone $startDate;
+        while ($currentDate <= $endDate) {
+            // 6 = samedi, 7 = dimanche
+            if ($currentDate->dayOfWeek !== 6 && $currentDate->dayOfWeek !== 7) {
+                $workingDaysInPeriod++;
+            }
+            $currentDate->addDay();
+        }
+
+        // Get the user's plannings within the date range
+        $plannings = Planning::where('user_id', $user->id)
+            ->whereHas('calendar', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('date', [$startDate, $endDate]);
+            })
+            ->with('calendar')
+            ->get();
+
+        // Log tous les types de jours pour débogage
+        $uniqueTypeDays = $plannings->pluck('type_day')->unique()->values()->toArray();
+        \Illuminate\Support\Facades\Log::info('Types de jours dans les plannings:', $uniqueTypeDays);
+
+        // Calculate statistics
+        $totalDays = $totalDaysInPeriod;
+        $plannedDays = $plannings->where('type_day', 'Planifié')->count();
+        $workDays = $workingDaysInPeriod; // Nombre de jours ouvrables dans la période
+        $restDays = $plannings->where('type_day', 'Repos')->count();
+        $teleworkDays = $plannings->where('telework', true)->count();
+
+        // Ajouter les types supplémentaires
+        $paidLeaveDays = $plannings->where('type_day', 'Congés payés')->count();
+        $sickLeaveDays = $plannings->where('type_day', 'Arrêt maladie')->count();
+        $morningPaidLeaveDays = $plannings->where('type_day', 'CP matin')->count();
+        $afternoonPaidLeaveDays = $plannings->where('type_day', 'CP après-midi')->count();
+        $trainingDays = $plannings->where('type_day', 'Formation')->count();
+        $holidayDays = $plannings->where('type_day', 'Jour férié')->count();
+
+        // Essayer d'autres variantes possibles pour les jours fériés
+        if ($holidayDays === 0) {
+            $holidayDays += $plannings->where('type_day', 'Férié')->count();
+            $holidayDays += $plannings->where('type_day', 'Ferie')->count();
+            $holidayDays += $plannings->where('type_day', 'Jour ferie')->count();
+            $holidayDays += $plannings->where('type_day', 'Jours fériés')->count();
+        }
+
+        // Ajouter tous les types uniques pour débogage
+        $typesStats = [];
+        foreach ($uniqueTypeDays as $type) {
+            $typesStats['type_' . str_replace(' ', '_', strtolower($type)) . '_count'] = $plannings->where('type_day', $type)->count();
+        }
+
+        return response()->json(array_merge([
+            'totalDays' => $totalDays,
+            'workDays' => $workDays,
+            'plannedDays' => $plannedDays,
+            'restDays' => $restDays,
+            'teleworkDays' => $teleworkDays,
+            'paidLeaveDays' => $paidLeaveDays,
+            'sickLeaveDays' => $sickLeaveDays,
+            'morningPaidLeaveDays' => $morningPaidLeaveDays,
+            'afternoonPaidLeaveDays' => $afternoonPaidLeaveDays,
+            'trainingDays' => $trainingDays,
+            'holidayDays' => $holidayDays,
+            'workingDaysInPeriod' => $workingDaysInPeriod,
+            'period' => $period,
+        ], $typesStats));
+    }
+
+    /**
+     * Get upcoming events for the widget.
+     */
+    public function getEvents(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'daysAhead' => 'required|integer|min:1|max:30',
+        ]);
+
+        $user = Auth::user();
+        $daysAhead = $request->daysAhead;
+
+        $startDate = Carbon::now()->startOfDay();
+        $endDate = Carbon::now()->addDays($daysAhead)->endOfDay();
+
+        // Get the user's plannings within the date range
+        $plannings = Planning::where('user_id', $user->id)
+            ->whereHas('calendar', function ($query) use ($startDate, $endDate) {
+                $query->whereBetween('date', [$startDate, $endDate]);
+            })
+            ->with('calendar')
+            ->get();
+
+        // Format the events
+        $events = [];
+        foreach ($plannings as $planning) {
+            $events[] = [
+                'id' => $planning->id,
+                'title' => $planning->type_day,
+                'date' => $planning->calendar->date,
+                'type' => $planning->telework ? 'Télétravail' : $planning->type_day,
+                'hours' => $planning->hours,
+                'start_time' => $planning->debut_journee,
+                'end_time' => $planning->fin_journee,
+            ];
+        }
+
+        return response()->json($events);
+    }
+
+    /**
+     * Get team presence information for the widget.
+     */
+    public function getTeamPresence(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->validate([
+            'date' => 'required|date',
+        ]);
+
+        $user = Auth::user();
+        $date = Carbon::parse($request->date);
+
+        // Get all users in the team
+        $teamUsers = User::where('team_id', $user->team_id)
+            ->where('account_active', true)
+            ->get();
+
+        // Get the calendar for the specified date
+        $calendar = Calendar::whereDate('date', $date)->first();
+
+        if (!$calendar) {
+            return response()->json([]);
+        }
+
+        // Get all plannings for the team on that date
+        $plannings = Planning::where('team_id', $user->team_id)
+            ->where('calendar_id', $calendar->id)
+            ->get()
+            ->keyBy('user_id');
+
+        // Format the team presence data
+        $teamPresence = [];
+        foreach ($teamUsers as $teamUser) {
+            $planning = $plannings->get($teamUser->id);
+            $isPresent = $planning && $planning->type_day === 'Planifié';
+
+            $teamPresence[] = [
+                'id' => $teamUser->id,
+                'name' => $teamUser->name,
+                'avatar' => $teamUser->avatar,
+                'isPresent' => $isPresent,
+                'telework' => $planning ? $planning->telework : false,
+                'hours' => $planning ? $planning->hours : null,
+            ];
+        }
+
+        return response()->json($teamPresence);
+    }
     protected array $hours = [
         '08h00',
         '08h30',

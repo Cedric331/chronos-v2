@@ -70,23 +70,35 @@
                 <div class="dark:bg-gray-800 overflow-hidden rounded-xl shadow-lg transition-all duration-300 hover:shadow-xl min-h-screen"
                      :style="{background: $store.state.isDarkMode? '': 'linear-gradient(135deg, ' + $page.props.auth.team.params.color2 + '33, ' + $page.props.auth.team.params.color1 + '33)'}">
                     <div class="p-2 sm:p-4">
-                        <div class="flex justify-end mb-2">
-                            <button @click="getAllPlanning = !getAllPlanning"
-                                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-200"
-                                    :class="getAllPlanning ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-100' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'">
+                        <div class="flex justify-between mb-2">
+                            <button @click="showWidgetManager = true"
+                                    class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-200 bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                                 </svg>
-                                {{ getAllPlanning ? 'Revenir au planning du jour' : 'Voir le planning complet' }}
+                                Widgets
                             </button>
-                            <button @click="showShare = true"
-                                    class="ml-2 inline-flex items-center px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200 dark:bg-indigo-700 dark:hover:bg-indigo-600">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-                                </svg>
-                                Partager
-                            </button>
+                            <div class="flex">
+                                <button @click="getAllPlanning = !getAllPlanning"
+                                        class="inline-flex items-center px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-200"
+                                        :class="getAllPlanning ? 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-100' : 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    {{ getAllPlanning ? 'Revenir au planning du jour' : 'Voir le planning complet' }}
+                                </button>
+                                <button @click="showShare = true"
+                                        class="ml-2 inline-flex items-center px-3 py-1.5 text-sm font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200 dark:bg-indigo-700 dark:hover:bg-indigo-600">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                    </svg>
+                                    Partager
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Planning Widgets -->
+                        <PlanningWidgets :userWidgets="planningWidgets" @update="handleWidgetUpdate" @remove="handleWidgetRemove" />
                         <Calendar
                             ref="calendar"
                             :daysProps="daysProps"
@@ -100,6 +112,13 @@
                 </div>
             </div>
             <ModalSharePlanning v-if="showShare" :show="showShare" @close="this.showShare = false"></ModalSharePlanning>
+            <PlanningWidgetManager
+                v-if="showWidgetManager"
+                :show="showWidgetManager"
+                :selectedWidgets="planningWidgets"
+                @close="showWidgetManager = false"
+                @update="updateWidgets"
+            ></PlanningWidgetManager>
         </div>
     </AuthenticatedLayout>
 </template>
@@ -116,6 +135,8 @@ import {
 } from '@headlessui/vue'
 import Loading from "@/Components/Loading.vue";
 import ModalSharePlanning from "@/Pages/Calendar/Modal/ModalSharePlanning.vue";
+import PlanningWidgets from "@/Components/PlanningWidgets.vue";
+import PlanningWidgetManager from "@/Components/PlanningWidgetManager.vue";
 
 export default {
     components: {
@@ -127,7 +148,9 @@ export default {
         ListboxOptions,
         Calendar,
         AuthenticatedLayout,
-        Head
+        Head,
+        PlanningWidgets,
+        PlanningWidgetManager
     },
     props: {
         isToday: String,
@@ -137,6 +160,10 @@ export default {
         weeklyHours: {
             type: Object,
             default: () => []
+        },
+        planningWidgetsPrefs: {
+            type: Array,
+            default: () => []
         }
     },
     data() {
@@ -144,9 +171,11 @@ export default {
             isLoading: false,
             getAllPlanning: false,
             showShare: false,
+            showWidgetManager: false,
             selectedUser: this.user,
             daysProps: null,
-            weeklyProps: null
+            weeklyProps: null,
+            planningWidgets: this.planningWidgetsPrefs || []
         }
     },
     watch: {
@@ -178,11 +207,73 @@ export default {
                     this.$refs.calendar.resetDaySelected()
                 }, 200)
             })
+        },
+
+        // Méthode pour mettre à jour les widgets sans recharger la page
+        updateWidgets(widgets) {
+            // Créer une nouvelle référence pour forcer la réactivité
+            this.planningWidgets = JSON.parse(JSON.stringify(widgets));
+
+            // Enregistrer les préférences dans le localStorage pour persister entre les sessions
+            localStorage.setItem('planningWidgets', JSON.stringify(widgets));
+
+            // Forcer la mise à jour du composant PlanningWidgets
+            this.$nextTick(() => {
+                // Cette ligne force Vue à ré-évaluer le rendu des widgets
+                this.planningWidgets = [...this.planningWidgets];
+            });
+        },
+
+        // Gérer la mise à jour d'un widget individuel
+        handleWidgetUpdate(updatedWidget) {
+            // Trouver l'index du widget mis à jour
+            const widgetIndex = this.planningWidgets.findIndex(widget => widget.id === updatedWidget.id);
+
+            if (widgetIndex !== -1) {
+                // Mettre à jour le widget dans le tableau
+                this.planningWidgets[widgetIndex] = updatedWidget;
+
+                // Créer une nouvelle référence pour forcer la réactivité
+                this.planningWidgets = [...this.planningWidgets];
+
+                // Enregistrer les préférences dans le localStorage
+                localStorage.setItem('planningWidgets', JSON.stringify(this.planningWidgets));
+            }
+        },
+
+        // Gérer la suppression d'un widget
+        handleWidgetRemove(widgetToRemove) {
+            // Filtrer le tableau pour supprimer le widget
+            this.planningWidgets = this.planningWidgets.filter(widget => widget.id !== widgetToRemove.id);
+
+            // Enregistrer les préférences dans le localStorage
+            localStorage.setItem('planningWidgets', JSON.stringify(this.planningWidgets));
+
+            // Enregistrer les préférences sur le serveur
+            axios.post('/planning/widgets/preferences', {
+                widgets: this.planningWidgets
+            })
+            .then(response => {
+                console.log('Widget supprimé avec succès');
+            })
+            .catch(error => {
+                console.error('Erreur lors de la suppression du widget:', error);
+            });
         }
     },
     beforeMount () {
         this.daysProps = this.calendar
         this.weeklyProps = this.weeklyHours
+
+        // Si des widgets sont déjà enregistrés dans le localStorage, les utiliser
+        const savedWidgets = localStorage.getItem('planningWidgets');
+        if (savedWidgets) {
+            try {
+                this.planningWidgets = JSON.parse(savedWidgets);
+            } catch (e) {
+                console.error('Erreur lors du chargement des widgets depuis le localStorage:', e);
+            }
+        }
     }
 }
 </script>

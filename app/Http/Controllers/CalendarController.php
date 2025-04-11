@@ -78,12 +78,19 @@ class CalendarController extends Controller
        //     return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
        // }
 
+        // Get user's planning widget preferences
+        $planningWidgetsPrefs = [];
+        if ($user->preference && $user->preference->planning_widgets) {
+            $planningWidgetsPrefs = $user->preference->planning_widgets;
+        }
+
         return Inertia::render('Planning', [
             'user' => $user,
             'users' => $users,
             'isToday' => ucwords(Carbon::now()->isoFormat('dddd D MMMM')),
             'calendar' => $calendar,
             'weeklyHours' => $weeklyHours,
+            'planningWidgetsPrefs' => $planningWidgetsPrefs,
         ]);
     }
 
