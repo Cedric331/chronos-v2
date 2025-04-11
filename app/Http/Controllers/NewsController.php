@@ -19,27 +19,22 @@ class NewsController extends Controller
             'maxItems' => 'nullable|integer|min:1|max:20',
         ]);
 
-        // Vérifier si une requête a été faite récemment (moins de 10 minutes)
-        $userId = auth()->id();
-        $lastRequestKey = "news_last_request_{$userId}";
-        $lastRequestTime = Cache::get($lastRequestKey);
-        $now = now();
-
-        if ($lastRequestTime && $now->diffInMinutes($lastRequestTime) < 10) {
-            // Si une requête a été faite il y a moins de 10 minutes, retourner les données en cache
-            $cacheKey = "news_{$source}_{$maxItems}";
-            if (Cache::has($cacheKey)) {
-                return response()->json(Cache::get($cacheKey));
-            }
-        }
-
-        // Mettre à jour le timestamp de la dernière requête
-        Cache::put($lastRequestKey, $now, 60 * 10); // Expire après 10 minutes
-
         $source = $request->source;
         $maxItems = $request->maxItems ?? 10;
         $cacheKey = "news_{$source}_{$maxItems}";
         $cacheDuration = 60; // minutes (1 heure)
+        $lastRequestKey = "news_last_request_global";
+        $now = now();
+
+        // Vérifier si une requête a été faite récemment (moins de 10 minutes)
+        $lastRequestTime = Cache::get($lastRequestKey);
+
+        if ($lastRequestTime && $now->diffInMinutes($lastRequestTime) < 10) {
+            // Si une requête a été faite il y a moins de 10 minutes, utiliser les données en cache
+            if (Cache::has($cacheKey)) {
+                return response()->json(Cache::get($cacheKey));
+            }
+        }
 
         // Vérifier si les données sont en cache
         if (Cache::has($cacheKey)) {
@@ -82,6 +77,9 @@ class NewsController extends Controller
 
                 // Mettre en cache les résultats
                 Cache::put($cacheKey, $result, $cacheDuration * 60);
+
+                // Mettre à jour le timestamp de la dernière requête globale
+                Cache::put($lastRequestKey, $now, 60 * 10); // Expire après 10 minutes
 
                 return response()->json($result);
             } else {
