@@ -33,5 +33,9 @@ class AuthServiceProvider extends ServiceProvider
 
             return Auth::user()->isCoordinateur() || $team->params->update_planning;
         });
+
+        Gate::define('manage-tickets', function () {
+            return Auth::user()->isAdministrateur();
+        });
     }
 }

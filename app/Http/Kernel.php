@@ -71,5 +71,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'email.limit' => \App\Http\Middleware\EmailRateLimiter::class,
+        'can.manage.tickets' => \App\Http\Middleware\CanManageTickets::class,
     ];
 }

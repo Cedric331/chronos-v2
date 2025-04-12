@@ -37,7 +37,9 @@
                         </div>
 
                         <div class="flex justify-between h-16">
-
+                            <NavLink :href="route('tickets.index')" :active="route().current('tickets.*')" class="font-medium transition-all duration-200 hover:text-opacity-90 hover:scale-105">
+                                <i class="fas fa-ticket-alt mr-1"></i> Tickets
+                            </NavLink>
                             <div v-if="$page.props.auth.team.name" class="hidden lg:flex lg:items-center lg:ml-6">
                                 <div v-if="$page.props.auth.isCoordinateur && $page.props.auth.team.params.module_alert">
                                     <div v-if="$page.props.auth.alerts && $page.props.auth.alerts.length > 0 && $page.props.auth.alerts.find(item => !item.is_read)">

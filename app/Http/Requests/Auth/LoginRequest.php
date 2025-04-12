@@ -40,11 +40,52 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
+//    public function authenticate(): void
+//    {
+//        $this->ensureIsNotRateLimited();
+//
+//        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+//            RateLimiter::hit($this->throttleKey());
+//
+//            throw ValidationException::withMessages([
+//                'email' => trans('auth.failed'),
+//            ]);
+//        }
+//
+//        $user = Auth::user();
+//
+//        if (! $user->isActivated()) {
+//            $this->sendActivationMail($user);
+//        }
+//
+//        RateLimiter::clear($this->throttleKey());
+//    }
+
     public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $credentials = $this->only('email', 'password');
+
+        // On vérifie si l'on est en environnement local
+        if (app()->environment('local')) {
+            $user = \App\Models\User::where('email', $credentials['email'])->first();
+
+            if ($user) {
+                Auth::login($user, $this->boolean('remember'));
+
+                if (! $user->isActivated()) {
+                    $this->sendActivationMail($user);
+                }
+
+                RateLimiter::clear($this->throttleKey());
+
+                return;
+            }
+        }
+
+        // Comportement normal pour les autres environnements
+        if (! Auth::attempt($credentials, $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([

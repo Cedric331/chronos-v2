@@ -18,9 +18,15 @@ class EmailLogServiceProvider extends ServiceProvider
             $to = [];
 
             // Récupérer les destinataires
-            if (method_exists($message, 'getTo') && is_array($message->getTo())) {
-                foreach ($message->getTo() as $address => $name) {
-                    $to[] = $name ? "$name <$address>" : $address;
+            if (method_exists($message, 'getTo')) {
+                $recipients = $message->getTo();
+
+                foreach ($recipients as $recipient) {
+                    if ($recipient instanceof \Symfony\Component\Mime\Address) {
+                        $address = $recipient->getAddress();
+                        $name = $recipient->getName();
+                        $to[] = $name ? "$name <$address>" : $address;
+                    }
                 }
             }
 
@@ -38,14 +44,38 @@ class EmailLogServiceProvider extends ServiceProvider
             Log::channel('email')->info('Email envoyé', [
                 'to' => implode(', ', $to),
                 'subject' => method_exists($message, 'getSubject') ? $message->getSubject() : 'N/A',
-                'from' => method_exists($message, 'getFrom') ? $message->getFrom() : 'N/A',
+                'from' => $this->formatSender($message),
                 'trace' => array_slice($relevantTrace, 0, 5),
             ]);
         });
     }
 
+
     public function register()
     {
         // Rien à faire ici, la configuration du canal est dans config/logging.php
+    }
+
+    /**
+     * Formate l'expéditeur pour le log
+     */
+    private function formatSender($message)
+    {
+        if (!method_exists($message, 'getFrom')) {
+            return 'N/A';
+        }
+
+        $from = $message->getFrom();
+        $result = [];
+
+        foreach ($from as $sender) {
+            if ($sender instanceof \Symfony\Component\Mime\Address) {
+                $address = $sender->getAddress();
+                $name = $sender->getName();
+                $result[] = $name ? "$name <$address>" : $address;
+            }
+        }
+
+        return implode(', ', $result) ?: 'N/A';
     }
 }

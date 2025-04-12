@@ -5,7 +5,6 @@ namespace Database\Seeders;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Artisan;
 use Spatie\Permission\Models\Permission;
 
 class DatabaseSeeder extends Seeder
@@ -15,21 +14,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        //        $this->call([
+        //            CompanieSeeder::class,
+        //        ]);
+        //        $this->call([
+        //            RoleSeeder::class,
+        //        ]);
+        //        $this->call([
+        //            TeamSeeder::class,
+        //        ]);
         $this->call([
-            CompanieSeeder::class,
-        ]);
-        $this->call([
-            RoleSeeder::class,
-        ]);
-        $this->call([
-            TeamSeeder::class,
+            TicketSystemSeeder::class,
         ]);
 
-        Permission::create(['name' => 'access-admin']);
+        //        Permission::create(['name' => 'access-admin']);
 
-//         \App\Models\User::factory()->create([
-//             'name' => 'Test User',
-//             'email' => 'test@example.com',
-//         ]);
+        //         \App\Models\User::factory()->create([
+        //             'name' => 'Test User',
+        //             'email' => 'test@example.com',
+        //         ]);
     }
 }
