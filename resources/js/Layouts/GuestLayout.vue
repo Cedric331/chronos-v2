@@ -1,9 +1,5 @@
-<script setup>
-import { Link } from '@inertiajs/vue3';
-</script>
-
 <template>
-    <div 
+    <div
         class="min-h-screen flex flex-col sm:justify-center items-center bg-gray-100 dark:bg-gray-900"
         :style="backgroundStyle"
     >
@@ -16,9 +12,10 @@ import { Link } from '@inertiajs/vue3';
 <script>
 export default {
     data() {
+        const randomIndex = Math.floor(Math.random() * 8);
         return {
             backgroundStyle: {
-                backgroundImage: "url('/images/background_login.jpg')",
+                backgroundImage: `url('/images/bg-${randomIndex}.jpg')`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat",
