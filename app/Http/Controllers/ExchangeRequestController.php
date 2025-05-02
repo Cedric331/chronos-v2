@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ExchangeRequestAccepted;
+use App\Mail\ExchangeRequestCreated;
 use App\Models\ExchangeRequest;
 use App\Models\Planning;
 use App\Models\User;
@@ -9,6 +11,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 
 class ExchangeRequestController extends Controller
@@ -108,7 +111,7 @@ class ExchangeRequestController extends Controller
             ->first();
 
             if ($existingRequest) {
-                return back()->withErrors(['general' => 'Il existe déjà une demande d\'\u00e9change en cours pour l\'un des plannings sélectionnés.']);
+                return back()->withErrors(['general' => 'Il existe déjà une demande d\'échange en cours pour l\'un des plannings sélectionnés.']);
             }
         }
 
@@ -135,6 +138,21 @@ class ExchangeRequestController extends Controller
             activity($team->name)
                 ->event('Demande d\'\u00e9change multiple')
                 ->log('Une demande d\'\u00e9change pour ' . count($exchanges) . ' jour(s) a été créée');
+
+            // Envoyer une notification par email au coordinateur de l'équipe
+            $coordinateur = $team->coordinateur;
+            if ($coordinateur) {
+                foreach ($exchangeRequests as $exchangeRequest) {
+                    // Charger les relations nécessaires pour l'email
+                    $exchangeRequest->load(['requester', 'requested', 'requesterPlanning.calendar', 'requestedPlanning.calendar']);
+
+                    try {
+                        Mail::to($coordinateur->email)->send(new ExchangeRequestCreated($exchangeRequest));
+                    } catch (\Exception $e) {
+                        \Log::error('Erreur lors de l\'envoi de l\'email de notification de demande d\'échange: ' . $e->getMessage());
+                    }
+                }
+            }
 
             DB::commit();
 
@@ -204,6 +222,20 @@ class ExchangeRequestController extends Controller
                 ->event('Acceptation d\'\u00e9change')
                 ->performedOn($exchange)
                 ->log('Une demande d\'\u00e9change a été acceptée et les plannings ont été échangés');
+
+            // Envoyer une notification par email au coordinateur de l'équipe
+            $team = $user->team;
+            $coordinateur = $team->coordinateur;
+            if ($coordinateur) {
+                // Charger les relations nécessaires pour l'email
+                $exchange->load(['requester', 'requested', 'requesterPlanning.calendar', 'requestedPlanning.calendar']);
+
+                try {
+                    Mail::to($coordinateur->email)->send(new ExchangeRequestAccepted($exchange));
+                } catch (\Exception $e) {
+                    \Log::error('Erreur lors de l\'envoi de l\'email de notification d\'acceptation d\'échange: ' . $e->getMessage());
+                }
+            }
 
             DB::commit();
 
