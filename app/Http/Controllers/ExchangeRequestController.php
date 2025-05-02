@@ -141,16 +141,22 @@ class ExchangeRequestController extends Controller
 
             // Envoyer une notification par email au coordinateur de l'équipe
             $coordinateur = $team->coordinateur;
-            if ($coordinateur) {
+            if ($coordinateur && count($exchangeRequests) > 0) {
+                // Charger les relations nécessaires pour l'email pour tous les échanges
                 foreach ($exchangeRequests as $exchangeRequest) {
-                    // Charger les relations nécessaires pour l'email
                     $exchangeRequest->load(['requester', 'requested', 'requesterPlanning.calendar', 'requestedPlanning.calendar']);
+                }
 
-                    try {
-                        Mail::to($coordinateur->email)->send(new ExchangeRequestCreated($exchangeRequest));
-                    } catch (\Exception $e) {
-                        \Log::error('Erreur lors de l\'envoi de l\'email de notification de demande d\'échange: ' . $e->getMessage());
-                    }
+                try {
+                    // Générer l'URL pour voir la liste des échanges
+                    $url = route('exchanges.index');
+
+                    // Envoyer un seul email avec tous les échanges
+                    Mail::to($coordinateur->email)->send(new ExchangeRequestCreated($exchangeRequests, $url));
+                    // Envoi du mail à l'utilisateur demandé
+                    Mail::to(User::find($requestedId)->email)->send(new ExchangeRequestCreated($exchangeRequests, $url));
+                } catch (\Exception $e) {
+                    \Log::error('Erreur lors de l\'envoi de l\'email de notification de demande d\'échange: ' . $e->getMessage());
                 }
             }
 
@@ -232,6 +238,8 @@ class ExchangeRequestController extends Controller
 
                 try {
                     Mail::to($coordinateur->email)->send(new ExchangeRequestAccepted($exchange));
+                    // Envoi du mail à l'utilisateur à l'origine de la demande
+                    Mail::to(User::find($exchange->requester_id)->email)->send(new ExchangeRequestAccepted($exchange));
                 } catch (\Exception $e) {
                     \Log::error('Erreur lors de l\'envoi de l\'email de notification d\'acceptation d\'échange: ' . $e->getMessage());
                 }

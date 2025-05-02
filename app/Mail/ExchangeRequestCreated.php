@@ -15,22 +15,28 @@ class ExchangeRequestCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $exchangeRequest;
+    public $exchangeRequests;
     public $requester;
     public $requested;
-    public $requesterPlanning;
-    public $requestedPlanning;
+    public $comment;
+    public $url;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(ExchangeRequest $exchangeRequest)
+    public function __construct(array $exchangeRequests, string $url)
     {
-        $this->exchangeRequest = $exchangeRequest;
-        $this->requester = $exchangeRequest->requester;
-        $this->requested = $exchangeRequest->requested;
-        $this->requesterPlanning = $exchangeRequest->requesterPlanning;
-        $this->requestedPlanning = $exchangeRequest->requestedPlanning;
+        $this->exchangeRequests = $exchangeRequests;
+
+        // Tous les échanges ont le même demandeur et destinataire
+        if (count($exchangeRequests) > 0) {
+            $firstExchange = $exchangeRequests[0];
+            $this->requester = $firstExchange->requester;
+            $this->requested = $firstExchange->requested;
+            $this->comment = $firstExchange->requester_comment;
+        }
+
+        $this->url = $url;
     }
 
     /**
@@ -51,12 +57,11 @@ class ExchangeRequestCreated extends Mailable
         return new Content(
             markdown: 'emails.exchange_request_created',
             with: [
-                'exchangeRequest' => $this->exchangeRequest,
+                'exchangeRequests' => $this->exchangeRequests,
                 'requester' => $this->requester,
                 'requested' => $this->requested,
-                'requesterPlanning' => $this->requesterPlanning,
-                'requestedPlanning' => $this->requestedPlanning,
-                'url' => route('exchanges.show', $this->exchangeRequest->id),
+                'comment' => $this->comment,
+                'url' => $this->url,
             ],
         );
     }
