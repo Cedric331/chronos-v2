@@ -37,7 +37,7 @@
                         </div>
 
                         <div class="flex justify-between h-16">
-                            <NavLink :href="route('tickets.index')" :active="route().current('tickets.*')" class="font-medium transition-all duration-200 hover:text-opacity-90 hover:scale-105">
+                            <NavLink :href="route('tickets.index')" :active="route().current('tickets.*')" class="font-medium transition-all duration-200 hover:text-opacity-90 hover:scale-105 hidden lg:block">
                                 <i class="fas fa-ticket-alt mr-1"></i> Tickets
                             </NavLink>
                             <div v-if="$page.props.auth.team.name" class="hidden lg:flex lg:items-center lg:ml-6">
