@@ -91,9 +91,12 @@ const maxWidthClass = computed(() => {
                 >
                     <div
                         v-show="show"
-                        :class="[$store.state.isDarkMode ? 'bg-gray-800' : '', maxWidthClass]"
+                        :class="[
+                            $store.state.isDarkMode ? 'bg-gray-800 dark' : '', 
+                            maxWidthClass
+                        ]"
                         :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }"
-                        class="mb-6 rounded-lg my-auto bg-gray-200 text-black overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
+                        class="mb-6 rounded-lg my-auto bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
                     >
                         <slot v-if="show" />
                     </div>
