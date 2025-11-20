@@ -34,6 +34,8 @@ const contentClasses = props.contentClasses.toString();
 const widthClass = computed(() => {
     return {
         48: 'w-48',
+        56: 'w-56',
+        64: 'w-64',
         72: 'w-72',
         96: 'w-96',
     }[props.width.toString()];
@@ -57,10 +59,14 @@ const updateDropdownPosition = () => {
     if (!triggerRef.value) return;
 
     const rect = triggerRef.value.getBoundingClientRect();
+    const width = props.width === '48' ? 192 : (props.width === '56' ? 224 : (props.width === '64' ? 256 : (props.width === '72' ? 288 : 384)));
+    
+    // Utiliser getBoundingClientRect() qui donne la position relative à la viewport
+    // Avec fixed, on n'ajoute pas scrollY/scrollX car fixed est relatif à la viewport
     dropdownPosition.value = {
-        top: rect.bottom + window.scrollY,
-        left: props.align === 'left' ? rect.left : rect.right - (props.width === '48' ? 192 : (props.width === '72' ? 288 : 384)),
-        width: props.width === '48' ? 192 : (props.width === '72' ? 288 : 384)
+        top: rect.bottom + 4, // 4px de marge, position relative à la viewport
+        left: props.align === 'left' ? rect.left : rect.right - width,
+        width: width
     };
 };
 

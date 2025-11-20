@@ -259,7 +259,7 @@ export default {
 }
 
 .add-link-btn {
-    @apply flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-sm transition-all duration-200 font-medium;
+    @apply flex items-center px-4 py-2 bg-indigo-600 dark:bg-indigo-500 hover:bg-indigo-700 dark:hover:bg-indigo-600 text-white rounded-lg shadow-sm transition-all duration-200 font-medium;
 }
 
 .link-button {
