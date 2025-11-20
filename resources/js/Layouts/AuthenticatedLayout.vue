@@ -11,9 +11,9 @@
                         <!-- Left Section: Logo + Navigation Links -->
                         <div class="flex items-center flex-1">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center justify-center mr-10">
-                                <Link :href="route('planning')" class="flex items-center justify-center space-x-2 group">
-                                    <ApplicationLogo class="block w-auto h-8 fill-current text-gray-800 dark:text-gray-200 transition-transform duration-200 group-hover:scale-105"/>
+                            <div class="shrink-0 mr-10">
+                                <Link :href="route('planning')" class="flex items-center justify-center h-16 group">
+                                    <ApplicationLogo />
                                 </Link>
                             </div>
 
