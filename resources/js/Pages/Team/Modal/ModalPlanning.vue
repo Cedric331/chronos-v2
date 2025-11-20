@@ -1,160 +1,331 @@
 <template>
-    <Modal :show="showPlanning" maxWidth="4xl">
+    <Modal :show="showPlanning" maxWidth="5xl" @close="$emit('close')">
         <Loading :show="isLoading"></Loading>
-        <h2 class="flex justify-center my-5 text-xl w-full" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
-            {{ $t('team_rotation.title_planning') }}
-        </h2>
+        
+        <div class="p-6 sm:p-8">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-8 pb-6 border-b border-gray-200 dark:border-gray-700">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                        {{ $t('team_rotation.title_planning') }}
+                    </h2>
+                    <p class="text-sm" :style="{ color: isDarkMode ? '#9ca3af' : '#6b7280' }">
+                        Créez un planning automatique en sélectionnant les dates, le collaborateur et les rotations
+                    </p>
+                </div>
+                <button
+                    @click="$emit('close')"
+                    class="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75"
+                    aria-label="Fermer la modal"
+                >
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
 
-        <!-- component -->
-        <section class="body-font bg-gray-100 text-gray-600">
-            <div class="container flex w-full flex-wrap justify-between rounded-lg bg-white px-2 h-full">
-
-                <div class="w-full md:flex mt-8">
-
-                    <div class="mt-8 max-w-sm md:mt-0 md:ml-10 md:w-1/3">
-                        <div class="relative flex pb-12">
-                            <div class="absolute inset-0 flex h-full w-10 items-center justify-center">
-                                <div class="pointer-events-none h-full w-1 bg-gray-200"></div>
-                            </div>
-                            <div @click="tabs = 1" class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-white cursor-pointer" :class="[dateStart && dateEnd && user ? 'bg-green-600' : 'bg-blue-500']">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z" />
+            <!-- Progress Steps -->
+            <div class="mb-8">
+                <div class="flex items-center justify-between">
+                    <!-- Step 1 -->
+                    <div class="flex items-center flex-1">
+                        <div class="flex flex-col items-center">
+                            <div 
+                                :class="[
+                                    'flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300',
+                                    tabs >= 1 && dateStart && dateEnd && user 
+                                        ? 'bg-green-500 border-green-500 text-white' 
+                                        : tabs >= 1 
+                                            ? 'bg-blue-500 border-blue-500 text-white' 
+                                            : 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
+                                ]"
+                            >
+                                <svg v-if="tabs >= 1 && dateStart && dateEnd && user" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg v-else class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" />
                                 </svg>
                             </div>
-                            <div class="flex-grow pl-4">
-                                <h2 class="title-font mb-1 mt-3 text-sm font-medium tracking-wider text-black">Sélection des dates et du collaborateur</h2>
-                            </div>
+                            <p class="mt-2 text-xs font-medium text-center max-w-[100px]" :style="{ color: tabs >= 1 ? (isDarkMode ? '#ffffff' : '#111827') : (isDarkMode ? '#6b7280' : '#9ca3af') }">
+                                Dates & Collaborateur
+                            </p>
                         </div>
-
-                        <div class="relative flex pb-12">
-                            <div @click="tabs = 2" :class="[rotations.length > 0 ? 'bg-green-600' : 'bg-blue-500']" class="relative z-10 inline-flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-blue-500 text-white cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
-                                </svg>
-                            </div>
-                            <div class="flex-grow pl-4 mt-3">
-                                <h2 class="title-font mb-1 text-sm font-medium tracking-wider text-black">Sélection des rotations</h2>
-                            </div>
-                        </div>
+                        <div 
+                            :class="[
+                                'flex-1 h-0.5 mx-2 transition-all duration-300',
+                                tabs >= 2 ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'
+                            ]"
+                        ></div>
                     </div>
 
-                    <div v-if="tabs === 1" class="mx-auto w-max mb-6">
-                        <div class="mx-auto">
-                            <div class="w-full flex flex-col bg-white rounded-lg">
-                                <h1 class="font-semibold text-center tracking-wide mb-2 text-black">Sélection des dates et du collaborateur</h1>
-                                <div class="flex flex-col justify-between mt-6">
-                                    <label class="text-black" for="start">Semaine de début du planning:</label>
-                                    <input type="week" id="start" name="trip-start" class="w-full"
-                                           v-model="dateStart"
-                                           :min="dateLimitStart" :max="dateEnd">
-                                    <label class="text-black mt-6" for="end">Semaine de fin du planning :</label>
-                                    <input type="week" id="end" name="trip-end"
-                                           v-model="dateEnd"
-                                           :min="dateStart" :max="dateLimitEnd">
-                                </div>
-                                <div class="flex flex-col justify-between">
-                                    <label class="text-black mt-6" for="end">Choisir le conseiller</label>
-                                    <div class="inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:pr-0">
-                                        <div class="w-full">
-                                            <div class="w-auto">
-                                                <select v-model="user" class=" block w-full text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600">
-                                                    <option v-for="user in team.users" :key="user.id" :value="user">
-                                                        {{ user.name }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <div v-if="user && user.hasPlanning" class="mt-4 text-black text-sm">
-                                                <p class="text-red-400">Ce collaborateur dispose déjà d'un planning.</p><p>Souhaitez-vous écraser les jours suivants ? <strong>(Congés Payés, RJF, Maladie, Formation, CP Matin, CP Après-midi, Congés sans solde)</strong></p>
-                                                <Switch v-model="type_fix"></Switch>
-                                            </div>
-                                        </div>
+                    <!-- Step 2 -->
+                    <div class="flex items-center flex-1">
+                        <div class="flex flex-col items-center">
+                            <div 
+                                :class="[
+                                    'flex items-center justify-center w-12 h-12 rounded-full border-2 transition-all duration-300',
+                                    tabs >= 2 && rotations.length > 0
+                                        ? 'bg-green-500 border-green-500 text-white'
+                                        : tabs >= 2
+                                            ? 'bg-blue-500 border-blue-500 text-white'
+                                            : 'bg-gray-200 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400'
+                                ]"
+                            >
+                                <svg v-if="tabs >= 2 && rotations.length > 0" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                                <svg v-else class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" />
+                                </svg>
+                            </div>
+                            <p class="mt-2 text-xs font-medium text-center max-w-[100px]" :style="{ color: tabs >= 2 ? (isDarkMode ? '#ffffff' : '#111827') : (isDarkMode ? '#6b7280' : '#9ca3af') }">
+                                Sélection des rotations
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 1: Dates & Collaborateur -->
+            <div v-if="tabs === 1" class="space-y-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-6" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                        Sélection des dates et du collaborateur
+                    </h3>
+
+                    <div class="space-y-6">
+                        <!-- Date de début -->
+                        <div>
+                            <label for="start" class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                Semaine de début du planning
+                            </label>
+                            <input 
+                                type="week" 
+                                id="start" 
+                                name="trip-start" 
+                                v-model="dateStart"
+                                :min="dateLimitStart" 
+                                :max="dateEnd"
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                            />
+                        </div>
+
+                        <!-- Date de fin -->
+                        <div>
+                            <label for="end" class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                Semaine de fin du planning
+                            </label>
+                            <input 
+                                type="week" 
+                                id="end" 
+                                name="trip-end"
+                                v-model="dateEnd"
+                                :min="dateStart" 
+                                :max="dateLimitEnd"
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                            />
+                        </div>
+
+                        <!-- Sélection du collaborateur -->
+                        <div>
+                            <label for="user" class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                Choisir le conseiller
+                            </label>
+                            <select 
+                                id="user"
+                                v-model="user" 
+                                class="w-full px-4 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors"
+                            >
+                                <option :value="null" disabled>Sélectionnez un collaborateur</option>
+                                <option v-for="userOption in team.users" :key="userOption.id" :value="userOption">
+                                    {{ userOption.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- Avertissement si planning existant -->
+                        <div v-if="user && user.hasPlanning" class="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                            <div class="flex items-start">
+                                <svg class="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-amber-800 dark:text-amber-300 mb-2">
+                                        Ce collaborateur dispose déjà d'un planning
+                                    </p>
+                                    <p class="text-sm text-amber-700 dark:text-amber-400 mb-3">
+                                        Souhaitez-vous écraser les jours suivants ? <strong>(Congés Payés, RJF, Maladie, Formation, CP Matin, CP Après-midi, Congés sans solde)</strong>
+                                    </p>
+                                    <div class="flex items-center">
+                                        <Switch v-model="type_fix" />
+                                        <span class="ml-3 text-sm text-amber-700 dark:text-amber-400">Écraser les jours existants</span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div v-if="tabs === 2" class="mx-auto grid w-full grid-cols-12 gap-4 p-1">
-                        <div class="header col-span-12 mx-auto">
-                            <h1 class="font-semibold text-lg tracking-wide mb-2" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">Choix des rotations</h1>
-                        </div>
-                        <div class="col-span-12 rounded-lg sm:col-span-6 overflow-y-auto h-36 2xl:h-[550px]">
-                            <table class="w-full divide-y divide-gray-200">
-                                <thead class="bg-black">
-                                <tr>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
-                                        Ordre des rotations
-                                    </th>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium text-white uppercase tracking-wider w-10">
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody class="bg-white border">
-                                    <tr v-for="(rotation, index) in rotations">
-                                        <td class="p-4 whitespace-nowrap text-sm font-bold">
-                                            {{ rotation.name }}
-                                        </td>
-                                        <td @click="this.rotations.splice(index, 1)" class="p-4 cursor-pointer bg-black whitespace-nowrap text-sm font-bold" :class="$store.state.isDarkMode ? 'text-white' : 'text-black'">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ecf0f1" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+            <!-- Step 2: Sélection des rotations -->
+            <div v-if="tabs === 2" class="space-y-6">
+                <div class="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+                    <h3 class="text-lg font-semibold mb-6" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                        Choix des rotations
+                    </h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Rotations sélectionnées -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-sm font-semibold" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                    Rotations sélectionnées
+                                </h4>
+                                <Badge v-if="rotations.length > 0" variant="success" size="sm">
+                                    {{ rotations.length }} rotation{{ rotations.length > 1 ? 's' : '' }}
+                                </Badge>
+                            </div>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <div v-if="rotations.length === 0" class="p-8 text-center">
+                                    <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                    </svg>
+                                    <p class="text-sm" :style="{ color: isDarkMode ? '#9ca3af' : '#6b7280' }">
+                                        Aucune rotation sélectionnée
+                                    </p>
+                                </div>
+                                <div v-else class="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
+                                    <div 
+                                        v-for="(rotation, index) in rotations" 
+                                        :key="rotation.id"
+                                        class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between group"
+                                    >
+                                        <div class="flex-1">
+                                            <p class="font-semibold" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                                {{ rotation.name }}
+                                            </p>
+                                            <p class="text-xs mt-1" :style="{ color: isDarkMode ? '#9ca3af' : '#6b7280' }">
+                                                {{ rotation.total_hours }}
+                                            </p>
+                                        </div>
+                                        <button
+                                            @click="rotations.splice(index, 1)"
+                                            class="p-2 rounded-lg text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                            aria-label="Retirer la rotation"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                             </svg>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-span-12 rounded-lg sm:col-span-6 overflow-y-auto h-96 2xl:h-[550px]">
-                            <table class="w-full divide-y divide-gray-200">
-                                <thead class="bg-black">
-                                <tr>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
-                                    </th>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
-                                        Nom de la Rotation
-                                    </th>
-                                    <th scope="col" class="p-4 text-left text-xs font-medium uppercase tracking-wider text-white">
-                                        Nombre d'heures
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody class="bg-white overflow-y-auto">
-                                    <tr v-for="rotation in this.team.rotations">
-                                        <td @click="this.rotations.push(rotation)" class="p-4 cursor-pointer bg-black whitespace-nowrap text-sm font-bold">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ffffff" class="w-6 h-6">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15m0 0l6.75 6.75M4.5 12l6.75-6.75" />
+
+                        <!-- Rotations disponibles -->
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-sm font-semibold" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                    Rotations disponibles
+                                </h4>
+                                <Badge variant="info" size="sm">
+                                    {{ team.rotations.length }} rotation{{ team.rotations.length > 1 ? 's' : '' }}
+                                </Badge>
+                            </div>
+                            <div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+                                <div v-if="team.rotations.length === 0" class="p-8 text-center">
+                                    <svg class="w-12 h-12 mx-auto text-gray-400 dark:text-gray-500 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <p class="text-sm" :style="{ color: isDarkMode ? '#9ca3af' : '#6b7280' }">
+                                        Aucune rotation disponible
+                                    </p>
+                                </div>
+                                <div v-else class="divide-y divide-gray-200 dark:divide-gray-700 max-h-96 overflow-y-auto">
+                                    <div 
+                                        v-for="rotation in team.rotations" 
+                                        :key="rotation.id"
+                                        class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-between group cursor-pointer"
+                                        @click="addRotation(rotation)"
+                                    >
+                                        <div class="flex-1">
+                                            <p class="font-semibold" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                                {{ rotation.name }}
+                                            </p>
+                                            <div class="flex items-center mt-1 space-x-2">
+                                                <Badge 
+                                                    :variant="rotation.total_hours === '35h00' ? 'success' : 'warning'"
+                                                    size="xs"
+                                                >
+                                                    {{ rotation.total_hours }}
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                        <button
+                                            @click.stop="addRotation(rotation)"
+                                            class="p-2 rounded-lg text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            aria-label="Ajouter la rotation"
+                                        >
+                                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                                             </svg>
-                                        </td>
-                                        <td class="p-4 whitespace-nowrap text-sm font-bold">
-                                            {{ rotation.name }}
-                                        </td>
-                                        <td class="p-4 whitespace-nowrap text-sm font-semibold">
-                                            {{ rotation.total_hours }}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-
-                <div class="flex w-full mb-5 mr-5" :class="tabJustify">
-                    <svg @click="this.tabs--" v-if="tabs !== 1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 cursor-pointer">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 9l-3 3m0 0l3 3m-3-3h7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-
-                    <svg @click="this.tabs++" v-if="tabs !== 2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-10 h-10 cursor-pointer">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 15l3-3m0 0l-3-3m3 3h-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-
             </div>
-        </section>
 
-        <div class="flex justify-between m-4">
-            <SecondaryButton @click="this.$emit('close')">Annuler</SecondaryButton>
-            <PrimaryButton @click="generatePlanning()" :disabled="!user || !dateStart || !dateEnd || rotations.length === 0" :class="[!user || !dateStart || !dateEnd || rotations.length === 0 ? 'opacity-50 cursor-not-allowed' : '']" class="text-sm font-medium hover:bg-gray-700 bg-black text-white rounded-lg p-2">Générer le Planning</PrimaryButton>
+            <!-- Navigation & Actions -->
+            <div class="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+                <button
+                    v-if="tabs > 1"
+                    @click="tabs--"
+                    class="inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors"
+                >
+                    <svg class="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Précédent
+                </button>
+                <div v-else></div>
+
+                <div class="flex items-center space-x-3">
+                    <SecondaryButton @click="$emit('close')">
+                        Annuler
+                    </SecondaryButton>
+                    <button
+                        v-if="tabs < 2"
+                        @click="tabs++"
+                        :disabled="tabs === 1 && (!dateStart || !dateEnd || !user)"
+                        :class="[
+                            'inline-flex items-center px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors',
+                            tabs === 1 && (!dateStart || !dateEnd || !user) ? 'opacity-50 cursor-not-allowed' : ''
+                        ]"
+                    >
+                        Suivant
+                        <svg class="w-4 h-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </button>
+                    <PrimaryButton 
+                        v-else
+                        @click="generatePlanning()" 
+                        :disabled="!user || !dateStart || !dateEnd || rotations.length === 0"
+                        :class="[
+                            !user || !dateStart || !dateEnd || rotations.length === 0 ? 'opacity-50 cursor-not-allowed' : ''
+                        ]"
+                    >
+                        <svg class="w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Générer le Planning
+                    </PrimaryButton>
+                </div>
+            </div>
         </div>
     </Modal>
 </template>
@@ -164,27 +335,37 @@ import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Loading from "@/Components/Loading.vue";
-import Checkbox from "@/Components/Checkbox.vue";
 import Switch from "@/Components/Switch.vue";
+import Badge from "@/Components/Badge.vue";
+import { useStore } from 'vuex';
+import { useNotification } from '@/composables/useNotification';
+import { computed } from 'vue';
+import axios from "axios";
 
 export default {
     name: "ModalPlanning",
     components: {
         Switch,
-        Checkbox,
         Loading,
         Modal,
         PrimaryButton,
-        SecondaryButton
+        SecondaryButton,
+        Badge
     },
     props: {
         team: Object,
         showPlanning: Boolean
     },
+    emits: ['close'],
+    setup() {
+        const store = useStore();
+        const isDarkMode = computed(() => store.state.isDarkMode);
+        const { showSuccess, showError } = useNotification();
+        return { isDarkMode, showSuccess, showError };
+    },
     data () {
         return {
             tabs: 1,
-            tabJustify: 'justify-end',
             rotations: [],
             isLoading: false,
             type_fix: false,
@@ -197,7 +378,7 @@ export default {
         dateLimitStart() {
             const now = new Date();
             const day = now.getDay();
-            const diff = now.getDate() - day + (day == 0 ? -6 : 1); // adjust when day is sunday
+            const diff = now.getDate() - day + (day == 0 ? -6 : 1);
             const monday = new Date(now.setDate(diff));
             const weekNumber = this.getWeekNumber(monday);
             return `${monday.getFullYear()}-W${weekNumber.toString().padStart(2, '0')}`;
@@ -210,18 +391,12 @@ export default {
             return `${now.getFullYear()}-W${weekNumber.toString().padStart(2, '0')}`;
         },
     },
-    watch: {
-        tabs() {
-            if (this.tabs === 2) {
-                this.tabJustify = 'justify-between';
-            } else if (this.tabs === 1) {
-                this.tabJustify = 'justify-end';
-            } else if (this.tabs === 3) {
-                this.tabJustify = 'justify-start';
-            }
-        }
-    },
     methods: {
+        addRotation(rotation) {
+            if (!this.rotations.find(r => r.id === rotation.id)) {
+                this.rotations.push(rotation);
+            }
+        },
         generatePlanning () {
             this.isLoading = true
             axios.post('/planning/generate', {
@@ -233,15 +408,12 @@ export default {
               dateEnd: this.dateEnd,
           })
               .then(() => {
-                  this.$notify({
-                      title: "Planning généré",
-                      type: "success",
-                      text: "Planning généré avec succès !",
-                  });
+                  this.showSuccess('Planning généré avec succès !');
                   this.$emit('close')
               })
               .catch(error => {
                   console.log(error)
+                  this.showError('Une erreur est survenue lors de la génération du planning');
               })
               .finally(() => {
                   this.isLoading = false

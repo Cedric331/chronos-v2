@@ -96,7 +96,7 @@ class CalendarService
                 [
                     'plannings' => function ($query) use ($user) {
                         $query->where('team_id', $user->team_id)
-                            ->with('eventPlannings');
+                            ->with(['eventPlannings', 'rotation']);
                     },
                     'plannings.user',
                 ]
@@ -106,7 +106,7 @@ class CalendarService
                 $query->whereHas('calendar', function ($q) use ($startOfWeek, $endOfWeek) {
                     $q->where('date', '>=', $startOfWeek)
                         ->where('date', '<=', $endOfWeek);
-                })->with(['calendar', 'eventPlannings']);
+                })->with(['calendar', 'eventPlannings', 'rotation']);
             }])
                 ->where('team_id', $user->team_id)
                 ->whereHas('plannings.calendar', function ($query) use ($startOfWeek, $endOfWeek) {

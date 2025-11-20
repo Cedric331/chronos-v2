@@ -1,93 +1,177 @@
 <template>
-<Modal :show="show" :closeable="false" :maxWidth="'3xl'">
-    <div>
-        <TabGroup @change="changeTab">
-            <TabList class="flex justify-around bg-gray-600">
-                <Tab :class="[tab === 0 ? 'bg-[#70a1ff] rounded-lg' : '']" class="w-2/4"><h1 class="text-lg text-white font-medium text-center p-4">Création d'un horaire spécifique</h1></Tab>
-                <Tab :class="[tab === 1 ? 'bg-[#70a1ff] rounded-lg' : '']" class="w-2/4"><h1 class="text-lg text-white font-medium text-center p-4">Création d'un horaire depuis une rotation</h1></Tab>
-            </TabList>
-            <TabPanels>
-                <TabPanel>
-                <div class="relative block md:flex w-full h-[560px]">
-                    <div class="w-full md:w-3/5 relative z-1  shadow-lg overflow-hidden">
-                        <h1 :class="[isDarkMode ? 'text-white' : 'text-gray-600']" class="text-lg font-medium text-center border-b border-gray-200 tracking-wide p-4">Création d'un horaire spécifique</h1>
+    <Modal :show="show" :closeable="true" :maxWidth="'4xl'">
+        <div class="p-0">
+            <!-- Header avec onglets -->
+            <TabGroup as="div" @change="changeTab">
+                <TabList class="flex bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">
+                    <Tab 
+                        v-slot="{ selected }"
+                        class="flex-1 focus:outline-none"
+                    >
+                        <div 
+                            class="px-6 py-4 text-center transition-all duration-200 cursor-pointer"
+                            :class="selected 
+                                ? 'bg-white dark:bg-gray-700 text-amber-600 dark:text-amber-400 border-b-2 border-amber-500 font-semibold' 
+                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'"
+                        >
+                            <div class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                <span class="text-base font-medium">Horaire spécifique</span>
+                            </div>
+                        </div>
+                    </Tab>
+                    <Tab 
+                        v-slot="{ selected }"
+                        class="flex-1 focus:outline-none"
+                    >
+                        <div 
+                            class="px-6 py-4 text-center transition-all duration-200 cursor-pointer"
+                            :class="selected 
+                                ? 'bg-white dark:bg-gray-700 text-amber-600 dark:text-amber-400 border-b-2 border-amber-500 font-semibold' 
+                                : 'text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-750'"
+                        >
+                            <div class="flex items-center justify-center space-x-2">
+                                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                </svg>
+                                <span class="text-base font-medium">Depuis une rotation</span>
+                            </div>
+                        </div>
+                    </Tab>
+                </TabList>
 
-                        <section class="container p-6 mx-auto bg-gray-100 h-[499px]">
-                            <div>
-                                <div class="rounded-lg w-auto w-full">
-                                    <div>
-                                        <label class="text-gray-800 font-semibold block my-3 text-md">Type</label>
-                                        <select :disabled="this.rotation !== null" v-model="type_day" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
-                                            <option v-for="params in  this.$page.props.auth.team.params.type_day" :value="params">
-                                                {{params}}
+                <TabPanels>
+                    <!-- Panel 1: Horaire spécifique -->
+                    <TabPanel class="focus:outline-none">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                            <!-- Formulaire principal -->
+                            <div class="lg:col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="text-lg font-semibold mb-4" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                        Configuration de l'horaire
+                                    </h3>
+                                    
+                                    <!-- Type de jour -->
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                            Type de jour
+                                        </label>
+                                        <select 
+                                            :disabled="rotation !== null"
+                                            v-model="type_day" 
+                                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:ring-opacity-75 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                                        >
+                                            <option v-for="params in $page.props.auth.team.params.type_day" :key="params" :value="params">
+                                                {{ params }}
                                             </option>
                                         </select>
                                     </div>
-                                    <div v-if="isTypeDayPlanifieOrFormation">
-                                        <div>
-                                            <label class="text-gray-800 font-semibold block my-3 text-md">Début journée</label>
-                                            <select :disabled="this.rotation !== null" v-model="debut_journee" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
-                                                <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
-                                                    {{ horaire }}
-                                                </option>
-                                            </select>
+
+                                    <!-- Horaires (si Planifié ou Formation) -->
+                                    <div v-if="isTypeDayPlanifieOrFormation" class="space-y-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                                    Début journée
+                                                </label>
+                                                <select 
+                                                    :disabled="rotation !== null"
+                                                    v-model="debut_journee" 
+                                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:ring-opacity-75 transition-all duration-200 disabled:opacity-50"
+                                                >
+                                                    <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
+                                                        {{ horaire }}
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                                    Début pause
+                                                </label>
+                                                <select 
+                                                    :disabled="rotation !== null"
+                                                    v-model="debut_pause" 
+                                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:ring-opacity-75 transition-all duration-200 disabled:opacity-50"
+                                                >
+                                                    <option selected>Pas de pause</option>
+                                                    <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
+                                                        {{ horaire }}
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div v-if="debut_pause !== null && debut_pause !== 'Pas de pause'">
+                                                <label class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                                    Fin pause
+                                                </label>
+                                                <select 
+                                                    :disabled="rotation !== null"
+                                                    v-model="fin_pause" 
+                                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:ring-opacity-75 transition-all duration-200 disabled:opacity-50"
+                                                >
+                                                    <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
+                                                        {{ horaire }}
+                                                    </option>
+                                                </select>
+                                            </div>
+
+                                            <div>
+                                                <label class="block text-sm font-medium mb-2" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                                    Fin journée
+                                                </label>
+                                                <select 
+                                                    :disabled="rotation !== null"
+                                                    v-model="fin_journee" 
+                                                    class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-amber-500 focus:border-amber-500 focus:ring-opacity-75 transition-all duration-200 disabled:opacity-50"
+                                                >
+                                                    <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
+                                                        {{ horaire }}
+                                                    </option>
+                                                </select>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label class="text-gray-800 font-semibold block my-3 text-md">Début pause</label>
-                                            <select :disabled="this.rotation !== null" v-model="debut_pause" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
-                                                <option selected>Pas de pause</option>
-                                                <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
-                                                    {{ horaire }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div v-if="debut_pause !== null && debut_pause !== 'Pas de pause'">
-                                            <label class="text-gray-800 font-semibold block my-3 text-md">Fin pause</label>
-                                            <select :disabled="this.rotation !== null" v-model="fin_pause" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
-                                                <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
-                                                    {{ horaire }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label class="text-gray-800 font-semibold block my-3 text-md">Fin journée</label>
-                                            <select :disabled="this.rotation !== null" v-model="fin_journee" class="block w-full text-sm leading-4 font-medium rounded-md text-gray-500 rounded transition ease-in-out m-0">
-                                                <option v-for="(horaire, index) in horaires" :key="index" :value="horaire">
-                                                    {{ horaire }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div class="flex justify-between">
-                                            <div class="form-check mt-6">
+
+                                        <!-- Options -->
+                                        <div class="flex flex-wrap gap-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+                                            <div class="flex items-center space-x-3">
                                                 <SwitchGroup>
                                                     <div class="flex items-center">
-                                                        <SwitchLabel class="mr-4">Technicien</SwitchLabel>
+                                                        <SwitchLabel class="text-sm font-medium mr-3" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                                            Technicien
+                                                        </SwitchLabel>
                                                         <Switch
                                                             v-model="is_technician"
-                                                            :disabled="this.rotation !== null"
-                                                            :class='is_technician ? "bg-[#70a1ff]" : "bg-gray-400"'
-                                                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                                <span
-                                                    :class='is_technician ? "translate-x-6" : "translate-x-1"'
-                                                    class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
-                                                />
+                                                            :disabled="rotation !== null"
+                                                            :class="is_technician ? 'bg-amber-500' : 'bg-gray-300 dark:bg-gray-600'"
+                                                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75 focus:ring-offset-2 disabled:opacity-50"
+                                                        >
+                                                            <span
+                                                                :class="is_technician ? 'translate-x-6' : 'translate-x-1'"
+                                                                class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                                                            />
                                                         </Switch>
                                                     </div>
                                                 </SwitchGroup>
                                             </div>
-                                            <div class="form-check mt-6 ml-4">
+                                            <div class="flex items-center space-x-3">
                                                 <SwitchGroup>
                                                     <div class="flex items-center">
-                                                        <SwitchLabel class="mr-4">Télétravail</SwitchLabel>
+                                                        <SwitchLabel class="text-sm font-medium mr-3" :style="{ color: isDarkMode ? '#e5e7eb' : '#374151' }">
+                                                            Télétravail
+                                                        </SwitchLabel>
                                                         <Switch
                                                             v-model="telework"
-                                                            :disabled="this.rotation !== null"
-                                                            :class='telework ? "bg-[#70a1ff]" : "bg-gray-400"'
-                                                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
-                                                <span
-                                                    :class='telework ? "translate-x-6" : "translate-x-1"'
-                                                    class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
-                                                />
+                                                            :disabled="rotation !== null"
+                                                            :class="telework ? 'bg-amber-500' : 'bg-gray-300 dark:bg-gray-600'"
+                                                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75 focus:ring-offset-2 disabled:opacity-50"
+                                                        >
+                                                            <span
+                                                                :class="telework ? 'translate-x-6' : 'translate-x-1'"
+                                                                class="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                                                            />
                                                         </Switch>
                                                     </div>
                                                 </SwitchGroup>
@@ -96,65 +180,141 @@
                                     </div>
                                 </div>
                             </div>
-                        </section>
-                    </div>
-                    <div class="w-full md:w-2/5 relative z-1 h-[499px] hidden md:block">
-                        <h1 :class="[isDarkMode ? 'text-white' : 'text-gray-600']" class="text-lg font-medium text-center border-b border-gray-200 tracking-wide p-4">{{ daySelected.length > 1 ? 'Dates Sélectionnées' : 'Date Sélectionnée' }}</h1>
-                        <section class="container p-6 mx-auto h-full bg-gray-100 overflow-hidden overflow-y-auto">
-                            <div v-for="day in daySelected" class="flex justify-around mt-2">
-                                <div class=" rounded-lg p-1 flex text-white bg-gray-600 w-[80%] justify-center">
-                                    <p>{{ day.date }}</p>
-                                </div>
-                                <svg @click="deleteDay(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff6b81" class="w-5 h-5 mt-2 mr-2 cursor-pointer hover:text-red-400">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                </svg>
-                            </div>
-                        </section>
-                    </div>
-                </div>
-            </TabPanel>
-                <TabPanel>
-                    <div class="relative block md:flex w-full h-[560px]">
-                        <div class="w-full md:w-3/5 relative z-1  shadow-lg overflow-hidden">
-                            <h1 :class="[isDarkMode ? 'text-white' : 'text-gray-600']" class="text-lg font-medium text-center border-b border-gray-200 tracking-wide p-4">Création d'un horaire depuis une rotation</h1>
 
-                            <section class="container p-6 mx-auto bg-gray-100 h-[499px]">
-                                <div>
-                                    <div v-for="rotation in this.$page.props.auth.team.rotations" class="flex justify-around mt-2">
-                                        <div @click.prevent="selectRotation(rotation.id)" :id="rotation.name" :class="[selectedRotation === rotation.id ? 'bg-[#1dd1a1]' : '']" class="rounded-lg p-1 flex text-white bg-gray-600 w-[80%] justify-center cursor-pointer">
-                                            <p>{{ rotation.name }}</p>
+                            <!-- Dates sélectionnées -->
+                            <div class="lg:col-span-1">
+                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 h-full">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-sm font-semibold" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                            {{ daySelected.length > 1 ? 'Dates sélectionnées' : 'Date sélectionnée' }}
+                                        </h3>
+                                        <Badge variant="info" size="sm">
+                                            {{ daySelected.length }}
+                                        </Badge>
+                                    </div>
+                                    <div class="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                                        <div 
+                                            v-for="day in daySelected" 
+                                            :key="day.id"
+                                            class="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
+                                        >
+                                            <span class="text-sm font-medium" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                                {{ day.date }}
+                                            </span>
+                                            <button
+                                                @click="deleteDay(day)"
+                                                class="p-1.5 rounded-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
+                                                aria-label="Supprimer cette date"
+                                            >
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                            </section>
+                            </div>
                         </div>
-                        <div class="w-full md:w-2/5 relative z-1 h-[499px] hidden md:block">
-                            <h1 :class="[isDarkMode ? 'text-white' : 'text-gray-600']" class="text-lg font-medium text-center border-b border-gray-200 tracking-wide p-4">{{ daySelected.length > 1 ? 'Dates Sélectionnées' : 'Date Sélectionnée' }}</h1>
-                            <section class="container p-6 mx-auto h-full bg-gray-100 overflow-hidden overflow-y-auto">
-                                <div v-for="day in daySelected" class="flex justify-around mt-2">
-                                    <div class=" rounded-lg p-1 flex text-white bg-gray-600 w-[80%] justify-center">
-                                        <p>{{ day.date }}</p>
+                    </TabPanel>
+
+                    <!-- Panel 2: Rotation -->
+                    <TabPanel class="focus:outline-none">
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6">
+                            <!-- Liste des rotations -->
+                            <div class="lg:col-span-2">
+                                <h3 class="text-lg font-semibold mb-4" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                    Sélectionner une rotation
+                                </h3>
+                                <div class="space-y-3">
+                                    <div 
+                                        v-for="rotation in $page.props.auth.team.rotations" 
+                                        :key="rotation.id"
+                                        @click.prevent="selectRotation(rotation.id)"
+                                        :id="rotation.name"
+                                        class="p-4 rounded-xl border-2 cursor-pointer transition-all duration-200 transform hover:scale-102"
+                                        :class="selectedRotation === rotation.id
+                                            ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/20 shadow-lg'
+                                            : 'border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-md'"
+                                    >
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-3">
+                                                <div class="p-2 bg-amber-100 dark:bg-amber-900/30 rounded-lg">
+                                                    <svg class="w-5 h-5 text-amber-600 dark:text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                                    </svg>
+                                                </div>
+                                                <span class="font-semibold" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                                    {{ rotation.name }}
+                                                </span>
+                                            </div>
+                                            <div v-if="selectedRotation === rotation.id" class="flex items-center justify-center w-6 h-6 bg-amber-500 rounded-full">
+                                                <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7" />
+                                                </svg>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <svg @click="deleteDay(day)" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="#ff6b81" class="w-5 h-5 mt-2 mr-2 cursor-pointer hover:text-red-400">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
-                                    </svg>
                                 </div>
-                            </section>
+                            </div>
+
+                            <!-- Dates sélectionnées -->
+                            <div class="lg:col-span-1">
+                                <div class="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-4 border border-gray-200 dark:border-gray-700 h-full">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-sm font-semibold" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                            {{ daySelected.length > 1 ? 'Dates sélectionnées' : 'Date sélectionnée' }}
+                                        </h3>
+                                        <Badge variant="info" size="sm">
+                                            {{ daySelected.length }}
+                                        </Badge>
+                                    </div>
+                                    <div class="space-y-2 max-h-96 overflow-y-auto custom-scrollbar">
+                                        <div 
+                                            v-for="day in daySelected" 
+                                            :key="day.id"
+                                            class="flex items-center justify-between p-3 bg-white dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 hover:shadow-md transition-all duration-200"
+                                        >
+                                            <span class="text-sm font-medium" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                                                {{ day.date }}
+                                            </span>
+                                            <button
+                                                @click="deleteDay(day)"
+                                                class="p-1.5 rounded-md text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75"
+                                                aria-label="Supprimer cette date"
+                                            >
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </TabPanel>
-            </TabPanels>
-        </TabGroup>
-        <div class="px-4 py-3 sm:px-6 flex justify-between">
-            <SecondaryButton @click="this.$emit('close')" type="button">
-                Annuler
-            </SecondaryButton>
-            <PrimaryButton @click="updatePlannig()" type="button" >
-                Enregistrer
-            </PrimaryButton>
+                    </TabPanel>
+                </TabPanels>
+            </TabGroup>
+
+            <!-- Footer -->
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 flex flex-col sm:flex-row justify-between items-center space-y-3 sm:space-y-0 sm:space-x-4">
+                <p class="text-xs text-center sm:text-left" :style="{ color: isDarkMode ? '#9ca3af' : '#6b7280' }">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Les modifications seront appliquées aux dates sélectionnées
+                </p>
+                <div class="flex space-x-3 w-full sm:w-auto">
+                    <SecondaryButton @click="$emit('close')" class="w-full sm:w-auto">
+                        Annuler
+                    </SecondaryButton>
+                    <PrimaryButton @click="updatePlannig()" class="w-full sm:w-auto">
+                        <svg class="w-4 h-4 mr-2 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Enregistrer
+                    </PrimaryButton>
+                </div>
+            </div>
         </div>
-    </div>
-</Modal>
+    </Modal>
 </template>
 
 <script>
@@ -162,7 +322,11 @@ import Modal from "@/Components/Modal.vue";
 import {Switch, SwitchGroup, SwitchLabel, Tab, TabGroup, TabList, TabPanel, TabPanels} from '@headlessui/vue'
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import Badge from "@/Components/Badge.vue";
+import { useStore } from 'vuex';
+import { useNotification } from '@/composables/useNotification';
 import tippy from "tippy.js";
+import axios from "axios";
 
 export default {
     name: "ModalUpdateDay",
@@ -178,7 +342,8 @@ export default {
         SwitchGroup,
         SwitchLabel,
         Switch,
-        Modal
+        Modal,
+        Badge
     },
     props: {
         show: Boolean,
@@ -186,37 +351,14 @@ export default {
     },
     data () {
         return {
-            isDarkMode: false,
             selectedRotation: null,
             rotation: null,
             horaires: [
-                '08h00',
-                '08h30',
-                '09h00',
-                '09h30',
-                '10h00',
-                '10h30',
-                '11h00',
-                '11h30',
-                '12h00',
-                '12h30',
-                '13h00',
-                '13h30',
-                '14h00',
-                '14h30',
-                '15h00',
-                '15h30',
-                '16h00',
-                '16h30',
-                '17h00',
-                '17h30',
-                '18h00',
-                '18h30',
-                '19h00',
-                '19h30',
-                '20h00',
-                '20h30',
-                '21h00'
+                '08h00', '08h30', '09h00', '09h30', '10h00', '10h30',
+                '11h00', '11h30', '12h00', '12h30', '13h00', '13h30',
+                '14h00', '14h30', '15h00', '15h30', '16h00', '16h30',
+                '17h00', '17h30', '18h00', '18h30', '19h00', '19h30',
+                '20h00', '20h30', '21h00'
             ],
             type_day: '',
             debut_journee: null,
@@ -285,26 +427,35 @@ export default {
                     is_technician: this.is_technician,
                     })
                     .then(response => {
+                        this.showSuccess('Horaire mis à jour avec succès');
                         this.$emit('update', response.data)
+                        setTimeout(() => {
+                            this.$emit('close')
+                        }, 500);
                     })
                     .catch(error => {
                         console.log(error)
-                        this.$notify({
-                            type: 'error',
-                            title: 'Erreur',
-                            text: this.error.response.data.message,
-                        })
+                        this.showError(error.response?.data?.message || 'Une erreur est survenue lors de la mise à jour');
                     })
             } else {
+                if (!this.selectedRotation) {
+                    this.showError('Veuillez sélectionner une rotation');
+                    return;
+                }
                 axios.patch('planning/update/rotation', {
                     days: this.daySelected,
                     rotation_id: this.selectedRotation,
                     })
                     .then(response => {
+                        this.showSuccess('Rotation appliquée avec succès');
                         this.$emit('update', response.data)
+                        setTimeout(() => {
+                            this.$emit('close')
+                        }, 500);
                     })
                     .catch(error => {
                         console.log(error)
+                        this.showError('Une erreur est survenue lors de l\'application de la rotation');
                     })
             }
         }
@@ -328,19 +479,37 @@ export default {
     computed: {
         isTypeDayPlanifieOrFormation() {
             return this.type_day === 'Planifié' || this.type_day === 'Formation' || this.type_day === 'CP Après-midi' || this.type_day === 'CP Matin';
+        },
+        isDarkMode() {
+            return this.$store.state.isDarkMode;
         }
     },
-    beforeMount() {
-        this.isDarkMode = localStorage.getItem('isDarkMode') === 'true';
+    created() {
+        const { showSuccess, showError } = useNotification();
+        this.showSuccess = showSuccess;
+        this.showError = showError;
     }
 }
 </script>
 
 <style scoped>
-body {
-    background: #e2e8f0;
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
 }
-*:hover {
-    transition: all 150ms ease-in;
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-800 rounded-lg;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-600 rounded-lg;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400 dark:bg-gray-500;
+}
+
+.hover\:scale-102:hover {
+    transform: scale(1.02);
 }
 </style>

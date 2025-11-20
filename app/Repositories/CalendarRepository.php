@@ -51,7 +51,7 @@ class CalendarRepository
                 ->where('team_id', $teamId);
         })
             ->with(['plannings' => function ($q) use ($userId) {
-                $q->with('eventPlannings')->where('user_id', $userId);
+                $q->with(['eventPlannings', 'rotation'])->where('user_id', $userId);
             }]);
 
         if ($startDate) {

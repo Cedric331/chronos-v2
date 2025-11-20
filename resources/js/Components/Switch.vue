@@ -1,14 +1,15 @@
 <template>
-    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in" @change="onToggleChange">
+    <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
         <input
+            :id="toggleId"
             v-model="checked"
             type="checkbox"
-            name="toggle"
-            id="toggle"
+            :name="toggleId"
             class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white appearance-none cursor-pointer"
+            @change="onToggleChange"
         />
         <label
-            for="toggle"
+            :for="toggleId"
             class="toggle-label block overflow-hidden h-5 rounded-full bg-gray-300 cursor-pointer"
             @click="checked = !checked">
         </label>
@@ -20,11 +21,16 @@ export default {
     props: {
         modelValue: {
             type: Boolean,
-            default: true
+            default: false
         },
         label: {
             type: String,
             default: ''
+        }
+    },
+    computed: {
+        toggleId() {
+            return `toggle-${this._uid || Math.random().toString(36).substr(2, 9)}`;
         }
     },
     watch: {

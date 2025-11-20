@@ -67,7 +67,7 @@ const maxWidthClass = computed(() => {
     <teleport to="body">
         <transition leave-active-class="duration-200">
 
-            <div v-show="show" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-0 z-50" scroll-region>
+            <div v-show="show" class="fixed inset-0 overflow-y-auto px-4 py-6 sm:px-6 z-50 flex items-center justify-center" scroll-region>
                 <transition
                     enter-active-class="ease-out duration-300"
                     enter-from-class="opacity-0"
@@ -96,7 +96,7 @@ const maxWidthClass = computed(() => {
                             maxWidthClass
                         ]"
                         :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }"
-                        class="mb-6 rounded-lg my-auto bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto"
+                        class="rounded-lg bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white overflow-hidden shadow-xl transform transition-all w-full max-w-full"
                     >
                         <slot v-if="show" />
                     </div>
