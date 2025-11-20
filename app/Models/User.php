@@ -54,6 +54,7 @@ class User extends Authenticatable implements FilamentUser
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'last_invitation' => 'datetime',
     ];
 
     protected $with = ['team'];
@@ -157,7 +158,8 @@ class User extends Authenticatable implements FilamentUser
     {
         if ($this->last_invitation) {
             $date = Carbon::parse($this->last_invitation);
-            return now() > $date->addHours(48) && !$this->isActivated();
+            $dateWithOneHour = $date->copy()->addHours(1);
+            return now() > $dateWithOneHour && !$this->isActivated();
         } else if (!$this->isActivated()) {
             return true;
         } else {

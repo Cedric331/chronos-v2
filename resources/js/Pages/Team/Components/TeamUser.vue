@@ -206,8 +206,13 @@ export default {
             axios.post('/user/invitation', {
                 id: user.id
             })
-            .then(() => {
-                this.users.find((item) => item.id === user.id).CanResendInvitation = false
+            .then((response) => {
+                const updatedUser = response.data;
+                const userIndex = this.users.findIndex((item) => item.id === user.id);
+                if (userIndex !== -1) {
+                    // Mettre à jour l'utilisateur avec les données retournées par le backend
+                    this.users[userIndex] = { ...this.users[userIndex], ...updatedUser };
+                }
                 this.$notify({
                     type: 'success',
                     title: 'Succès',

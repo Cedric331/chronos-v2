@@ -55,7 +55,7 @@ class CalendarController extends Controller
 
         $weeklyHours = [];
         foreach ($calendar as $day) {
-            $day->number_week = Carbon::parse($day->date)->isoFormat('W').Carbon::parse($day->date)->isoFormat('Y');
+            $day->number_week = Carbon::parse($day->date)->isoFormat('W').Carbon::parse($day->date)->isoFormat('GGGG');
             $weekNumber = $day->number_week;
 
             if (isset($day->plannings[0]->hours) && $day->plannings[0]->hours !== null) {
@@ -117,7 +117,7 @@ class CalendarController extends Controller
 
         $weeklyHours = [];
         foreach ($calendar as $day) {
-            $day->number_week = Carbon::parse($day->date)->isoFormat('W').Carbon::parse($day->date)->isoFormat('Y');
+            $day->number_week = Carbon::parse($day->date)->isoFormat('W').Carbon::parse($day->date)->isoFormat('GGGG');
             $weekNumber = $day->number_week;
 
             if (isset($day->plannings[0]->hours) && $day->plannings[0]->hours !== null) {
