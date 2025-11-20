@@ -17,3 +17,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+
+# Fichiers d'analyse et d'amélioration générés
+ANALYSE_ET_AMELIORATIONS.md
+EXEMPLES_AMELIORATIONS.md

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class CalendarPaidLeave extends Pivot
@@ -12,6 +11,6 @@ class CalendarPaidLeave extends Pivot
 
     protected $fillable = [
         'calendar_id',
-        'paid_leave_id'
+        'paid_leave_id',
     ];
 }

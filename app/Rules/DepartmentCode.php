@@ -17,13 +17,11 @@ class DepartmentCode implements ValidationRule
     /**
      * Run the validation rule.
      *
-     * @param  string $attribute
-     * @param  mixed $value
      * @param  Closure(string): \Illuminate\Translation\PotentiallyTranslatedString  $fail
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (!isset($this->departments[$value])) {
+        if (! isset($this->departments[$value])) {
             $fail('Le code du département n\'est pas valide.');
         }
     }

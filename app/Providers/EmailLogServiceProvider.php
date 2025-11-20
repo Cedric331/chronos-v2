@@ -2,11 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Mail\Events\MessageSending;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\ServiceProvider;
 
 class EmailLogServiceProvider extends ServiceProvider
 {
@@ -35,8 +34,8 @@ class EmailLogServiceProvider extends ServiceProvider
             $relevantTrace = [];
 
             foreach ($trace as $call) {
-                if (isset($call['file']) && !str_contains($call['file'], 'vendor/laravel')) {
-                    $relevantTrace[] = $call['file'] . ':' . ($call['line'] ?? '?');
+                if (isset($call['file']) && ! str_contains($call['file'], 'vendor/laravel')) {
+                    $relevantTrace[] = $call['file'].':'.($call['line'] ?? '?');
                 }
             }
 
@@ -50,7 +49,6 @@ class EmailLogServiceProvider extends ServiceProvider
         });
     }
 
-
     public function register()
     {
         // Rien à faire ici, la configuration du canal est dans config/logging.php
@@ -61,7 +59,7 @@ class EmailLogServiceProvider extends ServiceProvider
      */
     private function formatSender($message)
     {
-        if (!method_exists($message, 'getFrom')) {
+        if (! method_exists($message, 'getFrom')) {
             return 'N/A';
         }
 

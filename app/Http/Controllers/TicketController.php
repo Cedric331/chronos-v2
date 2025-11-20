@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\NewTicketNotification;
+use App\Mail\TicketNotification;
 use App\Models\Ticket;
 use App\Models\TicketAttachment;
 use App\Models\TicketCategory;
 use App\Models\TicketComment;
 use App\Models\TicketHistory;
-use App\Mail\NewTicketNotification;
-use App\Mail\TicketNotification;
 use App\Models\TicketPriority;
 use App\Models\TicketStatus;
 use App\Models\TicketTag;
@@ -29,7 +29,6 @@ class TicketController extends Controller
     {
         $user = Auth::user();
         $query = Ticket::with(['creator', 'assignee', 'status', 'category', 'priority', 'team', 'tags']);
-
 
         // Filtres supplémentaires
         if ($request->has('status') && $request->status) {
@@ -72,11 +71,10 @@ class TicketController extends Controller
             $search = $request->search;
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%")
-                  ->orWhereHas('creator', function ($sq) use ($search) {
-                      $sq->where('name', 'like', "%{$search}%");
-                  })
-                  ;
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('creator', function ($sq) use ($search) {
+                        $sq->where('name', 'like', "%{$search}%");
+                    });
             });
         }
 
@@ -154,7 +152,7 @@ class TicketController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'category_id' => 'required|exists:ticket_categories,id',
-            'priority_id' => 'required|exists:ticket_priorities,id'
+            'priority_id' => 'required|exists:ticket_priorities,id',
         ]);
 
         // Définir le statut par défaut (Nouveau)
@@ -183,16 +181,16 @@ class TicketController extends Controller
 
         // S'abonner automatiquement au ticket
         $ticket->subscribers()->attach($user->id);
-        \Log::info('Utilisateur ' . $user->email . ' abonné au ticket #' . $ticket->id);
+        \Log::info('Utilisateur '.$user->email.' abonné au ticket #'.$ticket->id);
 
         // Enregistrer l'activité
         activity($user->team->name)
             ->event('Création')
             ->performedOn($ticket)
-            ->log('Ticket #' . $ticket->id . ' créé : ' . $ticket->title);
+            ->log('Ticket #'.$ticket->id.' créé : '.$ticket->title);
 
         // Envoyer un email à tous les administrateurs
-        $admins = User::whereHas('roles', function($query) {
+        $admins = User::whereHas('roles', function ($query) {
             $query->where('name', 'Administrateur');
         })->get();
 
@@ -200,9 +198,9 @@ class TicketController extends Controller
             foreach ($admins as $admin) {
                 try {
                     Mail::to($admin->email)->send(new NewTicketNotification($ticket, $user));
-                    \Log::info('Email de notification de nouveau ticket envoyé à l\'administrateur ' . $admin->email);
+                    \Log::info('Email de notification de nouveau ticket envoyé à l\'administrateur '.$admin->email);
                 } catch (\Exception $e) {
-                    \Log::error('Erreur lors de l\'envoi de l\'email de notification de nouveau ticket: ' . $e->getMessage());
+                    \Log::error('Erreur lors de l\'envoi de l\'email de notification de nouveau ticket: '.$e->getMessage());
                 }
             }
         } else {
@@ -221,7 +219,7 @@ class TicketController extends Controller
         $user = Auth::user();
 
         // Vérifier si l'utilisateur a accès à ce ticket
-        if (!$user->isAdmin() && $ticket->team_id !== $user->team_id) {
+        if (! $user->isAdmin() && $ticket->team_id !== $user->team_id) {
             abort(403, 'Vous n\'avez pas accès à ce ticket.');
         }
 
@@ -235,7 +233,7 @@ class TicketController extends Controller
             'tags',
             'comments' => function ($query) use ($user) {
                 // Si l'utilisateur n'est pas admin, ne pas montrer les commentaires internes
-                if (!$user->isAdministrateur()) {
+                if (! $user->isAdministrateur()) {
                     $query->where('is_internal', false);
                 }
                 $query->with(['user', 'attachments']);
@@ -282,7 +280,7 @@ class TicketController extends Controller
         $user = Auth::user();
 
         // Vérifier si l'utilisateur a le droit de modifier ce ticket
-        if (!$user->isAdmin() && $ticket->team_id !== $user->team_id) {
+        if (! $user->isAdmin() && $ticket->team_id !== $user->team_id) {
             abort(403, 'Vous n\'avez pas accès à ce ticket.');
         }
 
@@ -298,10 +296,10 @@ class TicketController extends Controller
             ]);
         }
         // Le créateur du ticket peut uniquement le clôturer (le mettre en Résolu ou Fermé)
-        else if ($ticket->created_by === $user->id && $request->has('status_id')) {
+        elseif ($ticket->created_by === $user->id && $request->has('status_id')) {
             // Vérifier que le statut demandé est un statut de clôture (is_closed = true)
             $requestedStatus = TicketStatus::find($request->status_id);
-            if (!$requestedStatus || !$requestedStatus->is_closed) {
+            if (! $requestedStatus || ! $requestedStatus->is_closed) {
                 return redirect()->back()->with('error', 'Vous ne pouvez modifier le statut que pour clôturer le ticket.');
             }
 
@@ -369,7 +367,7 @@ class TicketController extends Controller
 
         // Vérifier si le ticket est fermé
         $newStatus = $ticket->status;
-        if ($newStatus->is_closed && !$ticket->closed_at) {
+        if ($newStatus->is_closed && ! $ticket->closed_at) {
             $ticket->closed_at = now();
             $ticket->save();
 
@@ -379,7 +377,7 @@ class TicketController extends Controller
                 'field_name' => 'closed_at',
                 'new_value' => now()->format('d/m/Y H:i'),
             ]);
-        } elseif (!$newStatus->is_closed && $ticket->closed_at) {
+        } elseif (! $newStatus->is_closed && $ticket->closed_at) {
             $ticket->closed_at = null;
             $ticket->save();
 
@@ -396,13 +394,13 @@ class TicketController extends Controller
         activity($user->team->name)
             ->event('Mise à jour')
             ->performedOn($ticket)
-            ->log('Ticket #' . $ticket->id . ' mis à jour');
+            ->log('Ticket #'.$ticket->id.' mis à jour');
 
         // Déterminer le type d'action pour la notification
         $action = 'update';
         if (isset($validated['status_id']) && $ticket->status->is_closed) {
             $action = 'closed';
-        } elseif (isset($validated['status_id']) && !$ticket->status->is_closed && $ticket->closed_at) {
+        } elseif (isset($validated['status_id']) && ! $ticket->status->is_closed && $ticket->closed_at) {
             $action = 'reopened';
         } elseif (isset($validated['status_id'])) {
             $action = 'status';
@@ -412,17 +410,17 @@ class TicketController extends Controller
         $subscribers = $ticket->subscribers()->where('users.id', '!=', $user->id)->get();
 
         // Log pour débogage
-        \Log::info('Envoi de notifications pour le ticket #' . $ticket->id);
-        \Log::info('Nombre d\'abonnés: ' . $subscribers->count());
+        \Log::info('Envoi de notifications pour le ticket #'.$ticket->id);
+        \Log::info('Nombre d\'abonnés: '.$subscribers->count());
 
         if ($subscribers->count() > 0) {
             foreach ($subscribers as $subscriber) {
-                \Log::info('Envoi de notification à ' . $subscriber->email);
+                \Log::info('Envoi de notification à '.$subscriber->email);
                 try {
                     Mail::to($subscriber->email)->send(new TicketNotification($ticket, $action, $user));
-                    \Log::info('Email envoyé avec succès à ' . $subscriber->email);
+                    \Log::info('Email envoyé avec succès à '.$subscriber->email);
                 } catch (\Exception $e) {
-                    \Log::error('Erreur lors de l\'envoi de l\'email: ' . $e->getMessage());
+                    \Log::error('Erreur lors de l\'envoi de l\'email: '.$e->getMessage());
                 }
             }
         } else {
@@ -441,7 +439,7 @@ class TicketController extends Controller
         $user = Auth::user();
 
         // Vérifier si l'utilisateur a accès à ce ticket
-        if (!$user->isAdmin() && $ticket->team_id !== $user->team_id) {
+        if (! $user->isAdmin() && $ticket->team_id !== $user->team_id) {
             abort(403, 'Vous n\'avez pas accès à ce ticket.');
         }
 
@@ -486,35 +484,35 @@ class TicketController extends Controller
         }
 
         // S'abonner automatiquement au ticket s'il ne l'est pas déjà
-        if (!$ticket->subscribers->contains($user->id)) {
+        if (! $ticket->subscribers->contains($user->id)) {
             $ticket->subscribers()->attach($user->id);
-            \Log::info('Utilisateur ' . $user->email . ' abonné au ticket #' . $ticket->id . ' après commentaire');
+            \Log::info('Utilisateur '.$user->email.' abonné au ticket #'.$ticket->id.' après commentaire');
         } else {
-            \Log::info('Utilisateur ' . $user->email . ' déjà abonné au ticket #' . $ticket->id);
+            \Log::info('Utilisateur '.$user->email.' déjà abonné au ticket #'.$ticket->id);
         }
 
         // Enregistrer l'activité
         activity($user->team->name)
             ->event('Commentaire')
             ->performedOn($ticket)
-            ->log('Commentaire ajouté au ticket #' . $ticket->id);
+            ->log('Commentaire ajouté au ticket #'.$ticket->id);
 
         // Envoyer des notifications aux abonnés (sauf pour les commentaires internes)
-        if (!$isInternal) {
+        if (! $isInternal) {
             $subscribers = $ticket->subscribers()->where('users.id', '!=', $user->id)->get();
 
             // Log pour débogage
-            \Log::info('Envoi de notifications de commentaire pour le ticket #' . $ticket->id);
-            \Log::info('Nombre d\'abonnés: ' . $subscribers->count());
+            \Log::info('Envoi de notifications de commentaire pour le ticket #'.$ticket->id);
+            \Log::info('Nombre d\'abonnés: '.$subscribers->count());
 
             if ($subscribers->count() > 0) {
                 foreach ($subscribers as $subscriber) {
-                    \Log::info('Envoi de notification de commentaire à ' . $subscriber->email);
+                    \Log::info('Envoi de notification de commentaire à '.$subscriber->email);
                     try {
                         Mail::to($subscriber->email)->send(new TicketNotification($ticket, 'comment', $user, $comment));
-                        \Log::info('Email de commentaire envoyé avec succès à ' . $subscriber->email);
+                        \Log::info('Email de commentaire envoyé avec succès à '.$subscriber->email);
                     } catch (\Exception $e) {
-                        \Log::error('Erreur lors de l\'envoi de la notification de commentaire: ' . $e->getMessage());
+                        \Log::error('Erreur lors de l\'envoi de la notification de commentaire: '.$e->getMessage());
                     }
                 }
             } else {
@@ -536,7 +534,7 @@ class TicketController extends Controller
         $user = Auth::user();
 
         // Vérifier si l'utilisateur a accès à ce ticket
-        if (!$user->isAdmin() && $ticket->team_id !== $user->team_id) {
+        if (! $user->isAdmin() && $ticket->team_id !== $user->team_id) {
             abort(403, 'Vous n\'avez pas accès à ce ticket.');
         }
 
@@ -547,16 +545,16 @@ class TicketController extends Controller
 
         // Vérifier si l'utilisateur est déjà abonné
         $isSubscribed = $ticket->subscribers->contains($user->id);
-        \Log::info('Statut d\'abonnement actuel de ' . $user->email . ' au ticket #' . $ticket->id . ': ' . ($isSubscribed ? 'Abonné' : 'Non abonné'));
+        \Log::info('Statut d\'abonnement actuel de '.$user->email.' au ticket #'.$ticket->id.': '.($isSubscribed ? 'Abonné' : 'Non abonné'));
 
         if ($isSubscribed) {
             $ticket->subscribers()->detach($user->id);
             $message = 'Vous vous êtes désabonné du ticket.';
-            \Log::info('Utilisateur ' . $user->email . ' désabonné du ticket #' . $ticket->id);
+            \Log::info('Utilisateur '.$user->email.' désabonné du ticket #'.$ticket->id);
         } else {
             $ticket->subscribers()->attach($user->id);
             $message = 'Vous vous êtes abonné au ticket.';
-            \Log::info('Utilisateur ' . $user->email . ' abonné au ticket #' . $ticket->id . ' via toggleSubscription');
+            \Log::info('Utilisateur '.$user->email.' abonné au ticket #'.$ticket->id.' via toggleSubscription');
         }
 
         return redirect()->route('tickets.show', $ticket->id)
@@ -572,12 +570,12 @@ class TicketController extends Controller
         $ticket = $attachment->ticket;
 
         // Vérifier si l'utilisateur a accès à ce ticket
-        if (!$user->isAdmin() && $ticket->team_id !== $user->team_id) {
+        if (! $user->isAdmin() && $ticket->team_id !== $user->team_id) {
             abort(403, 'Vous n\'avez pas accès à cette pièce jointe.');
         }
 
         // Vérifier si le commentaire est interne et si l'utilisateur n'est pas admin
-        if ($attachment->comment && $attachment->comment->is_internal && !$user->isAdmin()) {
+        if ($attachment->comment && $attachment->comment->is_internal && ! $user->isAdmin()) {
             abort(403, 'Vous n\'avez pas accès à cette pièce jointe.');
         }
 

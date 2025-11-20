@@ -37,7 +37,7 @@ class GeneratePlanning extends Command
                     $zonesString = implode(',', $day['vacance'][1]);
                 }
 
-                $newPlanningEntry = new Calendar();
+                $newPlanningEntry = new Calendar;
                 $newPlanningEntry->date = $day['date'];
                 $newPlanningEntry->is_holiday = $day['jour_ferie'][0];
                 $newPlanningEntry->name_holiday = $day['jour_ferie'][1];

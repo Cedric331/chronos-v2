@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 use SimpleXMLElement;
 
 class NewsController extends Controller
@@ -23,7 +23,7 @@ class NewsController extends Controller
         $maxItems = $request->maxItems ?? 10;
         $cacheKey = "news_{$source}_{$maxItems}";
         $cacheDuration = 60; // minutes (1 heure)
-        $lastRequestKey = "news_last_request_global";
+        $lastRequestKey = 'news_last_request_global';
         $now = now();
 
         // Vérifier si une requête a été faite récemment (moins de 10 minutes)
@@ -55,15 +55,17 @@ class NewsController extends Controller
                 // Parcourir les éléments du flux RSS
                 $count = 0;
                 foreach ($xml->channel->item as $item) {
-                    if ($count >= $maxItems) break;
+                    if ($count >= $maxItems) {
+                        break;
+                    }
 
                     $items[] = [
-                        'id' => md5((string)$item->link),
-                        'title' => (string)$item->title,
-                        'link' => (string)$item->link,
-                        'description' => (string)$item->description,
-                        'pubDate' => (string)$item->pubDate,
-                        'source' => 'universfreebox'
+                        'id' => md5((string) $item->link),
+                        'title' => (string) $item->title,
+                        'link' => (string) $item->link,
+                        'description' => (string) $item->description,
+                        'pubDate' => (string) $item->pubDate,
+                        'source' => 'universfreebox',
                     ];
 
                     $count++;
@@ -72,7 +74,7 @@ class NewsController extends Controller
                 $result = [
                     'items' => $items,
                     'source' => $source,
-                    'timestamp' => now()->toIso8601String()
+                    'timestamp' => now()->toIso8601String(),
                 ];
 
                 // Mettre en cache les résultats
@@ -86,7 +88,7 @@ class NewsController extends Controller
                 return response()->json(['error' => 'Impossible de récupérer le flux RSS'], 500);
             }
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Erreur lors de la récupération des actualités: ' . $e->getMessage()], 500);
+            return response()->json(['error' => 'Erreur lors de la récupération des actualités: '.$e->getMessage()], 500);
         }
     }
 }

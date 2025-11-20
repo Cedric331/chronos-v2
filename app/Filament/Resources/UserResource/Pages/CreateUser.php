@@ -4,7 +4,6 @@ namespace App\Filament\Resources\UserResource\Pages;
 
 use App\Filament\Resources\UserResource;
 use App\Mail\ActivationAccount;
-use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Support\Facades\Mail;
@@ -19,6 +18,7 @@ class CreateUser extends CreateRecord
     {
         $data['password'] = bcrypt(Str::random(30));
         $data['company_id'] = auth()->user()->company_id;
+
         return $data;
     }
 

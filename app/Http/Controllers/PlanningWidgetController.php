@@ -22,7 +22,7 @@ class PlanningWidgetController extends Controller
         $user = Auth::user();
         $preferences = $user->preference;
 
-        if (!$preferences) {
+        if (! $preferences) {
             $preferences = UserPreference::create([
                 'user_id' => $user->id,
                 'planning_widgets' => $request->widgets,
@@ -36,7 +36,7 @@ class PlanningWidgetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Widget preferences updated successfully',
-            'widgets' => $preferences->planning_widgets
+            'widgets' => $preferences->planning_widgets,
         ]);
     }
 
@@ -52,10 +52,10 @@ class PlanningWidgetController extends Controller
         $user = Auth::user();
         $preferences = $user->preference;
 
-        if (!$preferences || !$preferences->planning_widgets) {
+        if (! $preferences || ! $preferences->planning_widgets) {
             return response()->json([
                 'success' => false,
-                'message' => 'Widget not found'
+                'message' => 'Widget not found',
             ], 404);
         }
 
@@ -73,12 +73,12 @@ class PlanningWidgetController extends Controller
         if ($widgetIndex === -1) {
             return response()->json([
                 'success' => false,
-                'message' => 'Widget not found'
+                'message' => 'Widget not found',
             ], 404);
         }
 
         // Update the widget settings
-        if (!isset($widgets[$widgetIndex]['pivot'])) {
+        if (! isset($widgets[$widgetIndex]['pivot'])) {
             $widgets[$widgetIndex]['pivot'] = [];
         }
 
@@ -92,7 +92,7 @@ class PlanningWidgetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Widget settings updated successfully',
-            'widget' => $widgets[$widgetIndex]
+            'widget' => $widgets[$widgetIndex],
         ]);
     }
 
@@ -104,10 +104,10 @@ class PlanningWidgetController extends Controller
         $user = Auth::user();
         $preferences = $user->preference;
 
-        if (!$preferences || !$preferences->planning_widgets) {
+        if (! $preferences || ! $preferences->planning_widgets) {
             return response()->json([
                 'success' => false,
-                'message' => 'Widget not found'
+                'message' => 'Widget not found',
             ], 404);
         }
 
@@ -125,19 +125,19 @@ class PlanningWidgetController extends Controller
         if ($widgetIndex === -1) {
             return response()->json([
                 'success' => false,
-                'message' => 'Widget not found'
+                'message' => 'Widget not found',
             ], 404);
         }
 
         // Toggle the widget visibility
-        if (!isset($widgets[$widgetIndex]['pivot'])) {
+        if (! isset($widgets[$widgetIndex]['pivot'])) {
             $widgets[$widgetIndex]['pivot'] = [];
         }
 
         $isVisible = isset($widgets[$widgetIndex]['pivot']['is_visible']) ?
             $widgets[$widgetIndex]['pivot']['is_visible'] : true;
 
-        $widgets[$widgetIndex]['pivot']['is_visible'] = !$isVisible;
+        $widgets[$widgetIndex]['pivot']['is_visible'] = ! $isVisible;
 
         // Save the updated widgets
         $preferences->update([
@@ -147,7 +147,7 @@ class PlanningWidgetController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Widget visibility toggled successfully',
-            'widget' => $widgets[$widgetIndex]
+            'widget' => $widgets[$widgetIndex],
         ]);
     }
 
@@ -159,10 +159,10 @@ class PlanningWidgetController extends Controller
         $user = Auth::user();
         $preferences = $user->preference;
 
-        if (!$preferences || !$preferences->planning_widgets) {
+        if (! $preferences || ! $preferences->planning_widgets) {
             return response()->json([
                 'success' => false,
-                'message' => 'Widget not found'
+                'message' => 'Widget not found',
             ], 404);
         }
 
@@ -180,7 +180,7 @@ class PlanningWidgetController extends Controller
         if ($widgetIndex === -1) {
             return response()->json([
                 'success' => false,
-                'message' => 'Widget not found'
+                'message' => 'Widget not found',
             ], 404);
         }
 
@@ -194,7 +194,7 @@ class PlanningWidgetController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Widget removed successfully'
+            'message' => 'Widget removed successfully',
         ]);
     }
 }

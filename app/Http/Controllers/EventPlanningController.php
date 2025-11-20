@@ -8,20 +8,18 @@ use Illuminate\Http\Request;
 
 class EventPlanningController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('isCoordinateur');
     }
 
-    public function store (Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'check' => 'nullable|boolean',
         ]);
-
 
         $eventPlanning = collect();
         foreach ($request->days as $day) {
@@ -48,10 +46,11 @@ class EventPlanningController extends Controller
                 $eventPlanning->push($event);
             }
         }
+
         return response()->json($eventPlanning);
     }
 
-    public function delete (Request $request)
+    public function delete(Request $request)
     {
         $collection = collect();
         foreach ($request->days as $day) {

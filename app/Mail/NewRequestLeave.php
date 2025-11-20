@@ -3,7 +3,6 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -45,7 +44,7 @@ class NewRequestLeave extends Mailable
                 'leave_type' => $this->content['leave_type'],
                 'comment' => $this->content['comment'],
                 'dates' => $this->content['dates'],
-                'url' => $this->content['url']
+                'url' => $this->content['url'],
             ],
         );
     }

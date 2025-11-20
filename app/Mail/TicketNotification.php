@@ -16,10 +16,15 @@ class TicketNotification extends Mailable
     use Queueable, SerializesModels;
 
     public $ticket;
+
     public $action;
+
     public $performedBy;
+
     public $comment;
+
     public $subject;
+
     public $introLine;
 
     /**
@@ -80,12 +85,12 @@ class TicketNotification extends Mailable
     protected function getSubject(): string
     {
         return match ($this->action) {
-            'comment' => "Nouveau commentaire sur le ticket",
-            'status' => "Statut du ticket mis à jour",
-            'update' => "Ticket mis à jour",
-            'closed' => "Ticket fermé",
-            'reopened' => "Ticket réouvert",
-            default => "Mise à jour du ticket",
+            'comment' => 'Nouveau commentaire sur le ticket',
+            'status' => 'Statut du ticket mis à jour',
+            'update' => 'Ticket mis à jour',
+            'closed' => 'Ticket fermé',
+            'reopened' => 'Ticket réouvert',
+            default => 'Mise à jour du ticket',
         };
     }
 

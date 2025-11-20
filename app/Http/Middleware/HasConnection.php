@@ -15,9 +15,9 @@ class HasConnection
      */
     public function handle($request, Closure $next)
     {
-        if (!$this->hasInternetConnection()) {
+        if (! $this->hasInternetConnection()) {
             return response()->json([
-                'message' => 'No internet connection'
+                'message' => 'No internet connection',
             ], Response::HTTP_SERVICE_UNAVAILABLE);
         }
 
@@ -27,12 +27,13 @@ class HasConnection
     private function hasInternetConnection()
     {
         // Vous pouvez, par exemple, utiliser un ping ou une autre méthode pour vérifier la connexion
-        $connected = @fsockopen("www.google.com", 80);
-        if ($connected){
+        $connected = @fsockopen('www.google.com', 80);
+        if ($connected) {
             fclose($connected);
+
             return true;
         }
+
         return false;
     }
-
 }

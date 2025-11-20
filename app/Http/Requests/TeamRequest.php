@@ -29,7 +29,7 @@ class TeamRequest extends FormRequest
         }
 
         if ($this->code_departement) {
-            $departments = array_map(function($item) {
+            $departments = array_map(function ($item) {
                 if ($item['num_dep'] == $this->code_departement) {
                     return $item['dep_name'];
                 }
@@ -49,11 +49,12 @@ class TeamRequest extends FormRequest
                 Rule::unique('teams')->ignore($this->team),
             ],
             'logo' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'departement' => ['nullable','string','max:255'],
-            'code_departement' => ['nullable','integer', new DepartmentCode],
+            'departement' => ['nullable', 'string', 'max:255'],
+            'code_departement' => ['nullable', 'integer', new DepartmentCode],
             'user_id' => 'nullable|exists:users,id',
         ];
     }
+
     public function messages()
     {
         return [

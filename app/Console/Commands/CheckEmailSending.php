@@ -31,8 +31,9 @@ class CheckEmailSending extends Command
 
         // Vérifier si le fichier de log existe
         $logPath = storage_path('logs/emails.log');
-        if (!File::exists($logPath)) {
+        if (! File::exists($logPath)) {
             $this->error("Le fichier de log des emails n'existe pas encore. Attendez que des emails soient envoyés.");
+
             return 1;
         }
 
@@ -54,14 +55,14 @@ class CheckEmailSending extends Command
         }
 
         // Analyser les résultats
-        $this->info("Nombre total d'emails envoyés: " . count($emailLogs));
+        $this->info("Nombre total d'emails envoyés: ".count($emailLogs));
 
         // Analyser par heure
         $emailsByHour = [];
         foreach ($emailLogs as $log) {
             if (preg_match($pattern, $log, $matches)) {
                 $hour = substr($matches[1], 11, 2);
-                if (!isset($emailsByHour[$hour])) {
+                if (! isset($emailsByHour[$hour])) {
                     $emailsByHour[$hour] = 0;
                 }
                 $emailsByHour[$hour]++;
@@ -84,7 +85,7 @@ class CheckEmailSending extends Command
             // Extraire les destinataires
             if (preg_match('/"to":"([^"]+)"/', $log, $matches)) {
                 $to = $matches[1];
-                if (!isset($recipients[$to])) {
+                if (! isset($recipients[$to])) {
                     $recipients[$to] = 0;
                 }
                 $recipients[$to]++;
@@ -93,7 +94,7 @@ class CheckEmailSending extends Command
             // Extraire les sujets
             if (preg_match('/"subject":"([^"]+)"/', $log, $matches)) {
                 $subject = $matches[1];
-                if (!isset($subjects[$subject])) {
+                if (! isset($subjects[$subject])) {
                     $subjects[$subject] = 0;
                 }
                 $subjects[$subject]++;
@@ -102,7 +103,7 @@ class CheckEmailSending extends Command
             // Extraire les sources (fichiers)
             if (preg_match('/"trace":\["([^"]+)"/', $log, $matches)) {
                 $source = $matches[1];
-                if (!isset($sources[$source])) {
+                if (! isset($sources[$source])) {
                     $sources[$source] = 0;
                 }
                 $sources[$source]++;
@@ -116,7 +117,9 @@ class CheckEmailSending extends Command
         foreach ($recipients as $recipient => $count) {
             $this->line("  {$recipient}: {$count} emails");
             $i++;
-            if ($i >= 5) break;
+            if ($i >= 5) {
+                break;
+            }
         }
 
         // Afficher les sujets les plus fréquents
@@ -126,7 +129,9 @@ class CheckEmailSending extends Command
         foreach ($subjects as $subject => $count) {
             $this->line("  {$subject}: {$count} emails");
             $i++;
-            if ($i >= 5) break;
+            if ($i >= 5) {
+                break;
+            }
         }
 
         // Afficher les sources les plus fréquentes
@@ -136,7 +141,9 @@ class CheckEmailSending extends Command
         foreach ($sources as $source => $count) {
             $this->line("  {$source}: {$count} emails");
             $i++;
-            if ($i >= 5) break;
+            if ($i >= 5) {
+                break;
+            }
         }
 
         return 0;

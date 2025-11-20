@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -41,7 +40,7 @@ class Team extends Model
         return $this->hasMany(User::class);
     }
 
-    public function coordinateur ()
+    public function coordinateur()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }

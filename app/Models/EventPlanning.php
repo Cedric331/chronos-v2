@@ -12,7 +12,7 @@ class EventPlanning extends Model
     protected $fillable = [
         'planning_id',
         'title',
-        'description'
+        'description',
     ];
 
     public function planning(): \Illuminate\Database\Eloquent\Relations\BelongsTo

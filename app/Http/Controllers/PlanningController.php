@@ -104,7 +104,7 @@ class PlanningController extends Controller
         // Ajouter tous les types uniques pour débogage
         $typesStats = [];
         foreach ($uniqueTypeDays as $type) {
-            $typesStats['type_' . str_replace(' ', '_', strtolower($type)) . '_count'] = $plannings->where('type_day', $type)->count();
+            $typesStats['type_'.str_replace(' ', '_', strtolower($type)).'_count'] = $plannings->where('type_day', $type)->count();
         }
 
         return response()->json(array_merge([
@@ -184,7 +184,7 @@ class PlanningController extends Controller
         // Get the calendar for the specified date
         $calendar = Calendar::whereDate('date', $date)->first();
 
-        if (!$calendar) {
+        if (! $calendar) {
             return response()->json([]);
         }
 
@@ -212,6 +212,7 @@ class PlanningController extends Controller
 
         return response()->json($teamPresence);
     }
+
     protected array $hours = [
         '08h00',
         '08h30',
@@ -256,9 +257,8 @@ class PlanningController extends Controller
             return response()->json('Erreur dans la sélection des dates', 422);
         }
 
-
         $countDayGenerate = 0;
-        while (!$dateStart->eq($dateEnd)) {
+        while (! $dateStart->eq($dateEnd)) {
             foreach ($request->rotations as $rotation) {
                 foreach ($rotation['details'] as $detail) {
                     $this->createPlanning($detail, $rotation, $request->user, $dateStart, $request->type_fix);
@@ -269,7 +269,7 @@ class PlanningController extends Controller
                         activity(Auth::user()->team->name)
                             ->event('Mise à jour')
                             ->performedOn(User::find($request->user))
-                            ->log('Un planning a été généré pour ' . User::find($request->user)->name);
+                            ->log('Un planning a été généré pour '.User::find($request->user)->name);
 
                         return response()->json($countDayGenerate);
                     }
@@ -289,7 +289,7 @@ class PlanningController extends Controller
             $planning = Planning::where('calendar_id', $calendar->id)
                 ->where('user_id', $userId)
                 ->first();
-            if ($planning && !$type_fix && in_array($planning->type_day, config('teams.type_days_fix'))) {
+            if ($planning && ! $type_fix && in_array($planning->type_day, config('teams.type_days_fix'))) {
                 $process = false;
             }
 
@@ -367,7 +367,6 @@ class PlanningController extends Controller
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
             $query->with('eventPlannings')->where('user_id', $planning->user_id);
         }])->find($ids);
-
 
         return response()->json($calendar);
     }
@@ -488,7 +487,7 @@ class PlanningController extends Controller
             ->where('expired_at', '>', now())
             ->first();
 
-        if (!$shareLink) {
+        if (! $shareLink) {
             abort(404, 'Lien de partage non valide ou expiré');
         }
 
@@ -590,7 +589,7 @@ class PlanningController extends Controller
         }
 
         foreach ($weeklyHours as $weekNumber => $decimalHours) {
-            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
+            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)).'h'.sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
         }
 
         return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
@@ -644,6 +643,7 @@ class PlanningController extends Controller
     public function exportPlanning(): \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
     {
         $user = Auth::user();
+
         return (new PlanningsExport)->user($user)->download('planning.xlsx', \Maatwebsite\Excel\Excel::XLSX);
     }
 
@@ -687,8 +687,8 @@ class PlanningController extends Controller
 
         // Récupérer les dates communes aux deux utilisateurs pour les 30 prochains jours
         $dates = Calendar::whereHas('plannings', function ($query) use ($currentUser) {
-                $query->where('user_id', $currentUser->id);
-            })
+            $query->where('user_id', $currentUser->id);
+        })
             ->whereHas('plannings', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })
@@ -724,19 +724,19 @@ class PlanningController extends Controller
             foreach ($date->plannings as $planning) {
                 if ($planning->user_id === $currentUser->id) {
                     $yourPlanning = $planning;
-                } else if ($planning->user_id === $user->id) {
+                } elseif ($planning->user_id === $user->id) {
                     $colleaguePlanning = $planning;
                 }
             }
 
             // Vérifier que les deux plannings existent et ne sont pas déjà dans une demande d'échange
             if ($yourPlanning && $colleaguePlanning &&
-                !in_array($yourPlanning->id, $existingPlanningIds) &&
-                !in_array($colleaguePlanning->id, $existingPlanningIds)) {
+                ! in_array($yourPlanning->id, $existingPlanningIds) &&
+                ! in_array($colleaguePlanning->id, $existingPlanningIds)) {
                 $availableDates[] = [
                     'calendar' => $date,
                     'yourPlanning' => $yourPlanning,
-                    'colleaguePlanning' => $colleaguePlanning
+                    'colleaguePlanning' => $colleaguePlanning,
                 ];
             }
         }

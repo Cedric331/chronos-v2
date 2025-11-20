@@ -15,6 +15,7 @@ class NewTicketNotification extends Mailable
     use Queueable, SerializesModels;
 
     public $ticket;
+
     public $creator;
 
     /**

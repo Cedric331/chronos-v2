@@ -46,7 +46,7 @@ class GoogleController extends Controller
 
     public function createGoogleCalendarEvent($accessToken)
     {
-        $client = new \Google_Client();
+        $client = new \Google_Client;
         $client->setApplicationName('Chronos');
         $client->setScopes([
             'https://www.googleapis.com/auth/calendar',
@@ -74,7 +74,7 @@ class GoogleController extends Controller
             $service->calendars->delete($calendarId);
         }
 
-        $newCalendar = new Google_Service_Calendar_Calendar();
+        $newCalendar = new Google_Service_Calendar_Calendar;
         $newCalendar->setSummary($calendarName);
 
         $createdCalendar = $service->calendars->insert($newCalendar);

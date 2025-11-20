@@ -5,7 +5,6 @@ namespace App\Notifications;
 use App\Models\Ticket;
 use App\Models\TicketComment;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -14,8 +13,11 @@ class TicketUpdated extends Notification
     use Queueable;
 
     protected $ticket;
+
     protected $comment;
+
     protected $action;
+
     protected $performedBy;
 
     /**
@@ -29,11 +31,11 @@ class TicketUpdated extends Notification
         $this->comment = $comment;
 
         // Log pour débogage
-        \Log::info('Notification TicketUpdated créée pour le ticket #' . $ticket->id);
-        \Log::info('Action: ' . $action);
-        \Log::info('Effectuée par: ' . $performedBy->name . ' (' . $performedBy->email . ')');
+        \Log::info('Notification TicketUpdated créée pour le ticket #'.$ticket->id);
+        \Log::info('Action: '.$action);
+        \Log::info('Effectuée par: '.$performedBy->name.' ('.$performedBy->email.')');
         if ($comment) {
-            \Log::info('Commentaire ID: ' . $comment->id);
+            \Log::info('Commentaire ID: '.$comment->id);
         }
     }
 
@@ -44,7 +46,8 @@ class TicketUpdated extends Notification
      */
     public function via(object $notifiable): array
     {
-        \Log::info('Notification TicketUpdated via() appelée pour ' . $notifiable->email);
+        \Log::info('Notification TicketUpdated via() appelée pour '.$notifiable->email);
+
         return ['mail'];
     }
 
@@ -53,7 +56,7 @@ class TicketUpdated extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        \Log::info('Notification TicketUpdated toMail() appelée pour ' . $notifiable->email);
+        \Log::info('Notification TicketUpdated toMail() appelée pour '.$notifiable->email);
 
         // Utiliser un template Markdown personnalisé pour éviter les problèmes de syntaxe
         return (new MailMessage)
@@ -89,12 +92,12 @@ class TicketUpdated extends Notification
     protected function getSubject(): string
     {
         return match ($this->action) {
-            'comment' => "Nouveau commentaire sur le ticket",
-            'status' => "Statut du ticket mis à jour",
-            'update' => "Ticket mis à jour",
-            'closed' => "Ticket fermé",
-            'reopened' => "Ticket réouvert",
-            default => "Mise à jour du ticket",
+            'comment' => 'Nouveau commentaire sur le ticket',
+            'status' => 'Statut du ticket mis à jour',
+            'update' => 'Ticket mis à jour',
+            'closed' => 'Ticket fermé',
+            'reopened' => 'Ticket réouvert',
+            default => 'Mise à jour du ticket',
         };
     }
 

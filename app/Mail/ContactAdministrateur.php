@@ -3,12 +3,10 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Auth;
 
 class ContactAdministrateur extends Mailable
 {
@@ -41,7 +39,7 @@ class ContactAdministrateur extends Mailable
         return new Content(
             markdown: 'emails.contact',
             with: [
-                'content' => $this->content
+                'content' => $this->content,
             ],
         );
     }

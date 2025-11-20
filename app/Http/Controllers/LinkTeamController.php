@@ -9,8 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class LinkTeamController extends Controller
 {
-
-    public function store (Request $request)
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'lien' => 'required|url|string|max:255',
@@ -32,7 +31,7 @@ class LinkTeamController extends Controller
             ]);
         } else {
             return response()->json([
-                'message' => 'Vous n\'avez pas les droits pour ajouter un lien'
+                'message' => 'Vous n\'avez pas les droits pour ajouter un lien',
             ], 403);
         }
 
@@ -45,7 +44,7 @@ class LinkTeamController extends Controller
         return response()->json($links, 200);
     }
 
-    public function update (Request $request, LinkTeam $link)
+    public function update(Request $request, LinkTeam $link)
     {
         $validator = Validator::make($request->all(), [
             'lien' => 'required|url|string|max:255',
@@ -62,11 +61,11 @@ class LinkTeamController extends Controller
             $link->update([
                 'link' => $request->lien,
                 'description' => $request->description,
-                'updated_by' => Auth::user()->id
+                'updated_by' => Auth::user()->id,
             ]);
         } else {
             return response()->json([
-                'message' => 'Vous n\'avez pas les droits pour ajouter un lien'
+                'message' => 'Vous n\'avez pas les droits pour ajouter un lien',
             ], 403);
         }
 
@@ -85,12 +84,12 @@ class LinkTeamController extends Controller
             $link->delete();
         } else {
             return response()->json([
-                'message' => 'Vous n\'avez pas les droits pour supprimer ce lien'
+                'message' => 'Vous n\'avez pas les droits pour supprimer ce lien',
             ], 403);
         }
 
         return response()->json([
-            'message' => 'Le lien a bien été supprimé'
+            'message' => 'Le lien a bien été supprimé',
         ], 200);
     }
 }

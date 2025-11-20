@@ -26,7 +26,7 @@ class PaidLeaveController extends Controller
 
         $paidleaves = PaidLeave::with(['calendars', 'user'])
             ->where('team_id', $user->team_id)
-            ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")
+            ->orderByRaw("FIELD(status, '".PaidLeave::STATUS_PENDING."') DESC")
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -39,13 +39,14 @@ class PaidLeaveController extends Controller
             if ($date->month < 6) {
                 $date->subYear();
             }
+
             return Carbon::parse($date)->year;
         })->unique()->values();
 
         $yearRanges = $uniqueYears->map(function ($year) {
             return [
-                'value' => $year . ' - ' . ($year + 1),
-                'option' => 'Juin ' . $year . ' - Mai ' . ($year + 1)
+                'value' => $year.' - '.($year + 1),
+                'option' => 'Juin '.$year.' - Mai '.($year + 1),
             ];
         });
 
@@ -54,11 +55,12 @@ class PaidLeaveController extends Controller
             $date->subYear();
         }
         $dateYear = Carbon::parse($date)->year;
+
         return Inertia::render('PaidLeave/PaidLeave', [
             'leavesProps' => $paidleaves,
             'yearsProps' => $yearRanges,
             'usersProps' => $users,
-            'yearsRange' => 'Juin ' . $dateYear . ' - Mai ' . $dateYear + 1,
+            'yearsRange' => 'Juin '.$dateYear.' - Mai '.$dateYear + 1,
         ]);
     }
 
@@ -73,9 +75,9 @@ class PaidLeaveController extends Controller
             'type.required' => 'Vous devez sélectionner un type de congés',
         ]);
 
-        if (!in_array($request->type, config('teams.type_days_off'))) {
+        if (! in_array($request->type, config('teams.type_days_off'))) {
             return response()->json([
-                'message' => 'Vous ne pouvez pas poser ce type de congés'
+                'message' => 'Vous ne pouvez pas poser ce type de congés',
             ], 403);
         }
 
@@ -98,7 +100,7 @@ class PaidLeaveController extends Controller
 
         if ($paidLeave) {
             return response()->json([
-                'message' => 'Vous avez déjà une demande pour des jours sur cette période.'
+                'message' => 'Vous avez déjà une demande pour des jours sur cette période.',
             ], 403);
         }
 
@@ -107,7 +109,7 @@ class PaidLeaveController extends Controller
             'comment' => $request->comment,
             'user_id' => $user->id,
             'team_id' => $team->id,
-            'status' => PaidLeave::STATUS_PENDING
+            'status' => PaidLeave::STATUS_PENDING,
         ]);
 
         $paidLeave->calendars()->attach($calendars);
@@ -121,7 +123,7 @@ class PaidLeaveController extends Controller
                 'leave_type' => $paidLeave->type,
                 'comment' => $paidLeave->comment,
                 'dates' => $paidLeave->calendars->pluck('date_fr')->toArray(),
-                'url' => route('paidleave.index')
+                'url' => route('paidleave.index'),
             ];
             Mail::to($userCoordinateur->email)->queue(new NewRequestLeave($content));
         }
@@ -137,14 +139,14 @@ class PaidLeaveController extends Controller
 
         $paidLeave = PaidLeave::find($request->id);
 
-        if (!$paidLeave) {
+        if (! $paidLeave) {
             return response()->json([
-                'message' => 'La demande n\'existe pas'
+                'message' => 'La demande n\'existe pas',
             ], 404);
         }
 
         $paidLeave->update([
-            'status' => PaidLeave::STATUS_ACCEPTED
+            'status' => PaidLeave::STATUS_ACCEPTED,
         ]);
 
         // TODO: Send mail to user
@@ -154,9 +156,9 @@ class PaidLeaveController extends Controller
 
     public function refused(Request $request)
     {
-        if (!Auth::user()->isCoordinateur()) {
+        if (! Auth::user()->isCoordinateur()) {
             return response()->json([
-                'message' => 'Vous n\'avez pas les droits pour refuser une demande'
+                'message' => 'Vous n\'avez pas les droits pour refuser une demande',
             ], 403);
         }
 
@@ -166,14 +168,14 @@ class PaidLeaveController extends Controller
 
         $paidLeave = PaidLeave::find($request->id);
 
-        if (!$paidLeave) {
+        if (! $paidLeave) {
             return response()->json([
-                'message' => 'La demande n\'existe pas'
+                'message' => 'La demande n\'existe pas',
             ], 404);
         }
 
         $paidLeave->update([
-            'status' => PaidLeave::STATUS_REFUSED
+            'status' => PaidLeave::STATUS_REFUSED,
         ]);
 
         // TODO: Send mail to user
@@ -189,9 +191,9 @@ class PaidLeaveController extends Controller
 
         $paidLeave = PaidLeave::find($request->id);
 
-        if (!$paidLeave) {
+        if (! $paidLeave) {
             return response()->json([
-                'message' => 'La demande n\'existe pas'
+                'message' => 'La demande n\'existe pas',
             ], 404);
         }
 
@@ -201,7 +203,7 @@ class PaidLeaveController extends Controller
         return response()->json($paidLeave);
     }
 
-    public function search (Request $request)
+    public function search(Request $request)
     {
         $years = explode('-', $request->year);
 
@@ -224,7 +226,7 @@ class PaidLeaveController extends Controller
                 }
             })
             ->where('team_id', $user->team_id)
-            ->orderByRaw("FIELD(status, '" . PaidLeave::STATUS_PENDING . "') DESC")
+            ->orderByRaw("FIELD(status, '".PaidLeave::STATUS_PENDING."') DESC")
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

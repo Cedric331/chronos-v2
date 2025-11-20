@@ -15,7 +15,7 @@ class ContactController extends Controller
     {
         $request->validate([
             'subject' => 'required|string',
-            'text' => 'required|string'
+            'text' => 'required|string',
         ]);
 
         $data = [
@@ -24,8 +24,8 @@ class ContactController extends Controller
             'author' => [
                 'identifiant' => Auth::id(),
                 'name' => Auth::user()->name,
-                'email' => Auth::user()->email
-            ]
+                'email' => Auth::user()->email,
+            ],
         ];
 
         $admin = User::role('Administrateur')->first();
@@ -33,12 +33,11 @@ class ContactController extends Controller
         try {
             Mail::to($admin->email)->queue(new ContactAdministrateur($data));
         } catch (\Exception $e) {
-            Log::error('Erreur lors de l\'envoi du mail: ' . $e->getMessage());
+            Log::error('Erreur lors de l\'envoi du mail: '.$e->getMessage());
 
             return response()->json(['error' => 'Erreur lors de l\'envoi du mail.'], 404);
         }
 
         return response()->json(true);
     }
-
 }

@@ -25,7 +25,7 @@ return [
         'Congés Payés',
         'CP Matin',
         'CP Après-midi',
-        'Congés sans solde'
+        'Congés sans solde',
     ],
 
     // Détermine les types de jours à ne pas modifier

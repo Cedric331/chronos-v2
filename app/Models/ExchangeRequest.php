@@ -15,8 +15,11 @@ class ExchangeRequest extends Model
      * Les statuts possibles pour une demande d'échange
      */
     const STATUS_PENDING = 'pending';
+
     const STATUS_ACCEPTED = 'accepted';
+
     const STATUS_REJECTED = 'rejected';
+
     const STATUS_CANCELLED = 'cancelled';
 
     /**

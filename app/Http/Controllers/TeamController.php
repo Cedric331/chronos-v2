@@ -63,7 +63,7 @@ class TeamController extends Controller
         if ($team->params->send_coordinateur) {
             $roleNames[] = 'Coordinateur';
         }
-        $teamWithUsers = $team->load(['users' => function ($query) use ($roleNames, $team) {
+        $teamWithUsers = $team->load(['users' => function ($query) use ($roleNames) {
             $query->whereHas('roles', function ($roleQuery) use ($roleNames) {
                 $roleQuery->whereIn('name', $roleNames);
             });
@@ -74,7 +74,6 @@ class TeamController extends Controller
         });
 
         $teamWithUsers->setRelation('users', $filteredUsers);
-
 
         $coordinateursProps = User::whereHas('roles', function ($query) {
             $query->where('name', 'Coordinateur');
@@ -90,7 +89,7 @@ class TeamController extends Controller
     public function paginateActivities(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         $page = $request->input('page', 1);
-        if (!$request->team_id && Auth::user()->isAdmin()) {
+        if (! $request->team_id && Auth::user()->isAdmin()) {
             $activities = Activity::with(['subject', 'causer'])
                 ->whereHas('causer', function ($q) {
                     $q->where('company_id', Auth::user()->company_id);
@@ -118,18 +117,18 @@ class TeamController extends Controller
         $itemsPerPage = 10;
         $currentItems = $activities->slice(($currentPage - 1) * $itemsPerPage, $itemsPerPage)->values();
         $activities = new LengthAwarePaginator($currentItems, $activities->count(), $itemsPerPage, $currentPage, [
-            'path' => LengthAwarePaginator::resolveCurrentPath()
+            'path' => LengthAwarePaginator::resolveCurrentPath(),
         ]);
 
         $activities->getCollection()->transform(function ($activity) {
             $activity->subject_type = class_basename($activity->subject_type) === 'User' ? 'Utilisateur' : class_basename($activity->subject_type);
             $activity->formatted_date = $activity->created_at->format('d/m/Y H:i');
+
             return $activity;
         });
 
         return response()->json($activities);
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -192,9 +191,9 @@ class TeamController extends Controller
 
     }
 
-    private function getColor ($colors, $team)
+    private function getColor($colors, $team)
     {
-        usort($colors, function($a, $b) {
+        usort($colors, function ($a, $b) {
             return array_sum($b) - array_sum($a);
         });
 
@@ -221,7 +220,7 @@ class TeamController extends Controller
 
     public function deleteLogo(Request $request, Team $team)
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
         // Supprimer le fichier du système de fichiers
@@ -261,8 +260,8 @@ class TeamController extends Controller
 
         $roleNames = ['Conseiller', 'Coordinateur'];
         $users = User::whereHas('roles', function ($roleQuery) use ($roleNames) {
-                $roleQuery->whereIn('name', $roleNames);
-            })
+            $roleQuery->whereIn('name', $roleNames);
+        })
             ->where('team_id', $team->id)
             ->get();
         $users = $users->reject(function ($item) use ($team) {

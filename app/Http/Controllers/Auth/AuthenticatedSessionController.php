@@ -46,7 +46,7 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if (!Auth::user()) {
+        if (! Auth::user()) {
             return response()->json(['message' => 'Erreur lors de l\'authentification'], 401);
         }
 
@@ -66,5 +66,4 @@ class AuthenticatedSessionController extends Controller
 
         return redirect('/');
     }
-
 }

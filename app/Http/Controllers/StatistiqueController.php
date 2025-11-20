@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Planning;
 use App\Models\Calendar;
+use App\Models\Planning;
 use Illuminate\Http\Request;
 
 class StatistiqueController extends Controller
@@ -19,8 +19,8 @@ class StatistiqueController extends Controller
         $calendarIds = $calendars->pluck('id')->toArray();
 
         $plannings = Planning::where('user_id', $userId)
-        ->whereIn('calendar_id', $calendarIds)
-        ->get();
+            ->whereIn('calendar_id', $calendarIds)
+            ->get();
 
         $types = config('teams.type_days_default');
 

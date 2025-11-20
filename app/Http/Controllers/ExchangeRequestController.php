@@ -107,8 +107,8 @@ class ExchangeRequestController extends Controller
                 $query->where('requester_planning_id', $exchange['requester_planning_id'])
                     ->orWhere('requested_planning_id', $exchange['requested_planning_id']);
             })
-            ->where('status', ExchangeRequest::STATUS_PENDING)
-            ->first();
+                ->where('status', ExchangeRequest::STATUS_PENDING)
+                ->first();
 
             if ($existingRequest) {
                 return back()->withErrors(['general' => 'Il existe déjà une demande d\'échange en cours pour l\'un des plannings sélectionnés.']);
@@ -137,7 +137,7 @@ class ExchangeRequestController extends Controller
             // Journaliser l'action
             activity($team->name)
                 ->event('Demande d\'\u00e9change multiple')
-                ->log('Une demande d\'\u00e9change pour ' . count($exchanges) . ' jour(s) a été créée');
+                ->log('Une demande d\'\u00e9change pour '.count($exchanges).' jour(s) a été créée');
 
             // Envoyer une notification par email au coordinateur de l'équipe
             $coordinateur = $team->coordinateur;
@@ -156,17 +156,18 @@ class ExchangeRequestController extends Controller
                     // Envoi du mail à l'utilisateur demandé
                     Mail::to(User::find($requestedId)->email)->send(new ExchangeRequestCreated($exchangeRequests, $url));
                 } catch (\Exception $e) {
-                    \Log::error('Erreur lors de l\'envoi de l\'email de notification de demande d\'échange: ' . $e->getMessage());
+                    \Log::error('Erreur lors de l\'envoi de l\'email de notification de demande d\'échange: '.$e->getMessage());
                 }
             }
 
             DB::commit();
 
             return redirect()->route('exchanges.index')
-                ->with('success', 'Votre demande d\'\u00e9change pour ' . count($exchanges) . ' jour(s) a été envoyée avec succès.');
+                ->with('success', 'Votre demande d\'\u00e9change pour '.count($exchanges).' jour(s) a été envoyée avec succès.');
         } catch (\Exception $e) {
             DB::rollback();
-            return back()->withErrors(['general' => 'Une erreur est survenue lors de la création de la demande d\'\u00e9change: ' . $e->getMessage()]);
+
+            return back()->withErrors(['general' => 'Une erreur est survenue lors de la création de la demande d\'\u00e9change: '.$e->getMessage()]);
         }
     }
 
@@ -178,7 +179,7 @@ class ExchangeRequestController extends Controller
         $user = Auth::user();
 
         // Vérifier que l'utilisateur a le droit de voir cette demande
-        if ($user->id !== $exchange->requester_id && $user->id !== $exchange->requested_id && !$user->isCoordinateur()) {
+        if ($user->id !== $exchange->requester_id && $user->id !== $exchange->requested_id && ! $user->isCoordinateur()) {
             abort(403, 'Vous n\'avez pas le droit de voir cette demande d\'\u00e9change.');
         }
 
@@ -241,7 +242,7 @@ class ExchangeRequestController extends Controller
                     // Envoi du mail à l'utilisateur à l'origine de la demande
                     Mail::to(User::find($exchange->requester_id)->email)->send(new ExchangeRequestAccepted($exchange));
                 } catch (\Exception $e) {
-                    \Log::error('Erreur lors de l\'envoi de l\'email de notification d\'acceptation d\'échange: ' . $e->getMessage());
+                    \Log::error('Erreur lors de l\'envoi de l\'email de notification d\'acceptation d\'échange: '.$e->getMessage());
                 }
             }
 
@@ -251,6 +252,7 @@ class ExchangeRequestController extends Controller
                 ->with('success', 'Vous avez accepté la demande d\'\u00e9change avec succès et les plannings ont été échangés.');
         } catch (\Exception $e) {
             DB::rollback();
+
             return back()->withErrors(['general' => 'Une erreur est survenue lors de l\'acceptation de la demande d\'\u00e9change.']);
         }
     }
@@ -297,6 +299,7 @@ class ExchangeRequestController extends Controller
                 ->with('success', 'Vous avez rejeté la demande d\'\u00e9change.');
         } catch (\Exception $e) {
             DB::rollback();
+
             return back()->withErrors(['general' => 'Une erreur est survenue lors du rejet de la demande d\'\u00e9change.']);
         }
     }
@@ -338,11 +341,10 @@ class ExchangeRequestController extends Controller
                 ->with('success', 'Vous avez annulé la demande d\'\u00e9change.');
         } catch (\Exception $e) {
             DB::rollback();
+
             return back()->withErrors(['general' => 'Une erreur est survenue lors de l\'annulation de la demande d\'\u00e9change.']);
         }
     }
-
-
 
     /**
      * Effectue l'échange des plannings
@@ -391,7 +393,7 @@ class ExchangeRequestController extends Controller
         // Journaliser l'action
         activity(Auth::user()->team->name)
             ->event('Échange de planning')
-            ->log('Un échange de planning a été effectué entre ' . User::find($requesterId)->name . ' et ' . User::find($requestedId)->name);
+            ->log('Un échange de planning a été effectué entre '.User::find($requesterId)->name.' et '.User::find($requestedId)->name);
 
         return true;
     }

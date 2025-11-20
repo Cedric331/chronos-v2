@@ -151,17 +151,17 @@ class TicketSystemSeeder extends Seeder
         }
 
         // Création des tags par défaut
-//        $tags = [
-//            ['name' => 'Interface', 'color' => '#3498db'],
-//            ['name' => 'Performance', 'color' => '#f39c12'],
-//            ['name' => 'Sécurité', 'color' => '#e74c3c'],
-//            ['name' => 'Documentation', 'color' => '#2ecc71'],
-//            ['name' => 'Mobile', 'color' => '#9b59b6'],
-//            ['name' => 'API', 'color' => '#34495e'],
-//        ];
-//
-//        foreach ($tags as $tag) {
-//            TicketTag::create($tag);
-//        }
+        //        $tags = [
+        //            ['name' => 'Interface', 'color' => '#3498db'],
+        //            ['name' => 'Performance', 'color' => '#f39c12'],
+        //            ['name' => 'Sécurité', 'color' => '#e74c3c'],
+        //            ['name' => 'Documentation', 'color' => '#2ecc71'],
+        //            ['name' => 'Mobile', 'color' => '#9b59b6'],
+        //            ['name' => 'API', 'color' => '#34495e'],
+        //        ];
+        //
+        //        foreach ($tags as $tag) {
+        //            TicketTag::create($tag);
+        //        }
     }
 }

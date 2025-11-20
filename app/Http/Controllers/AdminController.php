@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TeamRequest;
 use App\Models\Team;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -49,7 +48,7 @@ class AdminController extends Controller
         return response()->json($teams, 201);
     }
 
-    public function refreshTypeDays ()
+    public function refreshTypeDays()
     {
         $teams = Team::all();
 

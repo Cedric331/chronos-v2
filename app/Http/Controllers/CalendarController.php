@@ -30,14 +30,14 @@ class CalendarController extends Controller
                 $roleQuery->whereIn('name', $roleNames);
             });
         })
-        ->where('team_id', $team->id)
-        ->get();
+            ->where('team_id', $team->id)
+            ->get();
 
         $users = $users->reject(function ($item) use ($team) {
             return $item->isCoordinateur() && $team->user_id !== $item->id;
         });
 
-        if (count($users) > 0 && !$users->contains('id', $user->id)) {
+        if (count($users) > 0 && ! $users->contains('id', $user->id)) {
             $user = $users->first();
         }
 
@@ -71,12 +71,12 @@ class CalendarController extends Controller
         }
 
         foreach ($weeklyHours as $weekNumber => $decimalHours) {
-            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
+            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)).'h'.sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
         }
 
-       // if ($request->header('User-Agent') === 'chronos-mobile') {
-       //     return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
-       // }
+        // if ($request->header('User-Agent') === 'chronos-mobile') {
+        //     return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
+        // }
 
         // Get user's planning widget preferences
         $planningWidgetsPrefs = [];
@@ -109,7 +109,7 @@ class CalendarController extends Controller
                 $query->with('eventPlannings')->where('user_id', $user->id);
             }])
             ->where(function ($query) use ($monday, $getAllPlanning) {
-                if (!$getAllPlanning) {
+                if (! $getAllPlanning) {
                     $query->where('date', '>=', $monday);
                 }
             })
@@ -133,12 +133,11 @@ class CalendarController extends Controller
         }
 
         foreach ($weeklyHours as $weekNumber => $decimalHours) {
-            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
+            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)).'h'.sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
         }
 
         return response()->json(['calendar' => $calendar, 'weeklyHours' => $weeklyHours]);
     }
-
 
     public static function generateDaysWithHolidays($dateDebut = null, $dateFin = null): array
     {
@@ -212,7 +211,8 @@ class CalendarController extends Controller
         return [! empty($zonesInHolidays), $zonesInHolidays];
     }
 
-    private static function getSchoolHolidays() {
+    private static function getSchoolHolidays()
+    {
         $url = 'https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
 
         // Utilisez la nouvelle fonction pour récupérer le contenu
@@ -263,7 +263,8 @@ class CalendarController extends Controller
         return $holidaysByZone;
     }
 
-    private static function fetchUrlContent($url) {
+    private static function fetchUrlContent($url)
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -271,10 +272,10 @@ class CalendarController extends Controller
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         $data = curl_exec($ch);
         if (curl_errno($ch)) {
-            throw new \Exception('Erreur cURL : ' . curl_error($ch));
+            throw new \Exception('Erreur cURL : '.curl_error($ch));
         }
         curl_close($ch);
+
         return $data;
     }
-
 }

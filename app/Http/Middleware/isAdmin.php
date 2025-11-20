@@ -5,7 +5,6 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Symfony\Component\HttpFoundation\Response;
 
 class isAdmin
 {
@@ -18,7 +17,7 @@ class isAdmin
     {
         $user = Auth::user();
 
-        if (!$user->isAdmin()) {
+        if (! $user->isAdmin()) {
             return redirect()->route('error');
         }
 

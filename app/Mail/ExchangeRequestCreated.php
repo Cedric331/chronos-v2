@@ -2,10 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\ExchangeRequest;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -16,9 +13,13 @@ class ExchangeRequestCreated extends Mailable
     use Queueable, SerializesModels;
 
     public $exchangeRequests;
+
     public $requester;
+
     public $requested;
+
     public $comment;
+
     public $url;
 
     /**

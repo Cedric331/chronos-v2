@@ -17,7 +17,7 @@ class TeamParamsController extends Controller
         // Log les données reçues
         \Log::info('TeamParamsController::update - Request data', [
             'team_params_id' => $teamParams->id,
-            'request_data' => $request->all()
+            'request_data' => $request->all(),
         ]);
 
         // Valider les données reçues
@@ -34,9 +34,8 @@ class TeamParamsController extends Controller
         // Log les données validées
         \Log::info('TeamParamsController::update - Validated data', [
             'team_params_id' => $teamParams->id,
-            'validated_data' => $validated
+            'validated_data' => $validated,
         ]);
-
 
         try {
             // Mettre à jour les paramètres
@@ -46,7 +45,7 @@ class TeamParamsController extends Controller
             // Log les paramètres après la mise à jour
             \Log::info('TeamParamsController::update - After update', [
                 'team_params_id' => $teamParams->id,
-                'updated_data' => $teamParams->toArray()
+                'updated_data' => $teamParams->toArray(),
             ]);
 
             // Enregistrer l'activité
@@ -64,7 +63,7 @@ class TeamParamsController extends Controller
             \Log::error('Error updating team params', [
                 'team_params_id' => $teamParams->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json(['message' => 'Une erreur est survenue lors de la mise à jour des paramètres.'], 500);

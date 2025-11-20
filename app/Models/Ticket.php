@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Ticket extends Model
 {
@@ -101,7 +101,7 @@ class Ticket extends Model
 
     public function isOverdue()
     {
-        return $this->due_date && $this->due_date->isPast() && !$this->isClosed();
+        return $this->due_date && $this->due_date->isPast() && ! $this->isClosed();
     }
 
     public function scopeOpen($query)

@@ -68,13 +68,13 @@ class BirthdayController extends Controller
                     }
 
                     $birthdays[] = [
-                        'id' => 'birthday_' . $member->id,
+                        'id' => 'birthday_'.$member->id,
                         'name' => $member->name,
                         'date' => $birthDateThisYear->toDateString(),
                         'age' => $age,
                         'team_id' => $member->team_id,
                         'team_name' => $member->team ? $member->team->name : 'Sans HUB',
-                        'is_team_member' => $member->team_id == $user->team_id
+                        'is_team_member' => $member->team_id == $user->team_id,
                     ];
                 }
             }
@@ -89,7 +89,7 @@ class BirthdayController extends Controller
 
         // Ajouter une information indiquant si l'utilisateur est dans la même équipe
         foreach ($birthdays as &$birthday) {
-            if (!isset($birthday['is_team_member'])) {
+            if (! isset($birthday['is_team_member'])) {
                 // Vérifier si team_id existe avant de l'utiliser
                 if (isset($birthday['team_id'])) {
                     $birthday['is_team_member'] = $birthday['team_id'] == $user->team_id;

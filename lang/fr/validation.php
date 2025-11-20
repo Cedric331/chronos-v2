@@ -194,5 +194,5 @@ return [
         'city' => 'ville',
         'country' => 'pays',
         'website' => 'site web',
-    ]
+    ],
 ];

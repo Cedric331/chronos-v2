@@ -5,16 +5,15 @@ namespace App\Exports;
 use App\Models\Calendar;
 use App\Models\User;
 use Carbon\Carbon;
-use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\Exportable;
+use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
-use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithCharts;
-use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadings;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\WithStyles;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Chart\Chart;
 use PhpOffice\PhpSpreadsheet\Chart\DataSeries;
@@ -22,14 +21,16 @@ use PhpOffice\PhpSpreadsheet\Chart\DataSeriesValues;
 use PhpOffice\PhpSpreadsheet\Chart\Legend;
 use PhpOffice\PhpSpreadsheet\Chart\PlotArea;
 use PhpOffice\PhpSpreadsheet\Chart\Title;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-
-class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings, ShouldAutoSize, WithEvents, WithCharts
+class PlanningsExport implements FromQuery, ShouldAutoSize, WithCharts, WithEvents, WithHeadings, WithMapping, WithStyles
 {
     use Exportable, RegistersEventListeners;
 
     protected User $user;
+
     protected array $rowTypes = [];
+
     protected array $chart = [];
 
     protected array $dayTypeCounts = [
@@ -54,6 +55,7 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
     public function query()
     {
         $user = $this->user;
+
         return Calendar::query()
             ->whereHas('plannings', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
@@ -64,10 +66,6 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
             ->where('date', '>=', Carbon::now()->startOfWeek());
     }
 
-    /**
-     * @param $calendar
-     * @return array
-     */
     public function map($calendar): array
     {
         $rows = [];
@@ -87,9 +85,6 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
         return $rows;
     }
 
-    /**
-     * @return array
-     */
     public function headings(): array
     {
         return [
@@ -108,7 +103,7 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
         $numberOfColumns = count($this->headings());
 
         foreach ($this->rowTypes as $index => $typeDay) {
-            if (!isset($this->dayTypeCounts[$typeDay])) {
+            if (! isset($this->dayTypeCounts[$typeDay])) {
                 $this->dayTypeCounts[$typeDay] = 0;
             }
             $this->dayTypeCounts[$typeDay]++;
@@ -117,7 +112,7 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
             $color = $this->getColorForTypeDay($typeDay);
 
             for ($col = 'A'; $col <= \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($numberOfColumns); $col++) {
-                $styles[$col . $rowNumber] = [
+                $styles[$col.$rowNumber] = [
                     'fill' => [
                         'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
                         'color' => ['argb' => $color],
@@ -148,15 +143,15 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
     public function generateChart($sheet, $dataRowCount)
     {
         $dataSeriesLabels = [
-            new DataSeriesValues('String', $sheet->getTitle() . '!$J$1', null, 1),
+            new DataSeriesValues('String', $sheet->getTitle().'!$J$1', null, 1),
         ];
 
         $xAxisTickValues = [
-            new DataSeriesValues('String', $sheet->getTitle() . '!$I$2:$I$' . ($dataRowCount - 1), null, $dataRowCount - 2),
+            new DataSeriesValues('String', $sheet->getTitle().'!$I$2:$I$'.($dataRowCount - 1), null, $dataRowCount - 2),
         ];
 
         $dataSeriesValues = [
-            new DataSeriesValues('Number', $sheet->getTitle() . '!$J$2:$J$' . ($dataRowCount - 1), null, $dataRowCount - 2),
+            new DataSeriesValues('Number', $sheet->getTitle().'!$J$2:$J$'.($dataRowCount - 1), null, $dataRowCount - 2),
         ];
 
         $series = new DataSeries(
@@ -170,7 +165,7 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
 
         $plotArea = new PlotArea(null, [$series]);
         $title = new Title('Graphique par Type de Journée');
-        $legend = new Legend();
+        $legend = new Legend;
 
         $chart = new Chart(
             'Graphique par Type de Journée',
@@ -188,13 +183,13 @@ class PlanningsExport implements FromQuery,WithStyles, WithMapping, WithHeadings
     public function afterSheet(AfterSheet $event)
     {
         $row = 1;
-        $event->sheet->setCellValue('I' . $row, 'Type de Journée');
-        $event->sheet->setCellValue('J' . $row, 'Nombre de Jours');
+        $event->sheet->setCellValue('I'.$row, 'Type de Journée');
+        $event->sheet->setCellValue('J'.$row, 'Nombre de Jours');
         $row++;
 
         foreach ($this->dayTypeCounts as $type => $count) {
-            $event->sheet->setCellValue('I' . $row, $type);
-            $event->sheet->setCellValue('J' . $row, $count);
+            $event->sheet->setCellValue('I'.$row, $type);
+            $event->sheet->setCellValue('J'.$row, $count);
             $row++;
         }
         $chart = $this->generateChart($event->sheet, $row);

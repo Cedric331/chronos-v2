@@ -11,11 +11,10 @@ class IsAdminOrHasPermission
     {
         $user = Auth::user();
 
-        if (!$user->isAdmin() && !$user->hasPermissionTo('access-admin')) {
+        if (! $user->isAdmin() && ! $user->hasPermissionTo('access-admin')) {
             return redirect()->route('planning');
         }
 
         return $next($request);
     }
 }
-

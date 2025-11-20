@@ -14,16 +14,18 @@ class PaidLeave extends Model
         'type',
         'comment',
         'user_id',
-        'team_id'
+        'team_id',
     ];
 
     protected $appends = [
         'dates',
-        'number_days'
+        'number_days',
     ];
 
     const STATUS_REFUSED = 'Refusé';
+
     const STATUS_ACCEPTED = 'Accepté';
+
     const STATUS_PENDING = 'En attente';
 
     public function calendars()
@@ -41,8 +43,9 @@ class PaidLeave extends Model
         $collection = collect();
         $calendars = $this->calendars()->get();
         foreach ($calendars as $calendar) {
-            $collection->push($calendar->date_fr . ' ' .  date('Y', strtotime($calendar->date)));
+            $collection->push($calendar->date_fr.' '.date('Y', strtotime($calendar->date)));
         }
+
         return $collection;
     }
 

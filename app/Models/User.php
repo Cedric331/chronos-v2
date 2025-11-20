@@ -9,14 +9,12 @@ use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Collection;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Database\Eloquent\Model;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -120,7 +118,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasRole(['Administrateur']);
     }
 
-    public function getHasAccessAdminAttribute (): bool
+    public function getHasAccessAdminAttribute(): bool
     {
         return $this->hasPermissionTo('access-admin');
     }
@@ -140,7 +138,7 @@ class User extends Authenticatable implements FilamentUser
         return $this->plannings()->count() > 0;
     }
 
-    public function getRoleAttribute ()
+    public function getRoleAttribute()
     {
         return $this->getRoleNames()->first();
     }
@@ -159,8 +157,9 @@ class User extends Authenticatable implements FilamentUser
         if ($this->last_invitation) {
             $date = Carbon::parse($this->last_invitation);
             $dateWithOneHour = $date->copy()->addHours(1);
-            return now() > $dateWithOneHour && !$this->isActivated();
-        } else if (!$this->isActivated()) {
+
+            return now() > $dateWithOneHour && ! $this->isActivated();
+        } elseif (! $this->isActivated()) {
             return true;
         } else {
             return false;
@@ -185,12 +184,12 @@ class User extends Authenticatable implements FilamentUser
         return $this->paidleaves()->where('status', PaidLeave::STATUS_ACCEPTED)
             ->whereHas('calendars', function ($query) {
 
-            $currentYear = date('Y');
-            $currentMonth = date('m');
-            $yearOfStartDate = $currentMonth >= 6 ? $currentYear : $currentYear - 1;
+                $currentYear = date('Y');
+                $currentMonth = date('m');
+                $yearOfStartDate = $currentMonth >= 6 ? $currentYear : $currentYear - 1;
 
-            $startDate = Carbon::createFromDate($yearOfStartDate, 6, 1);
-            $endDate = (clone $startDate)->addYear()->subDay();
+                $startDate = Carbon::createFromDate($yearOfStartDate, 6, 1);
+                $endDate = (clone $startDate)->addYear()->subDay();
                 $query->where(function ($subQuery) use ($startDate, $endDate) {
                     $subQuery->where('date', '>=', $startDate)
                         ->where('date', '<=', $endDate);

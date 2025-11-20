@@ -16,6 +16,7 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     protected static string $title = 'Utilisateurs';
+
     protected static ?string $label = 'Collaborateurs';
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -57,6 +58,7 @@ class UserResource extends Resource
                                 if (Auth::user()->isAdmin()) {
                                     $baseOptions['Administateur'] = 'Administateur';
                                 }
+
                                 return $baseOptions;
                             }),
                     ]),
@@ -90,7 +92,6 @@ class UserResource extends Resource
                     ]),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {

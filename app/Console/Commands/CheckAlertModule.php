@@ -10,7 +10,6 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CheckAlertModule extends Command
@@ -61,6 +60,7 @@ class CheckAlertModule extends Command
                         $requiredSchedule = $requiredSchedules->where('day', $day)
                             ->filter(function ($schedule) use ($timeSlot1, $timeSlot2) {
                                 $scheduleTime = $schedule['time'];
+
                                 return Str::contains($scheduleTime, $timeSlot1) || Str::contains($scheduleTime, $timeSlot2);
                             })
                             ->first();
@@ -84,8 +84,8 @@ class CheckAlertModule extends Command
                                     ->count();
 
                                 if ($realCount < $requiredSchedule->value) {
-                                        $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
-                                        $message = "Le créneau $requiredSchedule->time du ".$date->isoFormat('dddd D MMMM YYYY')." n'est pas couvert, alors que $required.\n";
+                                    $required = $requiredSchedule->value > 1 ? "{$requiredSchedule->value} sont nécessaires" : "{$requiredSchedule->value} est nécessaire";
+                                    $message = "Le créneau $requiredSchedule->time du ".$date->isoFormat('dddd D MMMM YYYY')." n'est pas couvert, alors que $required.\n";
 
                                     AlertSchedule::firstOrCreate([
                                         'team_id' => $team->id,

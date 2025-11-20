@@ -84,13 +84,13 @@ class UserController extends Controller
                 ->event('Enregistrement')
                 ->performedOn($user)
                 ->withProperties($user->getOriginal())
-                ->log('L\'utilisateur ' . $user->name . ' a été créé');
+                ->log('L\'utilisateur '.$user->name.' a été créé');
 
             return response()->json($user);
         } catch (Exception $e) {
             $user->delete();
 
-            return response()->json(['message' => 'L\'inscription a échoué, impossible d\'envoyer l\'email d\'invitation. Erreur: ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'L\'inscription a échoué, impossible d\'envoyer l\'email d\'invitation. Erreur: '.$e->getMessage()], 500);
         }
     }
 
@@ -122,9 +122,9 @@ class UserController extends Controller
 
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $user->id,
+            'email' => 'required|email|unique:users,email,'.$user->id,
             'birthday' => 'nullable|date',
-            'phone' => 'nullable|string|max:255'
+            'phone' => 'nullable|string|max:255',
         ]);
 
         $update = $user->update([
@@ -150,7 +150,7 @@ class UserController extends Controller
                 ->event('Mise à jour')
                 ->performedOn($user)
                 ->withProperties($user->getOriginal())
-                ->log('L\'utilisateur ' . $user->name . ' a été modifié');
+                ->log('L\'utilisateur '.$user->name.' a été modifié');
         }
 
         if (Auth::user()->isAdmin() && $request->role) {
@@ -182,17 +182,13 @@ class UserController extends Controller
             ->event('Suppression')
             ->performedOn($user)
             ->withProperties($user->getOriginal())
-            ->log('L\'utilisateur ' . $user->name . ' a été supprimé');
+            ->log('L\'utilisateur '.$user->name.' a été supprimé');
 
         $user->delete();
 
         return response()->json(['message' => 'Utilisateur supprimé'], 200);
     }
 
-    /**
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse|\Inertia\Response
-     */
     public function sendInvitation(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
         if (! Gate::check('has-role-coordinateur')) {
@@ -217,11 +213,11 @@ class UserController extends Controller
                 ->event('Relance de l\'invitation')
                 ->performedOn($user)
                 ->withProperties($user->getOriginal())
-                ->log('L\'utilisateur ' . $user->name . ' a reçu une relance d\'invitation');
+                ->log('L\'utilisateur '.$user->name.' a reçu une relance d\'invitation');
 
             return response()->json($user);
         } catch (Exception $e) {
-            return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email : ' . $e->getMessage()], 500);
+            return response()->json(['message' => 'Erreur lors de l\'envoi de l\'email : '.$e->getMessage()], 500);
         }
     }
 }

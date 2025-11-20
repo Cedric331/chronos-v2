@@ -19,7 +19,7 @@ class HandleInertiaRequests extends Middleware
     /**
      * Determine the current asset version.
      */
-    public function version(Request $request): string|null
+    public function version(Request $request): ?string
     {
         return parent::version($request);
     }
@@ -45,15 +45,6 @@ class HandleInertiaRequests extends Middleware
                 if ($team && $team->params) {
                     $team->params->refresh();
                 }
-
-                // Log pour débogage
-                \Log::info('HandleInertiaRequests::share - Team params', [
-                    'user_id' => $user->id,
-                    'team_id' => $team->id,
-                    'team_params' => $team->params ? $team->params->toArray() : null,
-                    'exchange_module' => $team->params ? $team->params->exchange_module : null,
-                    'exchange_module_type' => $team->params ? gettype($team->params->exchange_module) : null
-                ]);
 
                 if ($user->isCoordinateur()) {
                     $alerts = $team->alerts;
@@ -89,7 +80,7 @@ class HandleInertiaRequests extends Middleware
         ]);
     }
 
-    private function getMaxSizeFile(): string|null
+    private function getMaxSizeFile(): ?string
     {
         // Get upload_max_filesize from php.ini
         $maxUploadSize = ini_get('upload_max_filesize');
@@ -108,6 +99,7 @@ class HandleInertiaRequests extends Middleware
         if ($maxUploadSize < 12) {
             return 'Taille max du fichier : '.$maxUploadSize.' MB';
         }
+
         return null;
     }
 }
