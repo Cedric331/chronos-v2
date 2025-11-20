@@ -348,7 +348,6 @@
 ### Phase 3 - Amélioration (3-4 mois)
 11. ✅ Refactoriser le code avec des Enums et Value Objects
 12. ✅ Améliorer l'UX/UI
-13. ✅ Compléter les traductions
 14. ✅ Optimiser les assets
 
 ### Phase 4 - Évolution (4-6 mois)

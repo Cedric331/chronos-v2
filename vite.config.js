@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import laravel from 'laravel-vite-plugin';
 import vue from '@vitejs/plugin-vue';
 
-
 export default defineConfig({
     plugins: [
         laravel({
@@ -17,6 +16,21 @@ export default defineConfig({
                 },
             },
         }),
-
     ],
+    build: {
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    'vendor': ['vue', '@inertiajs/vue3'],
+                    'ui': ['@headlessui/vue', 'flowbite-vue'],
+                    'charts': ['chart.js', 'vue-chart-3'],
+                    'utils': ['lodash', 'axios'],
+                },
+            },
+        },
+        chunkSizeWarningLimit: 1000,
+    },
+    optimizeDeps: {
+        include: ['vue', '@inertiajs/vue3', 'axios'],
+    },
 });

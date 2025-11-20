@@ -29,8 +29,6 @@ class Ticket extends Model
         'closed_at' => 'datetime',
     ];
 
-    protected $with = ['status', 'category', 'priority'];
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

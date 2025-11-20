@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ExchangeRequestStatus;
+use App\Exceptions\ExchangeException;
 use App\Mail\ExchangeRequestAccepted;
 use App\Mail\ExchangeRequestCreated;
 use App\Models\ExchangeRequest;
 use App\Models\Planning;
-use App\Models\User;
+use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,6 +18,9 @@ use Inertia\Inertia;
 
 class ExchangeRequestController extends Controller
 {
+    public function __construct(
+        private UserRepository $userRepository
+    ) {}
     /**
      * Affiche la liste des demandes d'échange pour l'utilisateur connecté
      */
@@ -95,11 +100,11 @@ class ExchangeRequestController extends Controller
             $requestedPlanning = Planning::findOrFail($exchange['requested_planning_id']);
 
             if ($requesterPlanning->user_id !== $user->id) {
-                return back()->withErrors(['general' => 'Un des plannings sélectionnés ne vous appartient pas.']);
+                throw ExchangeException::planningNotOwned();
             }
 
             if ($requestedPlanning->user_id !== $requestedId) {
-                return back()->withErrors(['general' => 'Un des plannings sélectionnés n\'appartient pas à l\'utilisateur sélectionné.']);
+                throw ExchangeException::planningNotOwnedByUser($requestedId);
             }
 
             // Vérifier qu'il n'y a pas déjà une demande en cours pour ces plannings
@@ -107,11 +112,11 @@ class ExchangeRequestController extends Controller
                 $query->where('requester_planning_id', $exchange['requester_planning_id'])
                     ->orWhere('requested_planning_id', $exchange['requested_planning_id']);
             })
-                ->where('status', ExchangeRequest::STATUS_PENDING)
+                ->where('status', ExchangeRequestStatus::PENDING->value)
                 ->first();
 
             if ($existingRequest) {
-                return back()->withErrors(['general' => 'Il existe déjà une demande d\'échange en cours pour l\'un des plannings sélectionnés.']);
+                throw ExchangeException::exchangeRequestAlreadyExists();
             }
         }
 
@@ -128,7 +133,7 @@ class ExchangeRequestController extends Controller
                     'requested_planning_id' => $exchange['requested_planning_id'],
                     'team_id' => $team->id,
                     'requester_comment' => $request->requester_comment,
-                    'status' => ExchangeRequest::STATUS_PENDING,
+                    'status' => ExchangeRequestStatus::PENDING->value,
                 ]);
 
                 $exchangeRequests[] = $exchangeRequest;
@@ -154,7 +159,10 @@ class ExchangeRequestController extends Controller
                     // Envoyer un seul email avec tous les échanges
                     Mail::to($coordinateur->email)->send(new ExchangeRequestCreated($exchangeRequests, $url));
                     // Envoi du mail à l'utilisateur demandé
-                    Mail::to(User::find($requestedId)->email)->send(new ExchangeRequestCreated($exchangeRequests, $url));
+                    $requestedUser = $this->userRepository->find($requestedId);
+                    if ($requestedUser) {
+                        Mail::to($requestedUser->email)->send(new ExchangeRequestCreated($exchangeRequests, $url));
+                    }
                 } catch (\Exception $e) {
                     \Log::error('Erreur lors de l\'envoi de l\'email de notification de demande d\'échange: '.$e->getMessage());
                 }
@@ -208,7 +216,7 @@ class ExchangeRequestController extends Controller
         }
 
         // Vérifier que la demande est en attente
-        if ($exchange->status !== ExchangeRequest::STATUS_PENDING) {
+        if ($exchange->status !== ExchangeRequestStatus::PENDING->value) {
             return back()->withErrors(['general' => 'Cette demande d\'\u00e9change ne peut plus être acceptée.']);
         }
 
@@ -216,7 +224,7 @@ class ExchangeRequestController extends Controller
         try {
             // Mettre à jour la demande
             $exchange->update([
-                'status' => ExchangeRequest::STATUS_ACCEPTED,
+                'status' => ExchangeRequestStatus::ACCEPTED->value,
                 'requested_comment' => $request->requested_comment,
                 'responded_at' => now(),
             ]);
@@ -274,7 +282,7 @@ class ExchangeRequestController extends Controller
         }
 
         // Vérifier que la demande est en attente
-        if ($exchange->status !== ExchangeRequest::STATUS_PENDING) {
+        if ($exchange->status !== ExchangeRequestStatus::PENDING->value) {
             return back()->withErrors(['general' => 'Cette demande d\'\u00e9change ne peut plus être rejetée.']);
         }
 
@@ -282,7 +290,7 @@ class ExchangeRequestController extends Controller
         try {
             // Mettre à jour la demande
             $exchange->update([
-                'status' => ExchangeRequest::STATUS_REJECTED,
+                'status' => ExchangeRequestStatus::REJECTED->value,
                 'requested_comment' => $request->requested_comment,
                 'responded_at' => now(),
             ]);
@@ -317,7 +325,7 @@ class ExchangeRequestController extends Controller
         }
 
         // Vérifier que la demande est en attente
-        if ($exchange->status !== ExchangeRequest::STATUS_PENDING) {
+        if ($exchange->status !== ExchangeRequestStatus::PENDING->value) {
             return back()->withErrors(['general' => 'Cette demande d\'\u00e9change ne peut plus être annulée.']);
         }
 
@@ -325,7 +333,7 @@ class ExchangeRequestController extends Controller
         try {
             // Mettre à jour la demande
             $exchange->update([
-                'status' => ExchangeRequest::STATUS_CANCELLED,
+                'status' => ExchangeRequestStatus::CANCELLED->value,
                 'responded_at' => now(),
             ]);
 

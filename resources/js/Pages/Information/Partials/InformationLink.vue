@@ -1,5 +1,9 @@
 <template>
-    <div class="link-card dark:bg-gray-800 bg-white shadow-lg rounded-xl p-6 2xl:col-span-2 h-auto border border-gray-200 dark:border-gray-700" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }">
+    <div 
+        class="link-card dark:bg-gray-800 bg-white shadow-lg rounded-xl p-6 2xl:col-span-2 h-auto border border-gray-200 dark:border-gray-700" 
+        :class="$attrs.class"
+        :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color1 }"
+    >
         <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex items-center">
                 <div class="icon-container mr-4 hidden sm:flex">
@@ -137,6 +141,7 @@ import ModalCreateLink from "@/Pages/Information/Modal/ModalCreateLink.vue";
 
 export default {
     name: "InformationLink",
+    inheritAttrs: false,
     components: {
         ModalCreateLink,
         ModalConfirm,

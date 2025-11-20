@@ -27,8 +27,6 @@ class Team extends Model
 
     protected $appends = ['logo_url'];
 
-    protected $with = ['params'];
-
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

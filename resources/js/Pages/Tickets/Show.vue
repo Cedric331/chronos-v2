@@ -8,7 +8,7 @@
                     Ticket #{{ ticket.id }} - {{ ticket.title }}
                 </h2>
                 <div class="flex space-x-2">
-                    <Link :href="route('tickets.index')" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                    <Link :href="route('tickets.index')" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-opacity-75 transition ease-in-out duration-150">
                         <i class="fas fa-arrow-left mr-2"></i> Retour à la liste
                     </Link>
                 </div>
@@ -18,8 +18,7 @@
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <!-- Informations du ticket -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                    <div class="p-0">
+                <Card padding="p-0" class="mb-6">
                         <!-- En-tête du ticket avec statut et badges -->
                         <div class="border-b border-gray-200 bg-gray-50 px-6 py-4 flex flex-wrap items-center justify-between">
                             <div class="flex items-center space-x-3">
@@ -34,15 +33,15 @@
                                 </div>
                             </div>
                             <div class="flex flex-wrap gap-2 mt-2 sm:mt-0">
-                                <span class="px-3 py-1 rounded-full text-xs font-medium" :style="{ backgroundColor: ticket.status.color + '20', color: ticket.status.color }">
+                                <Badge :variant="getStatusVariant(ticket.status.name)">
                                     {{ ticket.status.name }}
-                                </span>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium" :style="{ backgroundColor: ticket.category.color + '20', color: ticket.category.color }">
+                                </Badge>
+                                <Badge variant="info">
                                     {{ ticket.category.name }}
-                                </span>
-                                <span class="px-3 py-1 rounded-full text-xs font-medium" :style="{ backgroundColor: ticket.priority.color + '20', color: ticket.priority.color }">
+                                </Badge>
+                                <Badge variant="warning">
                                     {{ ticket.priority.name }}
-                                </span>
+                                </Badge>
                                 <button
                                     v-if="!ticket.status.is_closed"
                                     @click="toggleSubscription"
@@ -215,12 +214,10 @@
                                 </li>
                             </ul>
                         </div>
-                    </div>
-                </div>
+                    </Card>
 
                 <!-- Commentaires -->
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                    <div class="p-0">
+                <Card padding="p-0" class="mb-6">
                         <!-- En-tête des commentaires -->
                         <div class="border-b border-gray-200 bg-gray-50 px-6 py-4">
                             <h3 class="text-lg font-medium text-gray-900">Commentaires</h3>
@@ -350,7 +347,7 @@
                                     <div class="flex justify-end">
                                         <button
                                             type="submit"
-                                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 relative"
+                                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 focus:ring-opacity-75 relative"
                                             :disabled="commentForm.processing"
                                         >
                                             <span v-if="commentForm.processing" class="absolute inset-0 flex items-center justify-center">
@@ -368,7 +365,7 @@
                                 </form>
                             </div>
                         </div>
-                    </div>
+                    </Card>
                 </div>
 
                 <!-- Historique -->
@@ -422,12 +419,16 @@
 import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, computed } from 'vue';
+import Card from '@/Components/Card.vue';
+import Badge from '@/Components/Badge.vue';
 
 export default {
     components: {
         Head,
         Link,
         AuthenticatedLayout,
+        Card,
+        Badge,
     },
     props: {
         ticket: Object,
@@ -629,6 +630,22 @@ export default {
             return fieldMap[fieldName] || fieldName;
         };
 
+        const getStatusVariant = (statusName) => {
+            const statusLower = statusName.toLowerCase();
+            if (statusLower.includes('ouvert') || statusLower.includes('en cours')) {
+                return 'info';
+            } else if (statusLower.includes('résolu') || statusLower.includes('accepté')) {
+                return 'success';
+            } else if (statusLower.includes('fermé') || statusLower.includes('annulé')) {
+                return 'default';
+            } else if (statusLower.includes('en attente')) {
+                return 'warning';
+            } else if (statusLower.includes('refusé') || statusLower.includes('erreur')) {
+                return 'error';
+            }
+            return 'default';
+        };
+
         return {
             form,
             commentForm,
@@ -649,6 +666,7 @@ export default {
             formatFieldName,
             getStatusName,
             getPriorityName,
+            getStatusVariant,
         };
     },
 };

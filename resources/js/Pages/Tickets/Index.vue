@@ -14,7 +14,7 @@
                                 Système de Tickets
                             </h2>
                         </div>
-                        <Link :href="route('tickets.create')" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:from-amber-600 hover:to-amber-700 active:from-amber-700 active:to-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition ease-in-out duration-150 shadow-md">
+                        <Link :href="route('tickets.create')" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-amber-500 to-amber-600 border border-transparent rounded-lg font-semibold text-xs text-white uppercase tracking-widest hover:from-amber-600 hover:to-amber-700 active:from-amber-700 active:to-amber-800 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-opacity-75 transition ease-in-out duration-150 shadow-md">
                             <i class="fas fa-plus mr-2"></i> Nouveau ticket
                         </Link>
                     </div>
@@ -24,8 +24,7 @@
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-0">
+                <Card padding="p-0">
                         <!-- Filtres -->
                         <div class="border-b border-gray-200">
                             <div class="p-6 bg-gradient-to-r from-amber-50 to-white">
@@ -33,7 +32,7 @@
                                     <h3 class="text-lg font-medium text-gray-800 flex items-center">
                                         <i class="fas fa-filter text-amber-500 mr-2"></i> Filtres
                                     </h3>
-                                    <button @click="resetFilters" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-all duration-200">
+                                    <button @click="resetFilters" class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-full text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 focus:ring-opacity-75 transition-all duration-200">
                                         <i class="fas fa-redo-alt mr-1.5 text-amber-500"></i> Réinitialiser
                                     </button>
                                 </div>
@@ -85,7 +84,7 @@
                                 <div class="bg-white p-3 rounded-lg shadow-sm border border-gray-100 md:col-span-2" style="margin-top: 10px">
                                     <label for="search" class="block text-sm font-medium text-gray-700 mb-1.5">Recherche</label>
                                     <div class="relative">
-                                        <input type="text" v-model="filters.search" @keyup.enter="applyFilters" id="search" class="pl-8 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500" placeholder="Rechercher par titre ou description...">
+                                        <input type="text" v-model="filters.search" @input="debouncedSearch" @keyup.enter="applyFilters" id="search" class="pl-8 block w-full rounded-md border-gray-300 shadow-sm focus:border-amber-500 focus:ring-amber-500 transition-all duration-200" placeholder="Rechercher par titre ou description...">
                                         <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
                                             <i class="fas fa-search text-amber-500"></i>
                                         </div>
@@ -118,16 +117,21 @@
 <!--                                </div>-->
                             </div>
 
-                            <div v-if="tickets.data.length === 0" class="flex flex-col items-center justify-center py-12 bg-gray-50">
-                                <div class="text-amber-400 mb-4">
-                                    <i class="fas fa-ticket-alt text-6xl"></i>
-                                </div>
-                                <h3 class="text-xl font-medium text-gray-900 mb-1">Aucun ticket trouvé</h3>
-                                <p class="text-gray-500 mb-4">Essayez de modifier vos filtres ou créez un nouveau ticket</p>
-                                <Link :href="route('tickets.create')" class="inline-flex items-center px-4 py-2 bg-amber-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-500 active:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                    <i class="fas fa-plus mr-2"></i> Nouveau ticket
-                                </Link>
-                            </div>
+                            <EmptyState
+                                v-if="tickets.data.length === 0"
+                                icon="search"
+                                title="Aucun ticket trouvé"
+                                description="Essayez de modifier vos filtres ou créez un nouveau ticket"
+                            >
+                                <template #action>
+                                    <Link 
+                                        :href="route('tickets.create')" 
+                                        class="inline-flex items-center px-4 py-2 bg-amber-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-500 active:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                                    >
+                                        <i class="fas fa-plus mr-2"></i> Nouveau ticket
+                                    </Link>
+                                </template>
+                            </EmptyState>
 
                             <div v-else class="divide-y divide-gray-200">
                                 <div v-for="ticket in tickets.data" :key="ticket.id" class="hover:bg-gray-50 transition-colors duration-150">
@@ -147,12 +151,14 @@
                                                 </div>
                                             </div>
                                             <div class="flex items-center space-x-2">
-                                                <span class="px-2 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-full" :style="{ backgroundColor: ticket.status.color + '20', color: ticket.status.color }">
-                                                    <i :class="ticket.status.icon" class="mr-1 text-xs flex-shrink-0"></i> {{ ticket.status.name }}
-                                                </span>
-                                                <span class="px-2 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-full" :style="{ backgroundColor: ticket.category.color + '20', color: ticket.category.color }">
-                                                    <i :class="ticket.category.icon" class="mr-1 text-xs flex-shrink-0"></i> {{ ticket.category.name }}
-                                                </span>
+                                                <Badge :variant="getStatusVariant(ticket.status.name)">
+                                                    <i :class="ticket.status.icon" class="mr-1 text-xs"></i>
+                                                    {{ ticket.status.name }}
+                                                </Badge>
+                                                <Badge variant="info">
+                                                    <i :class="ticket.category.icon" class="mr-1 text-xs"></i>
+                                                    {{ ticket.category.name }}
+                                                </Badge>
 <!--                                                <span class="px-2 py-1 inline-flex items-center text-xs leading-5 font-semibold rounded-full" :style="{ backgroundColor: ticket.priority.color + '20', color: ticket.priority.color }">-->
 <!--                                                    <i :class="ticket.priority.icon" class="mr-1 text-xs flex-shrink-0"></i> {{ ticket.priority.name }}-->
 <!--                                                </span>-->
@@ -176,7 +182,7 @@
                                 class="pagination-amber"
                             />
                         </div>
-                    </div>
+                    </Card>
                 </div>
             </div>
         </div>
@@ -187,8 +193,12 @@
 import { Head, Link } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Pagination } from 'flowbite-vue';
-import { ref, computed } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { router } from '@inertiajs/vue3';
+import { useDebounce } from '@/composables/useDebounce';
+import Card from '@/Components/Card.vue';
+import Badge from '@/Components/Badge.vue';
+import EmptyState from '@/Components/EmptyState.vue';
 
 export default {
     components: {
@@ -196,6 +206,9 @@ export default {
         Link,
         AuthenticatedLayout,
         Pagination,
+        Card,
+        Badge,
+        EmptyState,
     },
     props: {
         tickets: Object,
@@ -222,6 +235,11 @@ export default {
                 replace: true,
             });
         };
+
+        // Debounce pour la recherche
+        const debouncedSearch = useDebounce(() => {
+            applyFilters();
+        }, 500);
 
         const changePage = (page) => {
             filters.value.page = page;
@@ -262,6 +280,22 @@ export default {
             });
         };
 
+        const getStatusVariant = (statusName) => {
+            const statusLower = statusName.toLowerCase();
+            if (statusLower.includes('ouvert') || statusLower.includes('en cours')) {
+                return 'info';
+            } else if (statusLower.includes('résolu') || statusLower.includes('accepté')) {
+                return 'success';
+            } else if (statusLower.includes('fermé') || statusLower.includes('annulé')) {
+                return 'default';
+            } else if (statusLower.includes('en attente')) {
+                return 'warning';
+            } else if (statusLower.includes('refusé') || statusLower.includes('erreur')) {
+                return 'error';
+            }
+            return 'default';
+        };
+
         return {
             filters,
             applyFilters,
@@ -269,6 +303,8 @@ export default {
             sort,
             formatDate,
             changePage,
+            debouncedSearch,
+            getStatusVariant,
         };
     },
 };

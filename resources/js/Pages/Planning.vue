@@ -137,6 +137,7 @@ import Loading from "@/Components/Loading.vue";
 import ModalSharePlanning from "@/Pages/Calendar/Modal/ModalSharePlanning.vue";
 import PlanningWidgets from "@/Components/PlanningWidgets.vue";
 import PlanningWidgetManager from "@/Components/PlanningWidgetManager.vue";
+import { useNotification } from '@/composables/useNotification';
 
 export default {
     components: {
@@ -199,7 +200,9 @@ export default {
                 this.weeklyProps = response.data.weeklyHours
             })
             .catch(error => {
-                console.log(error)
+                console.error('Erreur lors du chargement du planning:', error);
+                const { showError } = useNotification();
+                showError('Une erreur est survenue lors du chargement du planning. Veuillez réessayer.');
             })
             .finally(() => {
                 setTimeout(() => {

@@ -94,14 +94,11 @@
                                         <span class="px-2 py-1 text-xs font-medium rounded-full" :class="paidLeave.number_days > 5 ? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300' : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300'">{{ paidLeave.number_days }} {{ paidLeave.number_days > 1 ? 'jours' : 'jour' }}</span>
                                     </td>
                                     <td class="p-4 whitespace-nowrap text-sm">
-                                        <span class="px-2 py-1 text-xs font-medium rounded-full"
-                                            :class="{
-                                                'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300': paidLeave.status === 'En attente',
-                                                'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300': paidLeave.status === 'Accepté',
-                                                'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300': paidLeave.status === 'Refusé'
-                                            }">
+                                        <Badge 
+                                            :variant="getStatusVariant(paidLeave.status)"
+                                        >
                                             {{ paidLeave.status }}
-                                        </span>
+                                        </Badge>
                                     </td>
                                     <td v-if="$page.props.auth.isCoordinateur" class="p-4 whitespace-nowrap text-sm">
                                         <div class="flex space-x-2">
@@ -229,6 +226,7 @@ import tippy from "tippy.js";
 import DangerButton from "@/Components/DangerButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
+import Badge from "@/Components/Badge.vue";
 import axios from "axios";
 import {DoughnutChart, BarChart} from 'vue-chart-3';
 import { Chart, registerables } from "chart.js";
@@ -244,7 +242,8 @@ export default {
         SecondaryButton,
         DoughnutChart,
         Head,
-        AuthenticatedLayout
+        AuthenticatedLayout,
+        Badge
     },
     props: {
         leavesProps: Object,
@@ -539,6 +538,16 @@ export default {
         openPaidLeaveModal() {
             // Rediriger vers la page du calendrier pour sélectionner les jours
             window.location.href = '/planning';
+        },
+        getStatusVariant(status) {
+            if (status === 'En attente') {
+                return 'warning';
+            } else if (status === 'Accepté') {
+                return 'success';
+            } else if (status === 'Refusé') {
+                return 'error';
+            }
+            return 'default';
         },
 
     },

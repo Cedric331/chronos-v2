@@ -43,12 +43,50 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            // Log les exceptions personnalisées avec plus de contexte
+            if ($e instanceof PlanningException || 
+                $e instanceof ExchangeException || 
+                $e instanceof TeamException) {
+                \Log::warning('Exception métier: ' . $e->getMessage(), [
+                    'exception' => get_class($e),
+                    'code' => $e->getCode(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
         });
     }
 
     public function render($request, Throwable $e)
     {
+        // Gérer les exceptions personnalisées
+        if ($e instanceof PlanningException || 
+            $e instanceof ExchangeException || 
+            $e instanceof TeamException) {
+            
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'error' => class_basename($e),
+                ], $e->getCode() ?: 422);
+            }
+
+            return back()->withErrors(['general' => $e->getMessage()])
+                ->withInput();
+        }
+
+        // Gérer les ValidationException personnalisées
+        if ($e instanceof ValidationException) {
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'message' => $e->getMessage(),
+                    'errors' => $e->getErrors(),
+                ], $e->getCode() ?: 422);
+            }
+
+            return back()->withErrors($e->getErrors())
+                ->withInput();
+        }
+
         $response = parent::render($request, $e);
 
         if (! app()->environment(['local']) && in_array($response->status(), [500, 503, 404, 403])) {

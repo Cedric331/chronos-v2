@@ -55,8 +55,6 @@ class User extends Authenticatable implements FilamentUser
         'last_invitation' => 'datetime',
     ];
 
-    protected $with = ['team'];
-
     protected $appends = ['hasPlanning', 'role', 'hasAccessAdmin', 'CanResendInvitation'];
 
     public function canAccessPanel(Panel $panel): bool

@@ -4,7 +4,7 @@
     <div :class="{ 'dark': $store.state.isDarkMode }">
         <div id="wave" :class="{ wave: triggerWave }" :style="{ left: waveX + 'px', top: waveY + 'px' }"></div>
         <div class="min-h-screen dark:bg-gray-900" >
-            <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-50 shadow-lg backdrop-filter backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90" :style="{background: $store.state.isDarkMode ? '': 'linear-gradient(135deg, ' + $page.props.auth.team.params.color1 + '80 0%, ' + $page.props.auth.team.params.color2 + '90 100%)'}">
+            <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 z-50 shadow-lg backdrop-filter backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90" :style="{background: $store.state.isDarkMode ? '': 'linear-gradient(135deg, ' + $page.props.auth.team.params.color1 + '80 0%, ' + $page.props.auth.team.params.color2 + '90 100%)'}" aria-label="Navigation principale">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-1">
                     <div class="flex justify-between h-16">
@@ -188,7 +188,10 @@
                         <div class="-mr-2 flex items-center lg:hidden">
                             <button
                                 @click="showingNavigationDropdown = !showingNavigationDropdown"
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out shadow-sm"
+                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75 focus:ring-offset-2 focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out shadow-sm"
+                                aria-label="Ouvrir le menu de navigation"
+                                :aria-expanded="showingNavigationDropdown"
+                                aria-controls="mobile-menu"
                             >
                                 <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                     <path
@@ -219,8 +222,11 @@
 
                 <!-- Responsive Navigation Menu -->
                 <div
+                    id="mobile-menu"
                     :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
                     class="lg:hidden"
+                    role="menu"
+                    aria-orientation="vertical"
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')">

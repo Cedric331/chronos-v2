@@ -7,7 +7,7 @@
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                     Nouveau ticket
                 </h2>
-                <Link :href="route('tickets.index')" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                <Link :href="route('tickets.index')" class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-opacity-75 transition ease-in-out duration-150" aria-label="Retour à la liste des tickets">
                     <i class="fas fa-arrow-left mr-2"></i> Retour à la liste
                 </Link>
             </div>
@@ -21,16 +21,14 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Titre -->
                                 <div class="col-span-2">
-                                    <InputLabel for="title" value="Titre" />
-                                    <TextInput
+                                    <FloatingLabelInput
                                         id="title"
-                                        type="text"
-                                        class="mt-1 block w-full"
                                         v-model="form.title"
-                                        required
+                                        label="Titre"
+                                        :error="form.errors.title"
+                                        :required="true"
                                         autofocus
                                     />
-                                    <InputError class="mt-2" :message="form.errors.title" />
                                 </div>
 
                                 <!-- Catégorie -->
@@ -39,15 +37,16 @@
                                     <select
                                         id="category_id"
                                         v-model="form.category_id"
-                                        class="mt-1 block w-full border-gray-300 focus:border-amber-500 focus:ring-amber-500 rounded-md shadow-sm"
+                                        class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75 focus:ring-offset-2 rounded-md shadow-sm transition-all duration-200"
                                         required
+                                        aria-describedby="category-error"
                                     >
                                         <option value="" disabled>Sélectionnez une catégorie</option>
                                         <option v-for="category in categories" :key="category.id" :value="category.id">
                                             {{ category.name }}
                                         </option>
                                     </select>
-                                    <InputError class="mt-2" :message="form.errors.category_id" />
+                                    <InputError id="category-error" class="mt-2" :message="form.errors.category_id" />
                                 </div>
 
                                 <!-- Priorité -->
@@ -56,15 +55,16 @@
                                     <select
                                         id="priority_id"
                                         v-model="form.priority_id"
-                                        class="mt-1 block w-full border-gray-300 focus:border-amber-500 focus:ring-amber-500 rounded-md shadow-sm"
+                                        class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75 focus:ring-offset-2 rounded-md shadow-sm transition-all duration-200"
                                         required
+                                        aria-describedby="priority-error"
                                     >
                                         <option value="" disabled>Sélectionnez une priorité</option>
                                         <option v-for="priority in priorities" :key="priority.id" :value="priority.id">
                                             {{ priority.name }}
                                         </option>
                                     </select>
-                                    <InputError class="mt-2" :message="form.errors.priority_id" />
+                                    <InputError id="priority-error" class="mt-2" :message="form.errors.priority_id" />
                                 </div>
 
                                 <!-- Pas d'assignation ni de tags -->
@@ -75,11 +75,12 @@
                                     <textarea
                                         id="description"
                                         v-model="form.description"
-                                        class="mt-1 block w-full border-gray-300 focus:border-amber-500 focus:ring-amber-500 rounded-md shadow-sm"
+                                        class="mt-1 block w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:border-amber-500 focus:ring-2 focus:ring-amber-500 focus:ring-opacity-75 focus:ring-offset-2 rounded-md shadow-sm transition-all duration-200"
                                         rows="6"
                                         required
+                                        aria-describedby="description-hint"
                                     ></textarea>
-                                    <p class="mt-1 text-sm text-gray-500">
+                                    <p id="description-hint" class="mt-1 text-sm text-gray-500 dark:text-gray-400">
                                         Décrivez votre problème ou votre demande en détail. Incluez toutes les informations pertinentes.
                                     </p>
                                     <InputError class="mt-2" :message="form.errors.description" />
@@ -108,6 +109,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import FloatingLabelInput from '@/Components/FloatingLabelInput.vue';
 import { ref } from 'vue';
 
 export default {
@@ -119,6 +121,7 @@ export default {
         InputLabel,
         PrimaryButton,
         TextInput,
+        FloatingLabelInput,
     },
     props: {
         statuses: Array,

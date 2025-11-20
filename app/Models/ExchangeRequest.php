@@ -13,6 +13,7 @@ class ExchangeRequest extends Model
 
     /**
      * Les statuts possibles pour une demande d'échange
+     * @deprecated Utiliser App\Enums\ExchangeRequestStatus à la place
      */
     const STATUS_PENDING = 'pending';
 

@@ -36,9 +36,11 @@ class HandleInertiaRequests extends Middleware
         $alerts = null;
 
         if ($user) {
+            // Charger la relation team avec params sur l'utilisateur
+            $user->load('team.params');
+            
             if (config('teams.active') && $user->team_id) {
                 // Charger l'équipe avec ses relations
-                // Utiliser fresh() pour s'assurer d'avoir les dernières données de la base de données
                 $team = Team::with(['rotations.details', 'params'])->find($user->team_id);
 
                 // Forcer le rechargement des paramètres d'équipe pour s'assurer d'avoir les dernières valeurs
