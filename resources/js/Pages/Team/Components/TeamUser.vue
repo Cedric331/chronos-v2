@@ -77,11 +77,13 @@
                                 <td class="p-4 whitespace-nowrap text-sm font-normal">
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" :class="{
                                         'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300': user.role === 'Administrateur',
+                                        'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': user.role === 'Responsable',
                                         'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': user.role === 'Coordinateur',
                                         'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': user.role === 'Conseiller'
                                     }">
                                         <i class="mr-1" :class="{
                                             'fas fa-crown': user.role === 'Administrateur',
+                                            'fas fa-user-shield': user.role === 'Responsable',
                                             'fas fa-user-tie': user.role === 'Coordinateur',
                                             'fas fa-user': user.role === 'Conseiller'
                                         }"></i>
