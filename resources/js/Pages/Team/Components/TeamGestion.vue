@@ -30,7 +30,16 @@
                         </p>
                     </div>
                 </div>
-                <div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <PrimaryButton 
+                        @click="exportTeamPlannings()" 
+                        :disabled="isExporting"
+                        class="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0 shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center px-5 py-3 rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                    >
+                        <i v-if="!isExporting" class="fas fa-file-excel mr-2"></i>
+                        <i v-else class="fas fa-spinner fa-spin mr-2"></i>
+                        {{ isExporting ? 'Export en cours...' : 'Exporter les plannings' }}
+                    </PrimaryButton>
                     <SecondaryButton @click="editTeam()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white border-0 shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center px-5 py-3 rounded-xl font-semibold">
                         <i class="fas fa-edit mr-2"></i> Modifier
                     </SecondaryButton>
@@ -192,7 +201,8 @@ export default {
     data () {
         return {
             showTypeDay: false,
-            show: false
+            show: false,
+            isExporting: false
         }
     },
     methods: {
@@ -269,6 +279,63 @@ export default {
         close () {
             this.show = false
             this.showTypeDay = false
+        },
+        exportTeamPlannings() {
+            if (this.isExporting) return;
+            
+            this.isExporting = true;
+            
+            // Utiliser fetch pour mieux gérer le téléchargement
+            fetch(`/planning/team/export?team_id=${this.team.id}`, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de l\'export');
+                }
+                
+                // Extraire le nom du fichier depuis les headers
+                const contentDisposition = response.headers.get('content-disposition');
+                let filename = 'plannings_equipe_' + this.team.name.replace(/\s+/g, '_') + '_' + new Date().toISOString().split('T')[0] + '.xlsx';
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+                    if (filenameMatch && filenameMatch[1]) {
+                        filename = filenameMatch[1].replace(/['"]/g, '');
+                    }
+                }
+                
+                return response.blob().then(blob => ({ blob, filename }));
+            })
+            .then(({ blob, filename }) => {
+                // Créer un lien de téléchargement
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = filename;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+                
+                this.isExporting = false;
+                this.$notify({
+                    title: "Export réussi",
+                    type: "success",
+                    text: "Le fichier Excel a été téléchargé avec succès",
+                });
+            })
+            .catch(error => {
+                console.error('Erreur lors de l\'export:', error);
+                this.isExporting = false;
+                this.$notify({
+                    title: "Erreur",
+                    type: "error",
+                    text: "Une erreur est survenue lors de l'export. Veuillez réessayer.",
+                });
+            });
         }
     },
     mounted() {

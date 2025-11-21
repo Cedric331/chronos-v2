@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Exports\PlanningsExport;
+use App\Exports\TeamPlanningsExport;
 use App\Http\Requests\RequestGeneratePlanning;
 use App\Models\Calendar;
 use App\Models\ExchangeRequest;
 use App\Models\Planning;
 use App\Models\Rotation;
 use App\Models\ShareLink;
+use App\Models\Team;
 use App\Models\User;
 use App\Services\CalendarService;
 use App\Services\PlanningService;
@@ -507,6 +509,28 @@ class PlanningController extends Controller
         $user = Auth::user();
 
         return (new PlanningsExport)->user($user)->download('planning.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+    }
+
+    public function exportTeamPlannings(Request $request): \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
+        $user = Auth::user();
+
+        // Vérifier que l'utilisateur a les permissions nécessaires (admin ou coordinateur)
+        if (! $user->isCoordinateur() && ! $user->isAdmin()) {
+            abort(403, 'Vous n\'avez pas les permissions nécessaires pour exporter les plannings de l\'équipe.');
+        }
+
+        $teamId = $request->input('team_id', $user->team_id);
+        $team = Team::findOrFail($teamId);
+
+        // Vérifier que l'utilisateur appartient à cette équipe ou est admin
+        if (! $user->isAdmin() && $user->team_id !== $team->id) {
+            abort(403, 'Vous n\'avez pas accès à cette équipe.');
+        }
+
+        $fileName = 'plannings_equipe_'.str_replace(' ', '_', $team->name).'_'.date('Y-m-d').'.xlsx';
+
+        return (new TeamPlanningsExport)->team($team)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     /**

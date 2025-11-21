@@ -6,65 +6,62 @@
         <div class="min-h-screen dark:bg-gray-900" >
             <nav class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 z-50 shadow-sm" :style="{background: $store.state.isDarkMode ? '' : 'linear-gradient(135deg, ' + $page.props.auth.team.params.color1 + '80 0%, ' + $page.props.auth.team.params.color2 + '90 100%)'}" aria-label="Navigation principale">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="w-full px-4 sm:px-6 lg:px-8">
                     <div class="flex justify-between items-center h-16">
-                        <!-- Left Section: Logo + Navigation Links -->
-                        <div class="flex items-center flex-1">
-                            <!-- Logo -->
-                            <div class="shrink-0 mr-10">
-                                <Link :href="route('planning')" class="flex items-center justify-center h-16 group">
-                                    <ApplicationLogo />
-                                </Link>
-                            </div>
-
-                            <!-- Navigation Links -->
-                            <div class="hidden lg:flex items-center space-x-2">
-                                <NavLink :href="route('planning')" :active="route().current('planning')" class="nav-link-item">
-                                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                                    </svg>
-                                    {{ $t('nav.dashboard') }}
-                                </NavLink>
-                                
-                                <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')" class="nav-link-item">
-                                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                    </svg>
-                                    {{ $t('nav.management') }}
-                                </NavLink>
-                                
-                                <NavLink :href="route('information.index')" :active="route().current('information.index')" class="nav-link-item">
-                                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                    Information
-                                </NavLink>
-                                
-                                <NavLink v-if="$page.props.auth.team.params.paid_leave" :href="route('paidleave.index')" :active="route().current('paidleave.index')" class="nav-link-item">
-                                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    Congés
-                                </NavLink>
-                                
-                                <NavLink v-if="$page.props.auth.team && $page.props.auth.team.params && Boolean($page.props.auth.team.params.exchange_module)" :href="route('exchanges.index')" :active="route().current('exchanges.*')" class="nav-link-item">
-                                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                    </svg>
-                                    Échanges
-                                </NavLink>
-                                
-                                <NavLink :href="route('tickets.index')" :active="route().current('tickets.*')" class="nav-link-item">
-                                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
-                                    </svg>
-                                    Tickets
-                                </NavLink>
-                            </div>
+                        <!-- Left Section: Logo -->
+                        <div class="flex items-center shrink-0">
+                            <Link :href="route('planning')" class="flex items-center justify-center h-16 group">
+                                <ApplicationLogo />
+                            </Link>
                         </div>
 
-                        <!-- Right Section: Actions + User Menu -->
-                        <div class="flex items-center space-x-6">
+                        <!-- Center Section: Navigation Links -->
+                        <div class="hidden lg:flex items-center space-x-2 absolute left-1/2 transform -translate-x-1/2">
+                            <NavLink :href="route('planning')" :active="route().current('planning')" class="nav-link-item">
+                                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                {{ $t('nav.dashboard') }}
+                            </NavLink>
+                            
+                            <NavLink v-if="$page.props.auth.isCoordinateur && $page.props.auth.user.team_id" :href="route('team.show', {name: $page.props.auth.user.team.name.toLowerCase()})" :active="route().current('team.show')" class="nav-link-item">
+                                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                </svg>
+                                {{ $t('nav.management') }}
+                            </NavLink>
+                            
+                            <NavLink :href="route('information.index')" :active="route().current('information.index')" class="nav-link-item">
+                                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Information
+                            </NavLink>
+                            
+                            <NavLink v-if="$page.props.auth.team.params.paid_leave" :href="route('paidleave.index')" :active="route().current('paidleave.index')" class="nav-link-item">
+                                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                Congés
+                            </NavLink>
+                            
+                            <NavLink v-if="$page.props.auth.team && $page.props.auth.team.params && Boolean($page.props.auth.team.params.exchange_module)" :href="route('exchanges.index')" :active="route().current('exchanges.*')" class="nav-link-item">
+                                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                                </svg>
+                                Échanges
+                            </NavLink>
+                            
+                            <NavLink :href="route('tickets.index')" :active="route().current('tickets.*')" class="nav-link-item">
+                                <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z" />
+                                </svg>
+                                Tickets
+                            </NavLink>
+                        </div>
+
+                        <!-- Right Section: Team Selector + Actions + User Menu -->
+                        <div class="flex items-center space-x-6 ml-auto">
                             <!-- Notifications -->
                             <div v-if="$page.props.auth.isCoordinateur && $page.props.auth.team.params.module_alert" class="hidden lg:block">
                                 <Dropdown align="right" width="96" contentClasses="bg-white dark:bg-gray-700 mt-1 border border-gray-200 dark:border-gray-600 overflow-y-auto max-h-72 rounded-lg shadow-lg z-90">

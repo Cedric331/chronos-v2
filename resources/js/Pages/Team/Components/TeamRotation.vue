@@ -38,10 +38,36 @@
             </div>
         </div>
 
+        <!-- Barre de recherche -->
+        <div v-if="team.rotations && team.rotations.length > 0" class="mb-6">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Rechercher une rotation par nom..."
+                    class="block w-full pl-10 pr-3 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200"
+                />
+                <button
+                    v-if="searchQuery"
+                    @click="searchQuery = ''"
+                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                >
+                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
         <!-- Liste des rotations -->
-        <div v-if="team.rotations && team.rotations.length > 0" class="space-y-4">
+        <div v-if="filteredRotations && filteredRotations.length > 0" class="space-y-4">
             <div 
-                v-for="rotation in team.rotations" 
+                v-for="rotation in filteredRotations" 
                 :key="rotation.id"
                 class="group relative bg-white dark:bg-gray-800 rounded-xl border-2 border-gray-200 dark:border-gray-700 hover:border-amber-500 dark:hover:border-amber-600 shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden"
             >
@@ -152,6 +178,19 @@
             </div>
         </div>
 
+        <!-- Message si aucune rotation trouvée après recherche -->
+        <div v-else-if="team.rotations && team.rotations.length > 0 && searchQuery" class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
+                Aucune rotation trouvée
+            </h3>
+            <p class="mt-1 text-sm" :style="{ color: isDarkMode ? '#9ca3af' : '#6b7280' }">
+                Aucune rotation ne correspond à votre recherche "{{ searchQuery }}"
+            </p>
+        </div>
+
         <!-- État vide -->
         <EmptyState
             v-else
@@ -196,7 +235,7 @@ import EmptyState from "@/Components/EmptyState.vue";
 import ModalGestionRotation from "@/Pages/Team/Modal/ModalGestionRotation.vue";
 import ModalPlanning from "@/Pages/Team/Modal/ModalPlanning.vue";
 import ModalConfirm from "@/Components/Modal/ModalConfirm.vue";
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useStore } from 'vuex';
 import { useNotification } from '@/composables/useNotification';
 import axios from "axios";
@@ -216,11 +255,28 @@ export default {
     props: {
         team: Object
     },
-    setup() {
+    setup(props) {
         const store = useStore();
         const isDarkMode = computed(() => store.state.isDarkMode);
         const { showSuccess, showError } = useNotification();
-        return { isDarkMode, showSuccess, showError };
+        const searchQuery = ref('');
+        
+        const filteredRotations = computed(() => {
+            if (!props.team.rotations || props.team.rotations.length === 0) {
+                return [];
+            }
+            
+            if (!searchQuery.value || searchQuery.value.trim() === '') {
+                return props.team.rotations;
+            }
+            
+            const query = searchQuery.value.toLowerCase().trim();
+            return props.team.rotations.filter(rotation => 
+                rotation.name && rotation.name.toLowerCase().includes(query)
+            );
+        });
+        
+        return { isDarkMode, showSuccess, showError, searchQuery, filteredRotations };
     },
     data () {
         return {

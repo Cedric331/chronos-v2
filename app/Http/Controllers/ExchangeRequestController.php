@@ -8,6 +8,7 @@ use App\Mail\ExchangeRequestAccepted;
 use App\Mail\ExchangeRequestCreated;
 use App\Models\ExchangeRequest;
 use App\Models\Planning;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

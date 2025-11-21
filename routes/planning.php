@@ -19,6 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/planning/share/{link}', [PlanningController::class, 'deleteShareLink'])->name('planning.share.delete');
 
     Route::get('/planning/user/export', [PlanningController::class, 'exportPlanning'])->name('planning.export');
+    Route::get('/planning/team/export', [PlanningController::class, 'exportTeamPlannings'])->name('planning.team.export');
 
     // Planning Widget Routes
     Route::post('/planning/widgets/preferences', [PlanningWidgetController::class, 'updatePreferences'])->name('planning.widgets.preferences');

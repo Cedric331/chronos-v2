@@ -25,7 +25,7 @@
                             </div>
 
                             <!-- Enhanced Stats Cards -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-4 lg:gap-6 mb-8">
                                 <!-- Teams Card -->
                                 <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-blue-400/50 dark:hover:border-blue-500/50 transform hover:-translate-y-2">
                                     <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -41,6 +41,25 @@
                                         </div>
                                         <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
                                             <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" :style="{ width: Math.min((teamsProps.length / 10) * 100, 100) + '%' }"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Responsables Card -->
+                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-orange-400/50 dark:hover:border-orange-500/50 transform hover:-translate-y-2">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-orange-500/10 to-orange-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-4 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                <i class="fas fa-user-shield text-white text-2xl"></i>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ stats?.responsables || 0 }}</p>
+                                                <p class="text-xs font-semibold text-orange-600 dark:text-orange-400 uppercase tracking-wider">Responsables</p>
+                                            </div>
+                                        </div>
+                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-orange-500 to-orange-600 rounded-full" :style="{ width: Math.min(((stats?.responsables || 0) / 10) * 100, 100) + '%' }"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -64,7 +83,46 @@
                                     </div>
                                 </div>
 
-                                <!-- Date Card -->
+                                <!-- Conseillers Card -->
+                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-cyan-400/50 dark:hover:border-cyan-500/50 transform hover:-translate-y-2">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-500/10 to-cyan-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-4 rounded-xl bg-gradient-to-br from-cyan-500 to-cyan-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                <i class="fas fa-user-friends text-white text-2xl"></i>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ stats?.conseillers || 0 }}</p>
+                                                <p class="text-xs font-semibold text-cyan-600 dark:text-cyan-400 uppercase tracking-wider">Conseillers</p>
+                                            </div>
+                                        </div>
+                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-full" :style="{ width: Math.min(((stats?.conseillers || 0) / 50) * 100, 100) + '%' }"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Utilisateurs Actifs Card -->
+                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-emerald-400/50 dark:hover:border-emerald-500/50 transform hover:-translate-y-2">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-4 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                <i class="fas fa-user-check text-white text-2xl"></i>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ stats?.usersActifs || 0 }}</p>
+                                                <p class="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Utilisateurs Actifs</p>
+                                            </div>
+                                        </div>
+                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full" :style="{ width: stats?.totalUsers > 0 ? Math.min(((stats?.usersActifs || 0) / stats.totalUsers) * 100, 100) + '%' : '0%' }"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                
+                                <!-- Date & Time Card (Fusionné) -->
                                 <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-purple-400/50 dark:hover:border-purple-500/50 transform hover:-translate-y-2">
                                     <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                     <div class="relative p-6">
@@ -73,31 +131,12 @@
                                                 <i class="fas fa-calendar-alt text-white text-2xl"></i>
                                             </div>
                                             <div class="text-right">
-                                                <p class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">{{ currentDate }}</p>
-                                                <p class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Date</p>
+                                                <p class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">{{ currentDate }}  {{ currentTime }}</p>
+                                                <p class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Date & Heure</p>
                                             </div>
                                         </div>
                                         <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full">
-                                            <div class="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full w-full"></div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Time Card -->
-                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-amber-400/50 dark:hover:border-amber-500/50 transform hover:-translate-y-2">
-                                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-amber-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                    <div class="relative p-6">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <div class="p-4 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                                                <i class="fas fa-clock text-white text-2xl"></i>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ currentTime }}</p>
-                                                <p class="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Heure</p>
-                                            </div>
-                                        </div>
-                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full">
-                                            <div class="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full w-full animate-pulse"></div>
+                                            <div class="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full w-full animate-pulse"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -189,6 +228,17 @@ export default defineComponent({
         coordinateursProps: {
             type: Array,
             required: true
+        },
+        stats: {
+            type: Object,
+            default: () => ({
+                conseillers: 0,
+                responsables: 0,
+                usersActifs: 0,
+                totalUsers: 0,
+                ticketsOuverts: 0,
+                ticketsTotal: 0
+            })
         }
     },
     data () {

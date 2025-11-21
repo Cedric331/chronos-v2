@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TeamRequest;
+use App\Models\Ticket;
+use App\Models\User;
 use App\Repositories\TeamRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Auth;
@@ -19,16 +21,49 @@ class AdminController extends Controller
 
     public function index()
     {
+        $companyId = Auth::user()->company_id;
+
         $teams = $this->teamRepository->getTeamsByCompany(
-            Auth::user()->company_id,
+            $companyId,
             ['users', 'coordinateur', 'params']
         )->loadCount('users');
 
-        $coordinateursProps = $this->userRepository->getUsersByRole('Coordinateur');
+        $coordinateursProps = $this->userRepository->getCoordinateursByCompany($companyId);
+
+        // Statistiques supplémentaires
+        $conseillersCount = User::whereHas('roles', function ($q) {
+            $q->where('name', 'Conseiller');
+        })->where('company_id', $companyId)->count();
+
+        $responsablesCount = User::whereHas('roles', function ($q) {
+            $q->where('name', 'Responsable');
+        })->where('company_id', $companyId)->count();
+
+        $usersActifsCount = User::where('company_id', $companyId)
+            ->where('account_active', true)
+            ->count();
+
+        $totalUsersCount = User::where('company_id', $companyId)->count();
+
+        $ticketsOuvertsCount = Ticket::whereHas('team', function ($q) use ($companyId) {
+            $q->where('company_id', $companyId);
+        })->open()->count();
+
+        $ticketsTotalCount = Ticket::whereHas('team', function ($q) use ($companyId) {
+            $q->where('company_id', $companyId);
+        })->count();
 
         return Inertia::render('Admin/Dashboard', [
             'teamsProps' => $teams,
             'coordinateursProps' => $coordinateursProps,
+            'stats' => [
+                'conseillers' => $conseillersCount,
+                'responsables' => $responsablesCount,
+                'usersActifs' => $usersActifsCount,
+                'totalUsers' => $totalUsersCount,
+                'ticketsOuverts' => $ticketsOuvertsCount,
+                'ticketsTotal' => $ticketsTotalCount,
+            ],
         ]);
     }
 
