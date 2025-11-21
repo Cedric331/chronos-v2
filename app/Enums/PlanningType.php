@@ -20,7 +20,7 @@ enum PlanningType: string
      */
     public function requiresHours(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PLANNED,
             self::TRAINING,
             self::MORNING_PAID_LEAVE,
@@ -34,7 +34,7 @@ enum PlanningType: string
      */
     public function isFixed(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::HOLIDAY,
             self::PAID_LEAVE,
             self::MORNING_PAID_LEAVE,
@@ -60,7 +60,7 @@ enum PlanningType: string
      */
     public function isLeaveDay(): bool
     {
-        return match($this) {
+        return match ($this) {
             self::PAID_LEAVE,
             self::UNPAID_LEAVE,
             self::MORNING_PAID_LEAVE,
@@ -85,7 +85,7 @@ enum PlanningType: string
     {
         return array_filter(
             self::cases(),
-            fn($case) => $case->isFixed()
+            fn ($case) => $case->isFixed()
         );
     }
 
@@ -96,8 +96,7 @@ enum PlanningType: string
     {
         return array_filter(
             self::cases(),
-            fn($case) => $case->requiresHours()
+            fn ($case) => $case->requiresHours()
         );
     }
 }
-

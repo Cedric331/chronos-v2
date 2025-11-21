@@ -268,7 +268,7 @@ class PlanningController extends Controller
         activity(Auth::user()->team->name)
             ->event('Mise à jour')
             ->performedOn($user)
-            ->log('Un planning a été généré pour ' . $user->name);
+            ->log('Un planning a été généré pour '.$user->name);
 
         return response()->json($countDayGenerate);
     }
@@ -485,7 +485,7 @@ class PlanningController extends Controller
 
     public function getPlanningTeam(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
     {
-        if (!$request->ajax()) {
+        if (! $request->ajax()) {
             return Inertia::render('Errors/404');
         }
 

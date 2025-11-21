@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\TeamException;
 use App\Http\Requests\TeamRequest;
 use App\Repositories\TeamRepository;
 use App\Repositories\UserRepository;

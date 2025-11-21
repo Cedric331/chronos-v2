@@ -21,7 +21,7 @@ class TeamRepository
     {
         $query = Team::where('company_id', $companyId);
 
-        if (!empty($with)) {
+        if (! empty($with)) {
             $query->with($with);
         }
 
@@ -32,7 +32,7 @@ class TeamRepository
     {
         $query = Team::where('id', $teamId);
 
-        if (!empty($relations)) {
+        if (! empty($relations)) {
             $query->with($relations);
         }
 
@@ -61,4 +61,3 @@ class TeamRepository
         return $team->delete();
     }
 }
-

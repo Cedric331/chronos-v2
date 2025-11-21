@@ -40,4 +40,3 @@ enum PaidLeaveStatus: string
         return in_array($this, [self::ACCEPTED, self::REFUSED]);
     }
 }
-

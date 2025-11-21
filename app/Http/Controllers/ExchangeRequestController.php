@@ -21,6 +21,7 @@ class ExchangeRequestController extends Controller
     public function __construct(
         private UserRepository $userRepository
     ) {}
+
     /**
      * Affiche la liste des demandes d'échange pour l'utilisateur connecté
      */

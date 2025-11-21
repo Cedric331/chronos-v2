@@ -31,4 +31,3 @@ class ExchangeException extends Exception
         return new self('Impossible de modifier une demande d\'échange terminée.', 422);
     }
 }
-

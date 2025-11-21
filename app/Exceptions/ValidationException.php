@@ -25,4 +25,3 @@ class ValidationException extends Exception
         return new self($message, $errors);
     }
 }
-

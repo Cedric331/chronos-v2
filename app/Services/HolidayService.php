@@ -2,11 +2,10 @@
 
 namespace App\Services;
 
-use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use ICal\ICal;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use ICal\ICal;
 use Yasumi\Yasumi;
 
 class HolidayService
@@ -20,11 +19,11 @@ class HolidayService
     {
         date_default_timezone_set('Europe/Paris');
         $year = date('Y');
-        
+
         if ($dateDebut === null) {
             $dateDebut = CarbonImmutable::parse("{$year}-01-01");
         }
-        
+
         if ($dateFin === null) {
             $dateFin = CarbonImmutable::parse("{$year}-12-31");
         }
@@ -61,7 +60,7 @@ class HolidayService
     public function getFrenchHolidays(int $year): array
     {
         $cacheKey = "french_holidays_{$year}";
-        
+
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($year) {
             try {
                 $holidays = Yasumi::create('France', $year, 'fr_FR');
@@ -75,7 +74,8 @@ class HolidayService
 
                 return $holidayDates;
             } catch (\Exception $e) {
-                Log::error("Erreur lors de la récupération des jours fériés pour l'année {$year}: " . $e->getMessage());
+                Log::error("Erreur lors de la récupération des jours fériés pour l'année {$year}: ".$e->getMessage());
+
                 return [];
             }
         });
@@ -87,7 +87,7 @@ class HolidayService
     public function getSchoolHolidays(int $year): array
     {
         $cacheKey = "school_holidays_{$year}";
-        
+
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($year) {
             try {
                 $url = 'https://fr.ftp.opendatasoft.com/openscol/fr-en-calendrier-scolaire/Zone-A-B-C-Corse.ics';
@@ -118,7 +118,7 @@ class HolidayService
                         $zones[] = 'C';
                     }
 
-                    if (!empty($zones)) {
+                    if (! empty($zones)) {
                         foreach ($zones as $zone) {
                             $holidaysByZone[$zone][] = [
                                 'name' => $event->summary,
@@ -131,7 +131,8 @@ class HolidayService
 
                 return $holidaysByZone;
             } catch (\Exception $e) {
-                Log::error("Erreur lors de la récupération des vacances scolaires pour l'année {$year}: " . $e->getMessage());
+                Log::error("Erreur lors de la récupération des vacances scolaires pour l'année {$year}: ".$e->getMessage());
+
                 return [
                     'A' => [],
                     'B' => [],
@@ -156,7 +157,7 @@ class HolidayService
             }
         }
 
-        return [!empty($zonesInHolidays), $zonesInHolidays];
+        return [! empty($zonesInHolidays), $zonesInHolidays];
     }
 
     /**
@@ -170,15 +171,15 @@ class HolidayService
         curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
         curl_setopt($ch, CURLOPT_TIMEOUT, 30);
         $data = curl_exec($ch);
-        
+
         if (curl_errno($ch)) {
             $error = curl_error($ch);
             curl_close($ch);
-            throw new \Exception('Erreur cURL : ' . $error);
+            throw new \Exception('Erreur cURL : '.$error);
         }
-        
+
         curl_close($ch);
+
         return $data;
     }
 }
-

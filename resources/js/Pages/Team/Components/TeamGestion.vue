@@ -1,149 +1,153 @@
 <template>
     <div class="p-6">
-        <!-- Team Info Card -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm mb-6 overflow-hidden transition-all duration-300 hover:shadow-md">
-            <div class="p-4 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <!-- Modern Team Info Card -->
+        <div class="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 rounded-xl shadow-lg mb-6 overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-200/50 dark:border-gray-700/50">
+            <div class="p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
                 <div class="flex items-center">
-                    <div class="mr-4">
+                    <div class="mr-5">
                         <div v-if="team.logo_url" class="relative inline-block">
-                            <img :src="team.logo_url" alt="Logo" class="rounded-full w-16 h-16 object-cover border-2 border-indigo-100 dark:border-indigo-900 shadow-sm" />
+                            <img :src="team.logo_url" alt="Logo" class="rounded-2xl w-20 h-20 object-cover border-4 border-indigo-200 dark:border-indigo-800 shadow-lg ring-2 ring-indigo-100 dark:ring-indigo-900" />
                             <button @click.prevent="deleteLogo()" id="deleteImage"
-                                class="absolute top-0 right-0 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center transform translate-x-1/3 -translate-y-1/3 shadow-sm hover:bg-red-600 transition-colors duration-200">
+                                class="absolute -top-1 -right-1 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-full w-7 h-7 flex items-center justify-center shadow-lg hover:from-red-600 hover:to-red-700 transition-all duration-300 transform hover:scale-110 ring-2 ring-white dark:ring-gray-800">
                                 <i class="fas fa-times text-xs"></i>
                             </button>
                         </div>
-                        <div v-else class="relative inline-block bg-gray-100 dark:bg-gray-700 rounded-full w-16 h-16 flex items-center justify-center">
-                            <i class="fas fa-building text-indigo-500 dark:text-indigo-400 text-2xl"></i>
+                        <div v-else class="relative inline-block bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900 dark:to-purple-900 rounded-2xl w-20 h-20 flex items-center justify-center shadow-lg ring-2 ring-indigo-100 dark:ring-indigo-900">
+                            <i class="fas fa-building text-indigo-600 dark:text-indigo-300 text-3xl"></i>
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ team.name }}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">
+                        <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">{{ team.name }}</h3>
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2 flex items-center">
+                            <i class="fas fa-map-marker-alt mr-2 text-indigo-500 dark:text-indigo-400"></i>
                             <span v-if="team.departement">{{ team.departement }}</span>
                             <span v-if="team.departement && team.code_departement"> - </span>
                             <span v-if="team.code_departement">{{ team.code_departement }}</span>
                         </p>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 flex items-center" v-if="team.coordinateur">
-                            <i class="fas fa-user-tie mr-1 text-indigo-500 dark:text-indigo-400"></i>
-                            Coordinateur: {{ team.coordinateur.name }}
+                        <p class="text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center" v-if="team.coordinateur">
+                            <i class="fas fa-user-tie mr-2 text-indigo-500 dark:text-indigo-400"></i>
+                            Coordinateur: <span class="font-semibold ml-1">{{ team.coordinateur.name }}</span>
                         </p>
                     </div>
                 </div>
                 <div>
-                    <SecondaryButton @click="editTeam()" class="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm transition-all duration-200 transform hover:scale-105 flex items-center">
+                    <SecondaryButton @click="editTeam()" class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white border-0 shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center px-5 py-3 rounded-xl font-semibold">
                         <i class="fas fa-edit mr-2"></i> Modifier
                     </SecondaryButton>
                 </div>
             </div>
         </div>
 
-        <!-- Team Settings Parameters -->
+        <!-- Modern Team Settings Parameters -->
         <div class="flex flex-col mt-6">
-            <h4 class="text-lg font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
-                <i class="fas fa-toggle-on mr-2 text-indigo-500 dark:text-indigo-400"></i> Options et modules
+            <h4 class="text-lg font-bold text-gray-800 dark:text-white mb-5 flex items-center">
+                <div class="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 mr-3 shadow-lg">
+                    <i class="fas fa-toggle-on text-white"></i>
+                </div>
+                Options et modules
             </h4>
-            <div class="overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div class="overflow-hidden rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200/50 dark:border-gray-700/50">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gray-50 dark:bg-gray-700">
+                        <thead class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30">
                         <tr>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Option
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Statut
                             </th>
                         </tr>
                         </thead>
 
                         <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        <tr>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                                <div class="p-2 rounded-full bg-blue-100 dark:bg-blue-900 mr-3">
-                                    <i id="sendCoordinateur" class="fas fa-user-tie text-blue-600 dark:text-blue-400"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                                <div class="p-3 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg mr-4">
+                                    <i id="sendCoordinateur" class="fas fa-user-tie text-white"></i>
                                 </div>
                                 <span>Afficher le Coordinateur dans le planning</span>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-300 ease-in">
                                     <checkbox @update:checked="val => updateTeamParamsCheck('send_coordinateur', val)" :checked="team.params.send_coordinateur" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                                <div class="p-2 rounded-full bg-green-100 dark:bg-green-900 mr-3">
-                                    <i id="updatePlanning" class="fas fa-calendar-check text-green-600 dark:text-green-400"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                                <div class="p-3 rounded-xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg mr-4">
+                                    <i id="updatePlanning" class="fas fa-calendar-check text-white"></i>
                                 </div>
                                 <span>Autoriser la modification du planning</span>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-300 ease-in">
                                     <checkbox @update:checked="val => updateTeamParamsCheck('update_planning', val)" :checked="team.params.update_planning" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                                <div class="p-2 rounded-full bg-indigo-100 dark:bg-indigo-900 mr-3">
-                                    <i id="shareLinkPlanning" class="fas fa-share-alt text-indigo-600 dark:text-indigo-400"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                                <div class="p-3 rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-600 shadow-lg mr-4">
+                                    <i id="shareLinkPlanning" class="fas fa-share-alt text-white"></i>
                                 </div>
                                 <span>Partage du planning</span>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-300 ease-in">
                                     <checkbox @update:checked="val => updateTeamParamsCheck('share_link_planning', val)" :checked="team.params.share_link_planning" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                                <div class="p-2 rounded-full bg-amber-100 dark:bg-amber-900 mr-3">
-                                    <i id="paid_leave" class="fas fa-umbrella-beach text-amber-600 dark:text-amber-400"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                                <div class="p-3 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg mr-4">
+                                    <i id="paid_leave" class="fas fa-umbrella-beach text-white"></i>
                                 </div>
                                 <span>Gestion des congés</span>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-300 ease-in">
                                     <checkbox @update:checked="val => updateTeamParamsCheck('paid_leave', val)" :checked="team.params.paid_leave" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                                <div class="p-2 rounded-full bg-red-100 dark:bg-red-900 mr-3">
-                                    <i id="moduleAlert" class="fas fa-bell text-red-600 dark:text-red-400"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                                <div class="p-3 rounded-xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg mr-4">
+                                    <i id="moduleAlert" class="fas fa-bell text-white"></i>
                                 </div>
                                 <span>Module d'alerte</span>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-300 ease-in">
                                     <checkbox @update:checked="val => updateTeamParamsCheck('module_alert', val)" :checked="team.params.module_alert" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                                <div class="p-2 rounded-full bg-purple-100 dark:bg-purple-900 mr-3">
-                                    <i id="shareLink" class="fas fa-link text-purple-600 dark:text-purple-400"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                                <div class="p-3 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg mr-4">
+                                    <i id="shareLink" class="fas fa-link text-white"></i>
                                 </div>
                                 <span>Partage de liens</span>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-300 ease-in">
                                     <checkbox @update:checked="val => updateTeamParamsCheck('share_link', val)" :checked="team.params.share_link" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center">
-                                <div class="p-2 rounded-full bg-teal-100 dark:bg-teal-900 mr-3">
-                                    <i id="exchangeModule" class="fas fa-exchange-alt text-teal-600 dark:text-teal-400"></i>
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200">
+                            <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200 flex items-center">
+                                <div class="p-3 rounded-xl bg-gradient-to-br from-teal-500 to-teal-600 shadow-lg mr-4">
+                                    <i id="exchangeModule" class="fas fa-exchange-alt text-white"></i>
                                 </div>
                                 <span>Module d'échange de planning</span>
                             </td>
-                            <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
-                                <div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+                            <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-300 ease-in">
                                     <checkbox @update:checked="val => updateTeamParamsCheck('exchange_module', val)" :checked="team.params.exchange_module" class="toggle-checkbox"></checkbox>
                                 </div>
                             </td>
@@ -305,7 +309,7 @@ export default {
 </script>
 
 <style scoped>
-/* Toggle checkbox styling */
+/* Modern Toggle checkbox styling */
 .toggle-checkbox {
     /* Reset tous les styles par défaut */
     -webkit-appearance: none !important;
@@ -319,10 +323,10 @@ export default {
     /* Nos styles personnalisés */
     position: relative;
     cursor: pointer;
-    height: 1.5rem;
-    width: 3rem;
+    height: 1.75rem;
+    width: 3.5rem;
     border-radius: 9999px;
-    transition: background-color 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dark .toggle-checkbox {
@@ -330,17 +334,35 @@ export default {
 }
 
 .toggle-checkbox:checked {
-    background-color: #6366f1 !important; /* bg-indigo-500 */
+    background: linear-gradient(to right, #4f46e5, #7c3aed) !important; /* gradient indigo-purple plus foncé */
     background-image: none !important;
+    box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.6) !important;
+}
+
+.dark .toggle-checkbox:checked {
+    background: linear-gradient(to right, #6366f1, #a855f7) !important; /* gradient plus clair en dark mode */
+    box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.7) !important;
+}
+
+.toggle-checkbox:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+}
+
+.toggle-checkbox:checked:hover {
+    box-shadow: 0 6px 20px 0 rgba(99, 102, 241, 0.5) !important;
 }
 
 .toggle-checkbox:focus {
     outline: none !important;
-    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #6366f1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2) !important;
+}
+
+.toggle-checkbox:checked:focus {
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3), 0 4px 14px 0 rgba(99, 102, 241, 0.4) !important;
 }
 
 .toggle-checkbox:checked:after {
-    transform: translateX(1.5rem);
+    transform: translateX(1.75rem);
 }
 
 .toggle-checkbox:after {
@@ -348,11 +370,12 @@ export default {
     position: absolute;
     top: 0.25rem;
     left: 0.25rem;
-    height: 1rem;
-    width: 1rem;
+    height: 1.25rem;
+    width: 1.25rem;
     border-radius: 9999px;
-    background-color: white;
-    transition: transform 0.3s ease;
+    background: linear-gradient(to bottom, #ffffff, #f9fafb);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Card hover effects */

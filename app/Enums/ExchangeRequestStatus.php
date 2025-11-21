@@ -38,7 +38,7 @@ enum ExchangeRequestStatus: string
      */
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PENDING => 'En attente',
             self::ACCEPTED => 'Accepté',
             self::REJECTED => 'Refusé',
@@ -46,4 +46,3 @@ enum ExchangeRequestStatus: string
         };
     }
 }
-

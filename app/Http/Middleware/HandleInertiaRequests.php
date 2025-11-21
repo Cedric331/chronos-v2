@@ -38,7 +38,7 @@ class HandleInertiaRequests extends Middleware
         if ($user) {
             // Charger la relation team avec params sur l'utilisateur
             $user->load('team.params');
-            
+
             if (config('teams.active') && $user->team_id) {
                 // Charger l'équipe avec ses relations
                 $team = Team::with(['rotations.details', 'params'])->find($user->team_id);

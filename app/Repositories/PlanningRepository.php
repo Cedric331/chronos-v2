@@ -44,7 +44,7 @@ class PlanningRepository
         Carbon $endOfWeek
     ): Collection {
         $cacheKey = "team_plannings_{$teamId}_{$startOfWeek->format('Y-m-d')}";
-        
+
         return Cache::remember($cacheKey, 3600, function () use ($teamId, $startOfWeek, $endOfWeek) {
             return Planning::where('team_id', $teamId)
                 ->whereHas('calendar', function ($query) use ($startOfWeek, $endOfWeek) {
@@ -80,4 +80,3 @@ class PlanningRepository
         return Planning::find($id);
     }
 }
-

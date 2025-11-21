@@ -26,7 +26,7 @@ class UserRepository
     {
         $query = User::where('team_id', $teamId);
 
-        if (!empty($with)) {
+        if (! empty($with)) {
             $query->with($with);
         }
 
@@ -39,7 +39,7 @@ class UserRepository
             $q->where('name', $role);
         });
 
-        if (!empty($with)) {
+        if (! empty($with)) {
             $query->with($with);
         }
 
@@ -52,7 +52,7 @@ class UserRepository
             $q->whereIn('name', $roles);
         });
 
-        if (!empty($with)) {
+        if (! empty($with)) {
             $query->with($with);
         }
 
@@ -90,4 +90,3 @@ class UserRepository
         return $user->delete();
     }
 }
-

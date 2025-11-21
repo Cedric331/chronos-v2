@@ -6,7 +6,6 @@ use App\Models\User;
 use App\Repositories\CalendarRepository;
 use App\Repositories\PlanningRepository;
 use Carbon\Carbon;
-use Illuminate\Support\Collection;
 
 class CalendarService
 {
@@ -33,7 +32,7 @@ class CalendarService
         // Assigner number_week à chaque jour du calendrier
         foreach ($calendar as $day) {
             if (isset($day->date)) {
-                $day->number_week = Carbon::parse($day->date)->isoFormat('W') . Carbon::parse($day->date)->isoFormat('GGGG');
+                $day->number_week = Carbon::parse($day->date)->isoFormat('W').Carbon::parse($day->date)->isoFormat('GGGG');
             }
         }
 
@@ -53,7 +52,7 @@ class CalendarService
         $monday = Carbon::now()->startOfWeek();
 
         $startDate = $getAllPlanning ? null : $monday;
-        
+
         $calendar = $this->calendarRepository->getCalendarsWithPlanningsForUser(
             $user->id,
             $user->team_id,
@@ -63,7 +62,7 @@ class CalendarService
         // Assigner number_week à chaque jour du calendrier
         foreach ($calendar as $day) {
             if (isset($day->date)) {
-                $day->number_week = Carbon::parse($day->date)->isoFormat('W') . Carbon::parse($day->date)->isoFormat('GGGG');
+                $day->number_week = Carbon::parse($day->date)->isoFormat('W').Carbon::parse($day->date)->isoFormat('GGGG');
             }
         }
 
@@ -81,7 +80,7 @@ class CalendarService
     public function getPlanningTeam(User $user, int $dayId, bool $mobile = false): array
     {
         $day = $this->calendarRepository->find($dayId);
-        if (!$day) {
+        if (! $day) {
             return ['calendar' => collect([]), 'weeklyHours' => []];
         }
 
@@ -124,4 +123,3 @@ class CalendarService
         ];
     }
 }
-

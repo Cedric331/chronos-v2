@@ -4,84 +4,86 @@
         <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
                 <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 flex items-center">
-                    <i class="fas fa-users text-indigo-500 dark:text-indigo-400 mr-2"></i>
+                    <div class="p-2 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 mr-3 shadow-lg">
+                        <i class="fas fa-users text-white"></i>
+                    </div>
                     {{ $t('team_user.titre') }}
                 </h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400" v-if="users">
-                    {{ users.length }} membre<span v-if="users.length !== 1">s</span> dans l'équipe
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400" v-if="users">
+                    <span class="font-bold text-indigo-600 dark:text-indigo-400">{{ users.length }}</span> membre<span v-if="users.length !== 1">s</span> dans l'équipe
                 </p>
             </div>
             <div>
                 <SecondaryButton
                     @click="createUser()"
-                    class="bg-indigo-600 hover:bg-indigo-700 text-white border-0 shadow-sm transition-all duration-200 transform hover:scale-105 flex items-center"
+                    class="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white border-0 shadow-lg transition-all duration-300 transform hover:scale-105 flex items-center px-5 py-3 rounded-xl font-semibold"
                 >
                     <i class="fas fa-user-plus mr-2"></i> {{ $t('team_user.buttonAdd') }}
                 </SecondaryButton>
             </div>
         </div>
         <div class="flex flex-col">
-            <div class="overflow-hidden rounded-lg bg-white dark:bg-gray-800 shadow-sm transition-all duration-300 hover:shadow-md">
+            <div class="overflow-hidden rounded-xl bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg transition-all duration-300 hover:shadow-xl border border-gray-200/50 dark:border-gray-700/50">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                        <thead class="bg-gray-50 dark:bg-gray-700">
+                        <thead class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/30 dark:to-purple-900/30">
                         <tr>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Avatar
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 {{ $t('name') }}
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Email
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Anniversaire
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Rôle
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                                 Statut
                             </th>
-                            <th scope="col" class="p-4 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                            <th scope="col" class="p-5 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                         </tr>
                         </thead>
 
                         <tbody v-if="users" class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                            <tr v-for="(user, i) in users">
-                                <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-700 dark:text-gray-300">
+                            <tr v-for="(user, i) in users" class="hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors duration-200 hover-row">
+                                <td class="p-5 whitespace-nowrap text-sm font-normal text-gray-700 dark:text-gray-300">
                                     <div class="flex items-center justify-center">
-                                        <img :src="user.avatar" class="h-10 w-10 rounded-full object-cover border-2 border-indigo-100 dark:border-indigo-900 shadow-sm" alt="Avatar">
+                                        <img :src="user.avatar" class="h-12 w-12 rounded-2xl object-cover border-2 border-indigo-200 dark:border-indigo-800 shadow-lg ring-2 ring-indigo-100 dark:ring-indigo-900" alt="Avatar">
                                     </div>
                                 </td>
-                                <td class="p-4 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
+                                <td class="p-5 whitespace-nowrap text-sm font-semibold text-gray-800 dark:text-gray-200">
                                     <div class="flex items-center">
-                                        <i class="fas fa-user-circle text-indigo-500 mr-2"></i>
+                                        <i class="fas fa-user-circle text-indigo-500 dark:text-indigo-400 mr-3 text-lg"></i>
                                         {{ user.name }}
                                     </div>
                                 </td>
-                                <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-700 dark:text-gray-300">
+                                <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
                                     <div class="flex items-center">
-                                        <i class="fas fa-envelope text-gray-400 mr-2"></i>
+                                        <i class="fas fa-envelope text-gray-500 dark:text-gray-400 mr-3"></i>
                                         {{ user.email }}
                                     </div>
                                 </td>
-                                <td class="p-4 whitespace-nowrap text-sm font-normal text-gray-700 dark:text-gray-300">
+                                <td class="p-5 whitespace-nowrap text-sm font-medium text-gray-700 dark:text-gray-300">
                                     <div class="flex items-center">
-                                        <i class="fas fa-birthday-cake text-pink-500 mr-2"></i>
+                                        <i class="fas fa-birthday-cake text-pink-500 dark:text-pink-400 mr-3"></i>
                                         <span v-if="user.birthday">{{ dateFormatFr(user.birthday) }}</span>
-                                        <span v-else class="text-gray-400 dark:text-gray-200 italic">Non défini</span>
+                                        <span v-else class="text-gray-400 dark:text-gray-500 italic">Non défini</span>
                                     </div>
                                 </td>
-                                <td class="p-4 whitespace-nowrap text-sm font-normal">
-                                    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium" :class="{
-                                        'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300': user.role === 'Administrateur',
-                                        'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300': user.role === 'Responsable',
-                                        'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300': user.role === 'Coordinateur',
-                                        'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300': user.role === 'Conseiller'
+                                <td class="p-5 whitespace-nowrap text-sm font-normal">
+                                    <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-xs font-bold shadow-sm" :class="{
+                                        'bg-gradient-to-r from-indigo-500 to-indigo-600 text-white': user.role === 'Administrateur',
+                                        'bg-gradient-to-r from-purple-500 to-purple-600 text-white': user.role === 'Responsable',
+                                        'bg-gradient-to-r from-blue-500 to-blue-600 text-white': user.role === 'Coordinateur',
+                                        'bg-gradient-to-r from-gray-400 to-gray-500 text-white': user.role === 'Conseiller'
                                     }">
-                                        <i class="mr-1" :class="{
+                                        <i class="mr-1.5" :class="{
                                             'fas fa-crown': user.role === 'Administrateur',
                                             'fas fa-user-shield': user.role === 'Responsable',
                                             'fas fa-user-tie': user.role === 'Coordinateur',
@@ -90,31 +92,31 @@
                                         {{ user.role }}
                                     </span>
                                 </td>
-                                <td class="p-4 whitespace-nowrap text-sm font-normal">
+                                <td class="p-5 whitespace-nowrap text-sm font-normal">
                                     <div v-if="user.account_active" class="flex items-center justify-center">
-                                        <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600 dark:bg-green-900 dark:text-green-300">
+                                        <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-600 text-white shadow-lg">
                                             <i class="fas fa-check-circle"></i>
                                         </span>
                                     </div>
                                     <div v-else>
                                         <div v-if="user.CanResendInvitation">
-                                            <button @click.prevent="sendInvitation(user)" class="inline-flex items-center px-3 py-1.5 bg-indigo-600 text-white text-xs font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200">
-                                                <i class="fas fa-paper-plane mr-1.5"></i> Renvoyer
+                                            <button @click.prevent="sendInvitation(user)" class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white text-xs font-semibold rounded-xl hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 shadow-lg transform hover:scale-105">
+                                                <i class="fas fa-paper-plane mr-2"></i> Renvoyer
                                             </button>
                                         </div>
                                         <div v-else class="flex items-center justify-center">
-                                            <span class="inline-flex items-center justify-center w-8 h-8 rounded-full bg-amber-100 text-amber-600 dark:bg-amber-900 dark:text-amber-300">
+                                            <span class="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 text-white shadow-lg">
                                                 <i class="fas fa-clock"></i>
                                             </span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="p-4 whitespace-nowrap text-sm font-normal">
+                                <td class="p-5 whitespace-nowrap text-sm font-normal">
                                     <div class="flex items-center space-x-3 justify-center">
-                                        <button @click="editUser(user)" class="p-1.5 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 hover:text-blue-700 transition-colors duration-200 dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
+                                        <button @click="editUser(user)" class="p-2.5 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-300 shadow-lg transform hover:scale-110">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <button v-if="$page.props.auth.user.id !== user.id" @click="confirmDelete(user)" class="p-1.5 rounded-full bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 transition-colors duration-200 dark:bg-red-900 dark:text-red-300 dark:hover:bg-red-800">
+                                        <button v-if="$page.props.auth.user.id !== user.id" @click="confirmDelete(user)" class="p-2.5 rounded-xl bg-gradient-to-br from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 transition-all duration-300 shadow-lg transform hover:scale-110">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </div>
@@ -335,6 +337,30 @@ export default {
 
 .items-center {
     align-items: center;
+}
+
+/* Hover row text visibility */
+.hover-row:hover td {
+    color: #111827 !important; /* text-gray-900 */
+}
+
+.dark .hover-row:hover td {
+    color: #f9fafb !important; /* text-gray-50 */
+}
+
+.hover-row:hover td .text-gray-400,
+.hover-row:hover td .text-gray-500 {
+    color: #6b7280 !important; /* text-gray-500 */
+}
+
+.dark .hover-row:hover td .text-gray-400,
+.dark .hover-row:hover td .text-gray-500 {
+    color: #d1d5db !important; /* text-gray-300 */
+}
+
+.hover-row:hover td .text-indigo-500,
+.hover-row:hover td .text-pink-500 {
+    opacity: 0.9;
 }
 
 /* Responsive adjustments */

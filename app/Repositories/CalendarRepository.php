@@ -29,7 +29,7 @@ class CalendarRepository
         $query = Calendar::where('date', '>=', $startDate)
             ->where('date', '<=', $endDate);
 
-        if (!empty($with)) {
+        if (! empty($with)) {
             $query->with($with);
         }
 
@@ -61,4 +61,3 @@ class CalendarRepository
         return $query->get();
     }
 }
-

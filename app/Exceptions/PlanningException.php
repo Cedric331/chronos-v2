@@ -31,4 +31,3 @@ class PlanningException extends Exception
         return new self('Ce type de jour ne peut pas être modifié.', 422);
     }
 }
-

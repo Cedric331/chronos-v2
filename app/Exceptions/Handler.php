@@ -44,10 +44,10 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             // Log les exceptions personnalisées avec plus de contexte
-            if ($e instanceof PlanningException || 
-                $e instanceof ExchangeException || 
+            if ($e instanceof PlanningException ||
+                $e instanceof ExchangeException ||
                 $e instanceof TeamException) {
-                \Log::warning('Exception métier: ' . $e->getMessage(), [
+                \Log::warning('Exception métier: '.$e->getMessage(), [
                     'exception' => get_class($e),
                     'code' => $e->getCode(),
                     'trace' => $e->getTraceAsString(),
@@ -59,10 +59,10 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $e)
     {
         // Gérer les exceptions personnalisées
-        if ($e instanceof PlanningException || 
-            $e instanceof ExchangeException || 
+        if ($e instanceof PlanningException ||
+            $e instanceof ExchangeException ||
             $e instanceof TeamException) {
-            
+
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
                     'message' => $e->getMessage(),

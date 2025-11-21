@@ -1,112 +1,161 @@
 <template>
     <AuthenticatedLayout>
-        <div class="flex overflow-hidden" :class="[$store.state.isDarkMode ? 'bg-gray-900' : 'bg-gray-100']">
+        <div class="flex overflow-hidden min-h-screen" :class="[$store.state.isDarkMode ? 'bg-gradient-to-br from-gray-900 via-gray-900 to-gray-800' : 'bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200']">
             <div id="main-content" class="h-full w-full relative overflow-y-auto" :style="{ backgroundColor: $store.state.isDarkMode ? '' : $page.props.auth.team.params.color2 }">
                 <main>
-                    <div class="container mx-auto px-4 py-8">
-                        <!-- Dashboard Header with stats -->
-                        <div class="mb-8">
-                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-                                <div>
-                                    <h1 class="text-3xl font-bold mb-2" :class="$store.state.isDarkMode ? 'text-white' : 'text-gray-800'">
-                                        <i class="fas fa-tachometer-alt mr-2"></i> Tableau de bord administrateur
-                                    </h1>
-                                    <p class="text-sm" :class="$store.state.isDarkMode ? 'text-gray-300' : 'text-gray-600'">
-                                        Gérez vos équipes et consultez les activités du système
-                                    </p>
+                    <div class="mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+                        <!-- Dashboard Header -->
+                        <div class="mb-8 lg:mb-12">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+                                <div class="mb-4 md:mb-0">
+                                    <div class="flex items-center mb-3">
+                                        <div class="p-3 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg mr-4 transform hover:scale-110 transition-transform duration-300">
+                                            <i class="fas fa-tachometer-alt text-white text-2xl"></i>
+                                        </div>
+                                        <div>
+                                            <h1 class="text-4xl lg:text-5xl font-bold mb-2 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent dark:from-indigo-400 dark:to-purple-400">
+                                                Tableau de bord
+                                            </h1>
+                                            <p class="text-base lg:text-lg" :class="$store.state.isDarkMode ? 'text-gray-400' : 'text-gray-600'">
+                                                Gérez vos équipes et consultez les activités du système
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Quick stats cards -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-blue-500 transition-all duration-300 hover:shadow-md">
-                                    <div class="flex items-center">
-                                        <div class="p-3 rounded-full bg-blue-100 dark:bg-blue-900 mr-4">
-                                            <i class="fas fa-users text-blue-500 dark:text-blue-300 text-xl"></i>
+                            <!-- Enhanced Stats Cards -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 mb-8">
+                                <!-- Teams Card -->
+                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-blue-400/50 dark:hover:border-blue-500/50 transform hover:-translate-y-2">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-4 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                <i class="fas fa-users text-white text-2xl"></i>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ teamsProps.length }}</p>
+                                                <p class="text-xs font-semibold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Équipes</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Équipes</p>
-                                            <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ teamsProps.length }}</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-green-500 transition-all duration-300 hover:shadow-md">
-                                    <div class="flex items-center">
-                                        <div class="p-3 rounded-full bg-green-100 dark:bg-green-900 mr-4">
-                                            <i class="fas fa-user-tie text-green-500 dark:text-green-300 text-xl"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Coordinateurs</p>
-                                            <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ coordinateursProps.length }}</p>
+                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full" :style="{ width: Math.min((teamsProps.length / 10) * 100, 100) + '%' }"></div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-purple-500 transition-all duration-300 hover:shadow-md">
-                                    <div class="flex items-center">
-                                        <div class="p-3 rounded-full bg-purple-100 dark:bg-purple-900 mr-4">
-                                            <i class="fas fa-calendar-alt text-purple-500 dark:text-purple-300 text-xl"></i>
+                                <!-- Coordinators Card -->
+                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-green-400/50 dark:hover:border-green-500/50 transform hover:-translate-y-2">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-green-500/10 to-green-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-4 rounded-xl bg-gradient-to-br from-green-500 to-green-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                <i class="fas fa-user-tie text-white text-2xl"></i>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ coordinateursProps.length }}</p>
+                                                <p class="text-xs font-semibold text-green-600 dark:text-green-400 uppercase tracking-wider">Coordinateurs</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Date</p>
-                                            <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ currentDate }}</p>
+                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                            <div class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full" :style="{ width: Math.min((coordinateursProps.length / 10) * 100, 100) + '%' }"></div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm p-4 border-l-4 border-amber-500 transition-all duration-300 hover:shadow-md">
-                                    <div class="flex items-center">
-                                        <div class="p-3 rounded-full bg-amber-100 dark:bg-amber-900 mr-4">
-                                            <i class="fas fa-clock text-amber-500 dark:text-amber-300 text-xl"></i>
+                                <!-- Date Card -->
+                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-purple-400/50 dark:hover:border-purple-500/50 transform hover:-translate-y-2">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-4 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                <i class="fas fa-calendar-alt text-white text-2xl"></i>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-1">{{ currentDate }}</p>
+                                                <p class="text-xs font-semibold text-purple-600 dark:text-purple-400 uppercase tracking-wider">Date</p>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Heure</p>
-                                            <p class="text-lg font-semibold text-gray-700 dark:text-gray-200">{{ currentTime }}</p>
+                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="h-full bg-gradient-to-r from-purple-500 to-purple-600 rounded-full w-full"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Time Card -->
+                                <div class="group relative overflow-hidden bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-200/50 dark:border-gray-700/50 hover:border-amber-400/50 dark:hover:border-amber-500/50 transform hover:-translate-y-2">
+                                    <div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-amber-600/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                    <div class="relative p-6">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="p-4 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 shadow-lg transform group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                                                <i class="fas fa-clock text-white text-2xl"></i>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-1">{{ currentTime }}</p>
+                                                <p class="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">Heure</p>
+                                            </div>
+                                        </div>
+                                        <div class="h-1 bg-gray-200 dark:bg-gray-700 rounded-full">
+                                            <div class="h-full bg-gradient-to-r from-amber-500 to-amber-600 rounded-full w-full animate-pulse"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Tabs Navigation -->
-                        <div class="mb-6">
-                            <div class="border-b border-gray-200 dark:border-gray-700">
-                                <ul class="flex flex-wrap -mb-px">
-                                    <li class="mr-2" v-for="(tab, index) in tabs" :key="index">
+                        <!-- Enhanced Tabs Navigation -->
+                        <div class="mb-8">
+                            <div class="bg-white/60 dark:bg-gray-800/60 backdrop-blur-md rounded-2xl p-2 shadow-lg border border-gray-200/50 dark:border-gray-700/50">
+                                <ul class="flex flex-wrap gap-2 justify-center sm:justify-start">
+                                    <li v-for="(tab, index) in tabs" :key="index" class="flex-1 sm:flex-initial">
                                         <a @click.prevent="activeTab = tab.id"
-                                           :class="[activeTab === tab.id ?
-                                                'border-indigo-500 text-indigo-600 dark:text-indigo-400 dark:border-indigo-400' :
-                                                'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300',
-                                                'inline-flex items-center py-4 px-4 font-medium text-sm border-b-2 cursor-pointer transition-all duration-200']"
+                                           :class="[
+                                               activeTab === tab.id ?
+                                                   'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg' :
+                                                   'bg-gray-100/80 dark:bg-gray-700/50 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600/50',
+                                               'inline-flex items-center justify-center py-3.5 px-6 font-semibold text-sm rounded-xl cursor-pointer transition-all duration-300 w-full sm:w-auto min-w-[160px]'
+                                           ]"
                                         >
-                                            <i :class="[tab.icon, 'mr-2']"></i> {{ tab.name }}
+                                            <i :class="[tab.icon, 'mr-2 text-base']"></i>
+                                            <span class="hidden sm:inline whitespace-nowrap">{{ tab.name }}</span>
+                                            <span class="sm:hidden whitespace-nowrap">{{ tab.shortName || tab.name }}</span>
                                         </a>
                                     </li>
                                 </ul>
                             </div>
                         </div>
 
-                        <!-- Tab Content -->
-                        <div class="transition-all duration-300 ease-in-out">
+                        <!-- Tab Content with Enhanced Animations -->
+                        <div class="transition-all duration-500 ease-in-out">
                             <!-- Teams Section -->
-                            <div v-if="activeTab === 'teams'" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-                                <div class="p-4 bg-indigo-50 dark:bg-indigo-900 border-b border-indigo-100 dark:border-indigo-800">
-                                    <h2 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300">
-                                        <i class="fas fa-users mr-2"></i> Gestion des équipes
-                                    </h2>
+                            <div v-if="activeTab === 'teams'" class="animate-fade-in">
+                                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transition-all duration-500 hover:shadow-2xl">
+                                    <div class="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 border-b border-indigo-400/20">
+                                        <h2 class="text-xl font-bold text-white flex items-center">
+                                            <i class="fas fa-users mr-3 text-2xl"></i>
+                                            <span>Gestion des équipes</span>
+                                        </h2>
+                                    </div>
+                                    <div class="p-6">
+                                        <Teams :teams-props="teamsProps" :coordinateursProps="coordinateursProps" />
+                                    </div>
                                 </div>
-                                <Teams :teams-props="teamsProps" :coordinateursProps="coordinateursProps" />
                             </div>
 
                             <!-- Log Section -->
-                            <div v-if="activeTab === 'logs'" class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-all duration-300 hover:shadow-lg">
-                                <div class="p-4 bg-indigo-50 dark:bg-indigo-900 border-b border-indigo-100 dark:border-indigo-800">
-                                    <h2 class="text-lg font-semibold text-indigo-700 dark:text-indigo-300">
-                                        <i class="fas fa-history mr-2"></i> Journal d'activités
-                                    </h2>
+                            <div v-if="activeTab === 'logs'" class="animate-fade-in">
+                                <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-gray-200/50 dark:border-gray-700/50 transition-all duration-500 hover:shadow-2xl">
+                                    <div class="p-6 bg-gradient-to-r from-indigo-500 to-purple-600 border-b border-indigo-400/20">
+                                        <h2 class="text-xl font-bold text-white flex items-center">
+                                            <i class="fas fa-history mr-3 text-2xl"></i>
+                                            <span>Journal d'activités</span>
+                                        </h2>
+                                    </div>
+                                    <div class="p-6">
+                                        <Log></Log>
+                                    </div>
                                 </div>
-                                <Log></Log>
                             </div>
                         </div>
                     </div>
@@ -146,8 +195,8 @@ export default defineComponent({
         return {
             activeTab: 'teams',
             tabs: [
-                { id: 'teams', name: 'Équipes', icon: 'fas fa-users' },
-                { id: 'logs', name: 'Journal d\'activités', icon: 'fas fa-history' }
+                { id: 'teams', name: 'Équipes', shortName: 'Équipes', icon: 'fas fa-users' },
+                { id: 'logs', name: 'Journal d\'activités', shortName: 'Journal', icon: 'fas fa-history' }
             ],
             currentDate: '',
             currentTime: '',
@@ -176,40 +225,125 @@ export default defineComponent({
     max-width: 1600px;
 }
 
-/* Transitions pour les éléments */
+/* Enhanced Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.animate-slide-in {
+    animation: slideIn 0.4s ease-out;
+}
+
+/* Glassmorphism effect */
+.backdrop-blur-sm {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.backdrop-blur-md {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* Enhanced transitions */
 .transition-all {
     transition-property: all;
     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.duration-300 {
-    transition-duration: 300ms;
+/* Gradient text */
+.bg-clip-text {
+    -webkit-background-clip: text;
+    background-clip: text;
 }
 
-/* Animations */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+.text-transparent {
+    color: transparent;
 }
 
-.fade-in {
-    animation: fadeIn 0.3s ease-in-out;
+/* Smooth hover effects */
+.group:hover .group-hover\:scale-110 {
+    transform: scale(1.1);
 }
 
-/* Hover effects */
+.group:hover .group-hover\:rotate-6 {
+    transform: rotate(6deg);
+}
+
+/* Card hover effects */
 .hover-lift {
-    transition: transform 0.2s ease;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hover-lift:hover {
-    transform: translateY(-3px);
+    transform: translateY(-8px);
 }
 
 /* Responsive adjustments */
-@media (max-width: 768px) {
+@media (max-width: 640px) {
     .container {
         padding-left: 1rem;
         padding-right: 1rem;
     }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Dark mode enhancements */
+@media (prefers-color-scheme: dark) {
+    .backdrop-blur-sm {
+        background-color: rgba(31, 41, 55, 0.8);
+    }
+}
+
+/* Custom scrollbar */
+#main-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#main-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#main-content::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 4px;
+}
+
+#main-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.5);
 }
 </style>

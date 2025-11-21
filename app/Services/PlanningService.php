@@ -69,14 +69,14 @@ class PlanningService
     ): void {
         $calendar = $this->calendarRepository->findByDate($date);
 
-        if (!$calendar) {
+        if (! $calendar) {
             return;
         }
 
         $existingPlanning = $this->planningRepository
             ->findByCalendarAndUser($calendar->id, $userId);
 
-        if ($existingPlanning && !$typeFix) {
+        if ($existingPlanning && ! $typeFix) {
             try {
                 $planningType = PlanningType::from($existingPlanning->type_day);
                 if ($planningType->isFixed()) {
@@ -90,7 +90,7 @@ class PlanningService
             }
         }
 
-            $this->planningRepository->updateOrCreate([
+        $this->planningRepository->updateOrCreate([
             'id' => $existingPlanning?->id,
         ], [
             'type_day' => $detail['is_off'] ? PlanningType::REST->value : PlanningType::PLANNED->value,
@@ -116,26 +116,27 @@ class PlanningService
         $isOff = is_array($workDay) ? ($workDay['is_off'] ?? false) : ($workDay->is_off ?? false);
         $debutJournee = is_array($workDay) ? ($workDay['debut_journee'] ?? null) : ($workDay->debut_journee ?? null);
 
-        if ($isOff || !$debutJournee) {
+        if ($isOff || ! $debutJournee) {
             return null;
         }
 
         $format = 'H:i';
-        $startDayTime = is_array($workDay) 
-            ? str_replace('h', ':', $workDay['debut_journee']) 
+        $startDayTime = is_array($workDay)
+            ? str_replace('h', ':', $workDay['debut_journee'])
             : str_replace('h', ':', $workDay->debut_journee);
-        $endDayTime = is_array($workDay) 
-            ? str_replace('h', ':', $workDay['fin_journee']) 
+        $endDayTime = is_array($workDay)
+            ? str_replace('h', ':', $workDay['fin_journee'])
             : str_replace('h', ':', $workDay->fin_journee);
 
         $startDay = DateTime::createFromFormat($format, $startDayTime);
         $endDay = DateTime::createFromFormat($format, $endDayTime);
 
-        if (!$startDay || !$endDay) {
+        if (! $startDay || ! $endDay) {
             Log::warning('Erreur de format de date dans calculateWorkHours', [
                 'startDayTime' => $startDayTime,
                 'endDayTime' => $endDayTime,
             ]);
+
             return null;
         }
 
@@ -145,11 +146,11 @@ class PlanningService
         $finPause = is_array($workDay) ? ($workDay['fin_pause'] ?? null) : ($workDay->fin_pause ?? null);
 
         if ($debutPause && $finPause) {
-            $startBreakTime = is_array($workDay) 
-                ? str_replace('h', ':', $debutPause) 
+            $startBreakTime = is_array($workDay)
+                ? str_replace('h', ':', $debutPause)
                 : str_replace('h', ':', $debutPause);
-            $endBreakTime = is_array($workDay) 
-                ? str_replace('h', ':', $finPause) 
+            $endBreakTime = is_array($workDay)
+                ? str_replace('h', ':', $finPause)
                 : str_replace('h', ':', $finPause);
 
             if ($startBreakTime !== null && $endBreakTime !== null) {
@@ -166,7 +167,7 @@ class PlanningService
         $hours = intval($totalWorkHours);
         $minutes = ($totalWorkHours - $hours) * 60;
 
-        return sprintf('%02d', $hours) . 'h' . sprintf('%02d', $minutes);
+        return sprintf('%02d', $hours).'h'.sprintf('%02d', $minutes);
     }
 
     /**
@@ -176,6 +177,7 @@ class PlanningService
     {
         try {
             $planningType = PlanningType::from($typeDay);
+
             return $planningType->requiresHours();
         } catch (\ValueError $e) {
             // Si le type n'existe pas dans l'Enum, utiliser la vérification par défaut
@@ -189,34 +191,34 @@ class PlanningService
     public function calculateWeeklyHours(Collection|EloquentCollection|array $calendar): array
     {
         $weeklyHours = [];
-        
+
         // Convertir en collection si c'est un tableau
         if (is_array($calendar)) {
             $calendar = collect($calendar);
         }
-        
+
         foreach ($calendar as $index => $day) {
             // Cas 1: Structure Calendar avec plannings (structure normale)
             if (isset($day->date)) {
                 $date = $day->date;
                 $plannings = $day->plannings ?? collect();
-                
+
                 // Convertir en collection si nécessaire
                 if (is_array($plannings)) {
                     $plannings = collect($plannings);
                 }
-                
-                $weekNumber = Carbon::parse($date)->isoFormat('W') . Carbon::parse($date)->isoFormat('GGGG');
-                
+
+                $weekNumber = Carbon::parse($date)->isoFormat('W').Carbon::parse($date)->isoFormat('GGGG');
+
                 // Assigner number_week directement à l'objet Calendar pour le frontend
                 $day->number_week = $weekNumber;
-                
+
                 $firstPlanning = $plannings->first();
                 if ($firstPlanning) {
-                    $hours = is_array($firstPlanning) 
-                        ? ($firstPlanning['hours'] ?? null) 
+                    $hours = is_array($firstPlanning)
+                        ? ($firstPlanning['hours'] ?? null)
                         : ($firstPlanning->hours ?? null);
-                    
+
                     if ($hours !== null) {
                         $hoursArray = explode('h', $hours);
                         $decimalHours = intval($hoursArray[0]) + (isset($hoursArray[1]) ? intval($hoursArray[1]) / 60 : 0);
@@ -232,32 +234,32 @@ class PlanningService
             // Cas 2: Structure User avec plannings (structure pour getPlanningTeam)
             elseif (isset($dayObj->plannings)) {
                 $plannings = $dayObj->plannings;
-                
+
                 // Convertir en collection si nécessaire
                 if (is_array($plannings)) {
                     $plannings = collect($plannings);
                 }
-                
+
                 // Pour chaque planning, récupérer la date du calendrier
                 foreach ($plannings as $planning) {
                     $planningObj = is_array($planning) ? (object) $planning : $planning;
-                    
+
                     // Récupérer la date depuis le calendrier associé
                     $calendarObj = null;
                     if (isset($planningObj->calendar)) {
-                        $calendarObj = is_array($planningObj->calendar) 
-                            ? (object) $planningObj->calendar 
+                        $calendarObj = is_array($planningObj->calendar)
+                            ? (object) $planningObj->calendar
                             : $planningObj->calendar;
                     }
-                    
+
                     if ($calendarObj && isset($calendarObj->date)) {
                         $date = $calendarObj->date;
-                        $weekNumber = Carbon::parse($date)->isoFormat('W') . Carbon::parse($date)->isoFormat('GGGG');
-                        
-                        $hours = is_array($planning) 
-                            ? ($planning['hours'] ?? null) 
+                        $weekNumber = Carbon::parse($date)->isoFormat('W').Carbon::parse($date)->isoFormat('GGGG');
+
+                        $hours = is_array($planning)
+                            ? ($planning['hours'] ?? null)
                             : ($planningObj->hours ?? null);
-                        
+
                         if ($hours !== null) {
                             $hoursArray = explode('h', $hours);
                             $decimalHours = intval($hoursArray[0]) + (isset($hoursArray[1]) ? intval($hoursArray[1]) / 60 : 0);
@@ -274,10 +276,9 @@ class PlanningService
         }
 
         foreach ($weeklyHours as $weekNumber => $decimalHours) {
-            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)) . 'h' . sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
+            $weeklyHours[$weekNumber] = sprintf('%02d', intval($decimalHours)).'h'.sprintf('%02d', ($decimalHours - intval($decimalHours)) * 60);
         }
 
         return $weeklyHours;
     }
 }
-

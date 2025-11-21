@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Team;
 use App\Models\User;
 use App\Services\CalendarService;
 use App\Services\HolidayService;
@@ -18,6 +17,7 @@ class CalendarController extends Controller
         private CalendarService $calendarService,
         private HolidayService $holidayService
     ) {}
+
     public function getPlanning(Request $request): \Inertia\Response
     {
         $user = User::with('team')->find(Auth::id());
@@ -41,7 +41,7 @@ class CalendarController extends Controller
         });
 
         $selectedUser = $user;
-        if (count($users) > 0 && !$users->contains('id', $user->id)) {
+        if (count($users) > 0 && ! $users->contains('id', $user->id)) {
             $selectedUser = $users->first();
         }
 
@@ -79,7 +79,7 @@ class CalendarController extends Controller
     public static function generateDaysWithHolidays($dateDebut = null, $dateFin = null): array
     {
         $holidayService = app(HolidayService::class);
-        
+
         $dateDebut = $dateDebut ? CarbonImmutable::parse($dateDebut) : null;
         $dateFin = $dateFin ? CarbonImmutable::parse($dateFin) : null;
 

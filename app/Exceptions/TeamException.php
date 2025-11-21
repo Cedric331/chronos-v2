@@ -21,4 +21,3 @@ class TeamException extends Exception
         return new self('Vous n\'avez pas les permissions nécessaires pour gérer cette équipe.', 403);
     }
 }
-

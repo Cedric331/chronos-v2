@@ -88,7 +88,7 @@ class TicketRepository
             'team',
             'tags',
             'comments' => function ($q) use ($isAdmin) {
-                if (!$isAdmin) {
+                if (! $isAdmin) {
                     $q->where('is_internal', false);
                 }
                 $q->with(['user', 'attachments']);
@@ -132,4 +132,3 @@ class TicketRepository
             ->get();
     }
 }
-
