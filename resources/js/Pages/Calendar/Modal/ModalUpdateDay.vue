@@ -393,25 +393,33 @@ export default {
                         return;
                     }
 
-                    let content = "<div style='padding: 8px; min-width: 200px;'>";
-                    content += `<div style='font-weight: 600; margin-bottom: 8px; font-size: 14px;'>${rotation.name}</div>`;
+                    const isDark = this.isDarkMode;
+                    const bgColor = isDark ? '#1f2937' : '#ffffff';
+                    const textColor = isDark ? '#f3f4f6' : '#111827';
+                    const borderColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+                    const secondaryTextColor = isDark ? '#9ca3af' : '#6b7280';
+                    const titleColor = isDark ? '#ffffff' : '#111827';
                     
-                    rotation.details.forEach(day => {
-                        content += `<div style='margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.1);'>`;
-                        content += `<div style='font-weight: 500; margin-bottom: 4px;'>${day.day}</div>`;
+                    let content = `<div style='padding: 12px; min-width: 220px; background-color: ${bgColor}; color: ${textColor};'>`;
+                    content += `<div style='font-weight: 600; margin-bottom: 10px; font-size: 14px; color: ${titleColor};'>${rotation.name}</div>`;
+                    
+                    rotation.details.forEach((day, index) => {
+                        const isLast = index === rotation.details.length - 1;
+                        content += `<div style='margin-bottom: ${isLast ? '0' : '8px'}; padding-bottom: ${isLast ? '0' : '8px'}; border-bottom: ${isLast ? 'none' : `1px solid ${borderColor}`};'>`;
+                        content += `<div style='font-weight: 500; margin-bottom: 4px; color: ${textColor};'>${day.day}</div>`;
                         
                         if (day.is_off) {
-                            content += `<div style='color: #9ca3af; font-size: 12px;'>Repos</div>`;
+                            content += `<div style='color: ${secondaryTextColor}; font-size: 12px;'>Repos</div>`;
                         } else if (day.debut_journee) {
-                            content += `<div style='font-size: 12px; color: #374151;'>`;
-                            content += `<div>Début: ${day.debut_journee}</div>`;
+                            content += `<div style='font-size: 12px; color: ${textColor};'>`;
+                            content += `<div style='margin-bottom: 2px;'>Début: ${day.debut_journee}</div>`;
                             if (day.debut_pause && day.fin_pause) {
-                                content += `<div>Pause: ${day.debut_pause} - ${day.fin_pause}</div>`;
+                                content += `<div style='margin-bottom: 2px;'>Pause: ${day.debut_pause} - ${day.fin_pause}</div>`;
                             }
                             content += `<div>Fin: ${day.fin_journee}</div>`;
                             content += `</div>`;
                         } else {
-                            content += `<div style='color: #9ca3af; font-size: 12px;'>Non planifié</div>`;
+                            content += `<div style='color: ${secondaryTextColor}; font-size: 12px;'>Non planifié</div>`;
                         }
                         content += `</div>`;
                     });
@@ -426,6 +434,7 @@ export default {
                             interactive: false,
                             delay: [200, 0],
                             appendTo: () => document.body,
+                            theme: isDark ? 'dark' : 'light',
                         });
                     }
                 });
