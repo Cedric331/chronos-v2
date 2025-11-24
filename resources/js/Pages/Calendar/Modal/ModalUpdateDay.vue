@@ -372,69 +372,84 @@ export default {
         }
     },
     methods: {
-        changeTab(index) {
-            this.tab = index
-            if (index === 1) {
-                this.$nextTick(() => {
-                    // Nettoyer les tooltips existants
-                    this.$page.props.auth.team.rotations.forEach(rotation => {
-                        const element = document.getElementById(rotation.name);
-                        if (element && element._tippy) {
-                            element._tippy.destroy();
-                        }
-                    });
+        initTooltips() {
+            if (!this.$page.props.auth.team || !this.$page.props.auth.team.rotations) {
+                return;
+            }
 
-                    // Créer les nouveaux tooltips
-                    this.$page.props.auth.team.rotations.forEach(rotation => {
-                        if (!rotation.details || rotation.details.length === 0) {
-                            return;
-                        }
-
-                        let content = "<div style='padding: 8px; min-width: 200px;'>";
-                        content += `<div style='font-weight: 600; margin-bottom: 8px; font-size: 14px;'>${rotation.name}</div>`;
-                        
-                        rotation.details.forEach(day => {
-                            content += `<div style='margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.1);'>`;
-                            content += `<div style='font-weight: 500; margin-bottom: 4px;'>${day.day}</div>`;
-                            
-                            if (day.is_off) {
-                                content += `<div style='color: #9ca3af; font-size: 12px;'>Repos</div>`;
-                            } else if (day.debut_journee) {
-                                content += `<div style='font-size: 12px; color: #374151;'>`;
-                                content += `<div>Début: ${day.debut_journee}</div>`;
-                                if (day.debut_pause && day.fin_pause) {
-                                    content += `<div>Pause: ${day.debut_pause} - ${day.fin_pause}</div>`;
-                                }
-                                content += `<div>Fin: ${day.fin_journee}</div>`;
-                                content += `</div>`;
-                            } else {
-                                content += `<div style='color: #9ca3af; font-size: 12px;'>Non planifié</div>`;
-                            }
-                            content += `</div>`;
-                        });
-                        content += "</div>";
-
-                        const element = document.getElementById(rotation.name);
-                        if (element) {
-                            tippy(element, {
-                                placement: 'right',
-                                content: content,
-                                allowHTML: true,
-                                theme: 'light-border',
-                                interactive: false,
-                                delay: [200, 0],
-                            });
-                        }
-                    });
-                });
-            } else {
-                // Nettoyer les tooltips quand on quitte l'onglet rotation
+            // Utiliser setTimeout pour s'assurer que le DOM est complètement rendu
+            setTimeout(() => {
+                // Nettoyer les tooltips existants
                 this.$page.props.auth.team.rotations.forEach(rotation => {
                     const element = document.getElementById(rotation.name);
                     if (element && element._tippy) {
                         element._tippy.destroy();
                     }
                 });
+
+                // Créer les nouveaux tooltips
+                this.$page.props.auth.team.rotations.forEach(rotation => {
+                    if (!rotation.details || rotation.details.length === 0) {
+                        return;
+                    }
+
+                    let content = "<div style='padding: 8px; min-width: 200px;'>";
+                    content += `<div style='font-weight: 600; margin-bottom: 8px; font-size: 14px;'>${rotation.name}</div>`;
+                    
+                    rotation.details.forEach(day => {
+                        content += `<div style='margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.1);'>`;
+                        content += `<div style='font-weight: 500; margin-bottom: 4px;'>${day.day}</div>`;
+                        
+                        if (day.is_off) {
+                            content += `<div style='color: #9ca3af; font-size: 12px;'>Repos</div>`;
+                        } else if (day.debut_journee) {
+                            content += `<div style='font-size: 12px; color: #374151;'>`;
+                            content += `<div>Début: ${day.debut_journee}</div>`;
+                            if (day.debut_pause && day.fin_pause) {
+                                content += `<div>Pause: ${day.debut_pause} - ${day.fin_pause}</div>`;
+                            }
+                            content += `<div>Fin: ${day.fin_journee}</div>`;
+                            content += `</div>`;
+                        } else {
+                            content += `<div style='color: #9ca3af; font-size: 12px;'>Non planifié</div>`;
+                        }
+                        content += `</div>`;
+                    });
+                    content += "</div>";
+
+                    const element = document.getElementById(rotation.name);
+                    if (element) {
+                        tippy(element, {
+                            placement: 'right',
+                            content: content,
+                            allowHTML: true,
+                            interactive: false,
+                            delay: [200, 0],
+                            appendTo: () => document.body,
+                        });
+                    }
+                });
+            }, 100);
+        },
+        changeTab(index) {
+            this.tab = index
+            if (index === 1) {
+                // Utiliser un double nextTick pour s'assurer que le DOM est complètement rendu
+                this.$nextTick(() => {
+                    this.$nextTick(() => {
+                        this.initTooltips();
+                    });
+                });
+            } else {
+                // Nettoyer les tooltips quand on quitte l'onglet rotation
+                if (this.$page.props.auth.team && this.$page.props.auth.team.rotations) {
+                    this.$page.props.auth.team.rotations.forEach(rotation => {
+                        const element = document.getElementById(rotation.name);
+                        if (element && element._tippy) {
+                            element._tippy.destroy();
+                        }
+                    });
+                }
                 this.selectedRotation = null;
             }
         },
@@ -508,6 +523,15 @@ export default {
                 }
             },
             immediate: true,
+        },
+        show: {
+            handler(newVal) {
+                if (newVal && this.tab === 1) {
+                    // Si la modal s'ouvre et l'onglet rotation est actif, initialiser les tooltips
+                    this.initTooltips();
+                }
+            },
+            immediate: false,
         }
     },
     computed: {
