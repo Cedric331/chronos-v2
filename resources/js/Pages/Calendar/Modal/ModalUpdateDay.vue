@@ -225,7 +225,7 @@
                                 <h3 class="text-lg font-semibold mb-4" :style="{ color: isDarkMode ? '#ffffff' : '#111827' }">
                                     Sélectionner une rotation
                                 </h3>
-                                <div class="space-y-3">
+                                <div class="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
                                     <div 
                                         v-for="rotation in $page.props.auth.team.rotations" 
                                         :key="rotation.id"
