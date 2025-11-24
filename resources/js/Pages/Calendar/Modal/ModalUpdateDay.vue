@@ -326,6 +326,7 @@ import Badge from "@/Components/Badge.vue";
 import { useStore } from 'vuex';
 import { useNotification } from '@/composables/useNotification';
 import tippy from "tippy.js";
+import 'tippy.js/dist/tippy.css';
 import axios from "axios";
 
 export default {
@@ -375,33 +376,66 @@ export default {
             this.tab = index
             if (index === 1) {
                 this.$nextTick(() => {
+                    // Nettoyer les tooltips existants
                     this.$page.props.auth.team.rotations.forEach(rotation => {
-                        let content = "";
-                        content += '<br>'
-                        rotation.details.forEach(day => {
-                            content += `<p>Jour: ${day.day}</p>`;
-                            if (day.debut_journee) {
-                                content += `<p>Début de journée: ${day.debut_journee}</p>`;
-                                if (day.debut_pause) {
-                                    content += `<p>Début de pause: ${day.debut_pause}</p>`;
-                                    content += `<p>Fin de pause: ${day.fin_pause}</p>`;
-                                }
-                                content += `<p>Fin de journée: ${day.fin_journee}</p>`;
-                            } else {
-                                content += `<p>Non planifié</p>`;
-                            }
-                            content += '<br>'
-                        });
+                        const element = document.getElementById(rotation.name);
+                        if (element && element._tippy) {
+                            element._tippy.destroy();
+                        }
+                    });
 
-                        tippy('#' + rotation.name, {
-                            placement: 'right',
-                            content: content,
-                            allowHTML: true,
-                        })
-                    })
-                })
+                    // Créer les nouveaux tooltips
+                    this.$page.props.auth.team.rotations.forEach(rotation => {
+                        if (!rotation.details || rotation.details.length === 0) {
+                            return;
+                        }
+
+                        let content = "<div style='padding: 8px; min-width: 200px;'>";
+                        content += `<div style='font-weight: 600; margin-bottom: 8px; font-size: 14px;'>${rotation.name}</div>`;
+                        
+                        rotation.details.forEach(day => {
+                            content += `<div style='margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(0,0,0,0.1);'>`;
+                            content += `<div style='font-weight: 500; margin-bottom: 4px;'>${day.day}</div>`;
+                            
+                            if (day.is_off) {
+                                content += `<div style='color: #9ca3af; font-size: 12px;'>Repos</div>`;
+                            } else if (day.debut_journee) {
+                                content += `<div style='font-size: 12px; color: #374151;'>`;
+                                content += `<div>Début: ${day.debut_journee}</div>`;
+                                if (day.debut_pause && day.fin_pause) {
+                                    content += `<div>Pause: ${day.debut_pause} - ${day.fin_pause}</div>`;
+                                }
+                                content += `<div>Fin: ${day.fin_journee}</div>`;
+                                content += `</div>`;
+                            } else {
+                                content += `<div style='color: #9ca3af; font-size: 12px;'>Non planifié</div>`;
+                            }
+                            content += `</div>`;
+                        });
+                        content += "</div>";
+
+                        const element = document.getElementById(rotation.name);
+                        if (element) {
+                            tippy(element, {
+                                placement: 'right',
+                                content: content,
+                                allowHTML: true,
+                                theme: 'light-border',
+                                interactive: false,
+                                delay: [200, 0],
+                            });
+                        }
+                    });
+                });
             } else {
-                this.selectedRotation = null
+                // Nettoyer les tooltips quand on quitte l'onglet rotation
+                this.$page.props.auth.team.rotations.forEach(rotation => {
+                    const element = document.getElementById(rotation.name);
+                    if (element && element._tippy) {
+                        element._tippy.destroy();
+                    }
+                });
+                this.selectedRotation = null;
             }
         },
         deleteDay (day) {
@@ -488,6 +522,17 @@ export default {
         const { showSuccess, showError } = useNotification();
         this.showSuccess = showSuccess;
         this.showError = showError;
+    },
+    beforeUnmount() {
+        // Nettoyer tous les tooltips avant la destruction du composant
+        if (this.$page.props.auth.team && this.$page.props.auth.team.rotations) {
+            this.$page.props.auth.team.rotations.forEach(rotation => {
+                const element = document.getElementById(rotation.name);
+                if (element && element._tippy) {
+                    element._tippy.destroy();
+                }
+            });
+        }
     }
 }
 </script>
