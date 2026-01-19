@@ -1,20 +1,26 @@
 <template>
     <Modal :show="show" :maxWidth="widthCustom">
-
-        <div v-if="showDates[0]" class="overflow-x-auto p-4 bg-white">
-            <div v-if="isMobile()">
-                <ViewDayTeam :showDates="showDates"></ViewDayTeam>
-            </div>
-
-            <div v-else>
-                <ViewWeekTeam :showDates="showDates" :weeklyHours="weeklyHours"></ViewWeekTeam>
-            </div>
+      <!-- Container: limite la hauteur de la modal -->
+      <div class="bg-white flex flex-col max-h-[85vh] sm:max-h-[90vh]">
+        <!-- Content: scroll vertical -->
+        <div v-if="showDates[0]" class="overflow-y-auto overflow-x-auto p-4">
+          <div v-if="isMobile()">
+            <ViewDayTeam :showDates="showDates" />
+          </div>
+  
+          <div v-else>
+            <ViewWeekTeam :showDates="showDates" :weeklyHours="weeklyHours" />
+          </div>
         </div>
-        <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-center">
-            <PrimaryButton @click="this.$emit('close')">Fermer</PrimaryButton>
+  
+        <!-- Footer: toujours visible -->
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 flex justify-center shrink-0 border-t">
+          <PrimaryButton @click="$emit('close')">Fermer</PrimaryButton>
         </div>
+      </div>
     </Modal>
-</template>
+  </template>
+  
 
 <script>
 import Modal from "@/Components/Modal.vue";
