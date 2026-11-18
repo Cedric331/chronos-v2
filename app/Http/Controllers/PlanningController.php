@@ -55,7 +55,7 @@ class PlanningController extends Controller
         }
 
         // Calculer le nombre total de jours dans la période
-        $totalDaysInPeriod = $startDate->diffInDays($endDate) + 1;
+        $totalDaysInPeriod = (int) $startDate->diffInDays($endDate, true) + 1;
 
         // Calculer le nombre de jours ouvrables dans la période (lundi-vendredi)
         $workingDaysInPeriod = 0;

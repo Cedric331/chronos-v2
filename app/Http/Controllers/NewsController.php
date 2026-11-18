@@ -29,7 +29,7 @@ class NewsController extends Controller
         // Vérifier si une requête a été faite récemment (moins de 10 minutes)
         $lastRequestTime = Cache::get($lastRequestKey);
 
-        if ($lastRequestTime && $now->diffInMinutes($lastRequestTime) < 10) {
+        if ($lastRequestTime && (int) $now->diffInMinutes($lastRequestTime, true) < 10) {
             // Si une requête a été faite il y a moins de 10 minutes, utiliser les données en cache
             if (Cache::has($cacheKey)) {
                 return response()->json(Cache::get($cacheKey));

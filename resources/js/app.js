@@ -6,7 +6,7 @@ import { plugin as VueTippy } from 'vue-tippy'
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 import dateFormatPlugin from './Plugin/date-format-plugin';
 import Notifications from '@kyvg/vue3-notification'
 import store from './store';

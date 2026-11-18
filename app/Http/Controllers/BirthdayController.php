@@ -62,7 +62,7 @@ class BirthdayController extends Controller
                 // Si l'anniversaire tombe dans la période
                 if ($birthDateThisYear <= $endDate) {
                     // Calculer l'âge
-                    $age = $birthDate->diffInYears(Carbon::now());
+                    $age = (int) $birthDate->diffInYears(Carbon::now(), true);
                     if ($birthDateThisYear->year > Carbon::now()->year) {
                         $age++; // Ajouter 1 an si l'anniversaire est l'année prochaine
                     }
