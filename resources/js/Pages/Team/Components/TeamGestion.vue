@@ -178,7 +178,6 @@ import ModalTeamUpdate from "@/Pages/Team/Modal/ModalTeamUpate.vue";
 import Checkbox from "@/Components/Checkbox.vue";
 // import ModalUpdateTypeDay from "@/Pages/Team/Modal/ModalUpdateTypeDay.vue";
 import tippy from "tippy.js";
-import {Inertia} from "@inertiajs/inertia";
 import { router } from '@inertiajs/vue3'
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 
@@ -220,7 +219,7 @@ export default {
                         text: "Logo supprimé avec succès!",
                     });
                     this.team.logo_url = null
-                    Inertia.reload({ only: ['auth.team'] });
+                    router.reload({ only: ['auth.team'] });
                 })
                 .catch(error => {
                     console.log(error)

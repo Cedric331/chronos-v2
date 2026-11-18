@@ -146,7 +146,7 @@ import Modal from "@/Components/Modal.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import InputError from "@/Components/InputError.vue";
-import { Inertia } from '@inertiajs/inertia';
+import { router } from '@inertiajs/vue3';
 import Checkbox from "@/Components/Checkbox.vue";
 
 export default {
@@ -204,9 +204,9 @@ export default {
                     }
                 });
                 if (response.data.url) {
-                    Inertia.visit(response.data.url);
+                    router.visit(response.data.url);
                 } else {
-                    Inertia.reload();
+                    router.reload();
                 }
 
             } catch (error) {
