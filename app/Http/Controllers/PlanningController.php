@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\PlanningType;
 use App\Exports\PlanningsExport;
 use App\Exports\TeamPlanningsExport;
 use App\Http\Requests\RequestGeneratePlanning;
@@ -15,18 +16,22 @@ use App\Models\User;
 use App\Services\CalendarService;
 use App\Services\PlanningService;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Inertia\Response;
+use Maatwebsite\Excel\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PlanningController extends Controller
 {
     /**
      * Get planning statistics for the widget.
      */
-    public function getStats(Request $request): \Illuminate\Http\JsonResponse
+    public function getStats(Request $request): JsonResponse
     {
         $request->validate([
             'period' => 'required|string|in:week,month,year',
@@ -126,7 +131,7 @@ class PlanningController extends Controller
     /**
      * Get upcoming events for the widget.
      */
-    public function getEvents(Request $request): \Illuminate\Http\JsonResponse
+    public function getEvents(Request $request): JsonResponse
     {
         $request->validate([
             'daysAhead' => 'required|integer|min:1|max:30',
@@ -166,7 +171,7 @@ class PlanningController extends Controller
     /**
      * Get team presence information for the widget.
      */
-    public function getTeamPresence(Request $request): \Illuminate\Http\JsonResponse
+    public function getTeamPresence(Request $request): JsonResponse
     {
         $request->validate([
             'date' => 'required|date',
@@ -249,7 +254,7 @@ class PlanningController extends Controller
         $this->middleware('isCoordinateur')->only('generate');
     }
 
-    public function generate(RequestGeneratePlanning $request): \Illuminate\Http\JsonResponse
+    public function generate(RequestGeneratePlanning $request): JsonResponse
     {
         $dateStart = Carbon::parse($request->dateStart);
         $dateEnd = Carbon::parse($request->dateEnd)->addWeek();
@@ -275,7 +280,7 @@ class PlanningController extends Controller
         return response()->json($countDayGenerate);
     }
 
-    public function update(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function update(Request $request): JsonResponse|Response
     {
         if (! Gate::check('can-update-planning')) {
             return response()->json(['message' => 'Action non autorisée'], 401);
@@ -286,6 +291,10 @@ class PlanningController extends Controller
         }
 
         $ids = array_column($request->days, 'id');
+
+        $planning = null;
+
+        $user = null;
         foreach ($request->days as $day) {
             $planning = Planning::find($day['plannings'][0]['id']);
             if ($this->planningService->checkTypeDay($request->type_day)) {
@@ -323,6 +332,12 @@ class PlanningController extends Controller
                 ->log('Le planning de '.$user->name.' a été modifié');
         }
 
+        if (! $planning) {
+
+            return response()->json(['message' => 'Aucun planning trouvé'], 422);
+
+        }
+
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
             $query->with('eventPlannings')->where('user_id', $planning->user_id);
         }])->whereIn('id', $ids)->get();
@@ -330,7 +345,7 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
-    public function updateWithRotation(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function updateWithRotation(Request $request): JsonResponse|Response
     {
         if (! Gate::check('can-update-planning')) {
             return response()->json(['message' => 'Action non autorisée'], 401);
@@ -342,6 +357,8 @@ class PlanningController extends Controller
 
         $rotation = Rotation::with('details')->find($request->rotation_id);
         $ids = array_column($request->days, 'id');
+        $planning = null;
+        $user = null;
         foreach ($request->days as $day) {
             $planning = Planning::with('calendar')->find($day['plannings'][0]['id']);
             $day = strtolower($planning->calendar->getDay());
@@ -358,7 +375,7 @@ class PlanningController extends Controller
                         'telework' => $detail->teletravail,
                         'is_technician' => $detail->technicien,
                         'rotation_id' => $rotation->id,
-                        'type_day' => $detail->is_off ? \App\Enums\PlanningType::REST->value : \App\Enums\PlanningType::PLANNED->value,
+                        'type_day' => $detail->is_off ? PlanningType::REST->value : PlanningType::PLANNED->value,
                     ]);
 
                     activity(Auth::user()->team->name)
@@ -370,6 +387,12 @@ class PlanningController extends Controller
             }
         }
 
+        if (! $planning) {
+
+            return response()->json(['message' => 'Aucun planning trouvé'], 422);
+
+        }
+
         $calendar = Calendar::with(['plannings' => function ($query) use ($planning) {
             $query->with('eventPlannings')->where('user_id', $planning->user_id);
         }])->whereIn('id', $ids)->get();
@@ -377,7 +400,7 @@ class PlanningController extends Controller
         return response()->json($calendar);
     }
 
-    public function generateShareLink(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function generateShareLink(Request $request): JsonResponse|Response
     {
         if (! $request->ajax()) {
             return Inertia::render('Errors/404');
@@ -420,7 +443,7 @@ class PlanningController extends Controller
         return response()->json(['link' => url("/planning/{$token}")]);
     }
 
-    public function deleteShareLink(Request $request, ShareLink $link): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function deleteShareLink(Request $request, ShareLink $link): JsonResponse|Response
     {
         if (! $request->ajax()) {
             return Inertia::render('Errors/404');
@@ -440,7 +463,7 @@ class PlanningController extends Controller
         return response()->json('Lien supprimé avec succès!');
     }
 
-    public function getPlanningShare($token): \Inertia\Response
+    public function getPlanningShare($token): Response
     {
         $shareLink = ShareLink::where('token', $token)
             ->where('expired_at', '>', now())
@@ -485,7 +508,7 @@ class PlanningController extends Controller
         return $calendar;
     }
 
-    public function getPlanningTeam(Request $request): \Illuminate\Http\JsonResponse|\Inertia\Response
+    public function getPlanningTeam(Request $request): JsonResponse|Response
     {
         if (! $request->ajax()) {
             return Inertia::render('Errors/404');
@@ -504,14 +527,14 @@ class PlanningController extends Controller
         ]);
     }
 
-    public function exportPlanning(): \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function exportPlanning(): \Illuminate\Http\Response|BinaryFileResponse
     {
         $user = Auth::user();
 
-        return (new PlanningsExport)->user($user)->download('planning.xlsx', \Maatwebsite\Excel\Excel::XLSX);
+        return (new PlanningsExport)->user($user)->download('planning.xlsx', Excel::XLSX);
     }
 
-    public function exportTeamPlannings(Request $request): \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\BinaryFileResponse
+    public function exportTeamPlannings(Request $request): \Illuminate\Http\Response|BinaryFileResponse
     {
         $user = Auth::user();
 
@@ -530,14 +553,14 @@ class PlanningController extends Controller
 
         $fileName = 'plannings_equipe_'.str_replace(' ', '_', $team->name).'_'.date('Y-m-d').'.xlsx';
 
-        return (new TeamPlanningsExport)->team($team)->download($fileName, \Maatwebsite\Excel\Excel::XLSX);
+        return (new TeamPlanningsExport)->team($team)->download($fileName, Excel::XLSX);
     }
 
     /**
      * Récupère les plannings d'un utilisateur spécifique pour les 30 prochains jours
      * Utilisé par l'API pour le module d'échange de planning
      */
-    public function getUserPlannings(User $user): \Illuminate\Http\JsonResponse
+    public function getUserPlannings(User $user): JsonResponse
     {
         $currentUser = Auth::user();
 
@@ -562,7 +585,7 @@ class PlanningController extends Controller
      * Récupère les dates disponibles pour un échange de planning entre l'utilisateur connecté et un autre utilisateur
      * Utilisé par l'API pour le module d'échange de planning
      */
-    public function getExchangeDates(User $user): \Illuminate\Http\JsonResponse
+    public function getExchangeDates(User $user): JsonResponse
     {
         $currentUser = Auth::user();
 

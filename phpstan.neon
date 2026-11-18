@@ -1,0 +1,13 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    paths:
+        - app/
+    level: 1
+    parallel:
+        maximumNumberOfProcesses: 1
+    ignoreErrors:
+        - identifier: larastan.relationExistence
+        - identifier: larastan.noUnnecessaryCollectionCall
+        - identifier: property.notFound

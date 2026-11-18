@@ -198,6 +198,7 @@ class PlanningService
         }
 
         foreach ($calendar as $index => $day) {
+            $dayObj = is_array($day) ? (object) $day : $day;
             // Cas 1: Structure Calendar avec plannings (structure normale)
             if (isset($day->date)) {
                 $date = $day->date;
